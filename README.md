@@ -53,6 +53,28 @@ kamma/
 └── README.md
 ```
 
+## Quick Start
+
+```bash
+# 1. Sync Kamma to your installed AI tools
+./sync.sh
+
+# 2. In any project, initialize Kamma
+/kamma:0-setup
+
+# 3. Plan a feature — creates spec.md and plan.md
+/kamma:1-plan "Add user authentication"
+
+# 4. Implement the thread
+/kamma:2-do
+
+# 5. Review with a different agent (recommended)
+/kamma:3-review
+
+# 6. Finalize — mark complete, sync docs, cleanup
+/kamma:4-finalize
+```
+
 ## Usage
 
 ### Workflow
@@ -83,6 +105,17 @@ Or use:
 This is just a thin wrapper around the same `uv` command.
 
 The sync tool copies prompts to all supported AI CLIs that are already installed on your machine and skips the rest.
+
+### Path Resolution
+
+The sync tool checks the install roots that already exist on the machine and writes only to those locations.
+
+- macOS and Linux home-based roots: `~/.claude`, `~/.gemini`, `~/.gemini/antigravity`, `~/.codex`, `~/.kilocode`
+- OpenCode roots: legacy `~/.opencode` and the documented config root `~/.config/opencode`
+- Windows home-based roots: `%USERPROFILE%\.claude`, `%USERPROFILE%\.gemini`, `%USERPROFILE%\.gemini\antigravity`, `%USERPROFILE%\.codex`, `%USERPROFILE%\.kilocode`
+- Windows OpenCode roots: `%USERPROFILE%\.config\opencode` and `%APPDATA%\opencode` when present
+
+If more than one valid root exists for the same tool, Kamma syncs all of them.
 
 ### What it creates in your project
 
