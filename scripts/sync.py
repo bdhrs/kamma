@@ -2,9 +2,12 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
+
+from rich import print
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -12,7 +15,6 @@ COMMANDS_DIR = ROOT / "commands"
 TEMPLATES_DIR = ROOT / "templates"
 REGISTRATION_DIR = ROOT / "registration"
 SKILLS_DIR = ROOT / "skills"
-HOME = Path.home()
 
 
 @dataclass(frozen=True)
@@ -21,6 +23,42 @@ class Command:
     description: str
     body: str
     source: Path
+
+
+@dataclass(frozen=True)
+class Target:
+    label: str
+    roots: list[Path]
+
+
+def unique_paths(paths: list[Path]) -> list[Path]:
+    seen: set[Path] = set()
+    ordered: list[Path] = []
+    for path in paths:
+        resolved = path.expanduser()
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        ordered.append(resolved)
+    return ordered
+
+
+HOME_DIRS = unique_paths(
+    [
+        Path.home(),
+        *(Path(os.environ[name]) for name in ("HOME", "USERPROFILE") if os.environ.get(name)),
+    ]
+)
+APPDATA_DIRS = unique_paths(
+    [
+        *(Path(os.environ[name]) for name in ("APPDATA", "LOCALAPPDATA") if os.environ.get(name)),
+    ]
+)
+AGENTS_DIRS = unique_paths([home / ".agents" for home in HOME_DIRS])
+
+
+def existing(paths: list[Path]) -> list[Path]:
+    return [path for path in unique_paths(paths) if path.is_dir()]
 
 
 def read_commands() -> list[Command]:
@@ -91,19 +129,25 @@ def remove_if_exists(path: Path) -> None:
         shutil.rmtree(path)
 
 
+def remove_stale(paths: list[Path]) -> None:
+    for path in paths:
+        remove_if_exists(path)
+
+
 def remove_marketplace_kamma() -> None:
-    marketplace = HOME / ".agents" / "plugins" / "marketplace.json"
-    if not marketplace.exists():
-        return
-    data = json.loads(marketplace.read_text())
-    plugins = data.get("plugins")
-    if not isinstance(plugins, list):
-        return
-    filtered = [plugin for plugin in plugins if plugin.get("name") != "kamma"]
-    if filtered == plugins:
-        return
-    data["plugins"] = filtered
-    marketplace.write_text(json.dumps(data, indent=2) + "\n")
+    for agents_dir in AGENTS_DIRS:
+        marketplace = agents_dir / "plugins" / "marketplace.json"
+        if not marketplace.exists():
+            continue
+        data = json.loads(marketplace.read_text())
+        plugins = data.get("plugins")
+        if not isinstance(plugins, list):
+            continue
+        filtered = [plugin for plugin in plugins if plugin.get("name") != "kamma"]
+        if filtered == plugins:
+            continue
+        data["plugins"] = filtered
+        marketplace.write_text(json.dumps(data, indent=2) + "\n")
 
 
 def render_toml(command: Command) -> str:
@@ -115,7 +159,7 @@ def render_toml(command: Command) -> str:
     )
 
 
-def render_antigravity_workflow(command: Command) -> str:
+def render_markdown_frontmatter(command: Command) -> str:
     return (
         "---\n"
         f"name: kamma-{command.base}\n"
@@ -125,18 +169,24 @@ def render_antigravity_workflow(command: Command) -> str:
     )
 
 
-def render_kilo_skill(command: Command) -> str:
-    return (
-        "---\n"
-        f"name: kamma-{command.base}\n"
-        f"description: {command.description}\n"
-        "---\n\n"
-        f"{command.body}"
-    )
+def resolve_opencode_command_dir(root: Path) -> Path:
+    commands_dir = root / "commands"
+    command_dir = root / "command"
+    if commands_dir.exists() and not command_dir.exists():
+        return commands_dir
+    if command_dir.exists() and not commands_dir.exists():
+        return command_dir
+    if root.name == ".opencode":
+        return command_dir
+    return commands_dir
 
 
-def copy_claude(commands: list[Command]) -> None:
-    target = HOME / ".claude" / "plugins" / "local" / "kamma"
+def sync_claude(root: Path, commands: list[Command]) -> None:
+    target = root / "plugins" / "local" / "kamma"
+    remove_stale([
+        target / "commands" / "kamma" / "status.toml",
+        target / "commands" / "kamma" / "kamma-status.toml",
+    ])
     ensure_dir(target / "commands" / "kamma")
     ensure_dir(target / ".claude-plugin")
     ensure_dir(target / "skills" / "kamma")
@@ -147,8 +197,14 @@ def copy_claude(commands: list[Command]) -> None:
     copy_tree_contents(TEMPLATES_DIR, target / "templates")
 
 
-def copy_gemini(commands: list[Command]) -> None:
-    target = HOME / ".gemini" / "extensions" / "kamma"
+def sync_gemini(root: Path, commands: list[Command]) -> None:
+    target = root / "extensions" / "kamma"
+    remove_stale([
+        target / "commands" / "kamma" / "status.toml",
+        target / "commands" / "kamma" / "kamma-status.toml",
+        root / "commands" / "kamma" / "status.toml",
+        root / "commands" / "kamma" / "kamma-status.toml",
+    ])
     ensure_dir(target / "commands" / "kamma")
     shutil.copy2(REGISTRATION_DIR / "gemini-extension.json", target / "gemini-extension.json")
     shutil.copy2(REGISTRATION_DIR / "GEMINI.md", target / "GEMINI.md")
@@ -157,65 +213,112 @@ def copy_gemini(commands: list[Command]) -> None:
     copy_tree_contents(TEMPLATES_DIR, target / "templates")
 
 
-def copy_antigravity(commands: list[Command]) -> None:
-    target = HOME / ".gemini" / "antigravity" / "global_workflows"
-    remove_if_exists(HOME / ".gemini" / "antigravity" / "skills" / "kamma")
+def sync_antigravity(root: Path, commands: list[Command]) -> None:
+    target = root / "global_workflows"
+    remove_if_exists(root / "skills" / "kamma")
+    remove_stale([
+        target / "kamma-status.md",
+        target / "status.md",
+    ])
     ensure_dir(target)
     for old in target.glob("kamma-*.md"):
         old.unlink()
     for command in commands:
-        write_text(target / f"kamma-{command.base}.md", render_antigravity_workflow(command))
+        write_text(target / f"kamma-{command.base}.md", render_markdown_frontmatter(command))
 
 
-def copy_opencode(commands: list[Command]) -> None:
-    command_target = HOME / ".opencode" / "command"
+def sync_opencode(root: Path, commands: list[Command]) -> None:
+    command_target = resolve_opencode_command_dir(root)
     ensure_dir(command_target)
-    remove_if_exists(command_target / "kamma-status.md")
+    remove_stale([
+        command_target / "kamma-status.md",
+        command_target / "status.md",
+    ])
     for command in commands:
         shutil.copy2(command.source, command_target / f"kamma-{command.base}.md")
-    copy_tree_contents(TEMPLATES_DIR, HOME / ".opencode" / "templates" / "kamma")
+    copy_tree_contents(TEMPLATES_DIR, root / "templates" / "kamma")
 
 
-def copy_codex(commands: list[Command]) -> None:
-    prompt_target = HOME / ".codex" / "prompts"
+def sync_codex(root: Path, commands: list[Command]) -> None:
+    prompt_target = root / "prompts"
     ensure_dir(prompt_target)
-    remove_if_exists(HOME / "plugins" / "kamma")
+    remove_stale([
+        prompt_target / "kamma-status.md",
+        prompt_target / "status.md",
+    ])
+    remove_if_exists(root.parent / "plugins" / "kamma")
     remove_marketplace_kamma()
     for command in commands:
         write_text(prompt_target / f"kamma-{command.base}.md", command.body)
-    copy_tree_contents(TEMPLATES_DIR, HOME / ".codex" / "templates" / "kamma")
+    copy_tree_contents(TEMPLATES_DIR, root / "templates" / "kamma")
 
 
-def copy_kilo(commands: list[Command]) -> None:
-    skills_root = HOME / ".kilocode" / "skills"
+def sync_kilo(root: Path, commands: list[Command]) -> None:
+    skills_root = root / "skills"
+    remove_stale([
+        skills_root / "kamma-status",
+        skills_root / "status",
+    ])
     ensure_dir(skills_root / "kamma")
     for command in commands:
         skill_dir = skills_root / f"kamma-{command.base}"
         ensure_dir(skill_dir)
-        write_text(skill_dir / "SKILL.md", render_kilo_skill(command))
+        write_text(skill_dir / "SKILL.md", render_markdown_frontmatter(command))
     shutil.copy2(SKILLS_DIR / "kamma" / "SKILL.md", skills_root / "kamma" / "SKILL.md")
-    copy_tree_contents(TEMPLATES_DIR, HOME / ".kilocode" / "templates" / "kamma")
+    copy_tree_contents(TEMPLATES_DIR, root / "templates" / "kamma")
 
 
 TARGETS = [
-    ("Claude Code", HOME / ".claude", copy_claude),
-    ("Gemini CLI", HOME / ".gemini", copy_gemini),
-    ("Antigravity", HOME / ".gemini" / "antigravity", copy_antigravity),
-    ("OpenCode", HOME / ".opencode", copy_opencode),
-    ("Codex CLI", HOME / ".codex", copy_codex),
-    ("Kilo CLI", HOME / ".kilocode", copy_kilo),
+    Target("Claude Code", existing([home / ".claude" for home in HOME_DIRS])),
+    Target("Gemini CLI", existing([home / ".gemini" for home in HOME_DIRS])),
+    Target("Antigravity", existing([home / ".gemini" / "antigravity" for home in HOME_DIRS])),
+    Target(
+        "OpenCode",
+        existing(
+            [
+                *(home / ".opencode" for home in HOME_DIRS),
+                *(home / ".config" / "opencode" for home in HOME_DIRS),
+                *(app_dir / "opencode" for app_dir in APPDATA_DIRS),
+            ]
+        ),
+    ),
+    Target("Codex CLI", existing([home / ".codex" for home in HOME_DIRS])),
+    Target("Kilo CLI", existing([home / ".kilocode" for home in HOME_DIRS])),
 ]
+SYNCERS = {
+    "Claude Code": sync_claude,
+    "Gemini CLI": sync_gemini,
+    "Antigravity": sync_antigravity,
+    "OpenCode": sync_opencode,
+    "Codex CLI": sync_codex,
+    "Kilo CLI": sync_kilo,
+}
 
 
 def main() -> None:
     commands = read_commands()
-    print(f"Syncing kamma from {ROOT}...")
-    for label, root, copier in TARGETS:
-        if root.is_dir():
-            copier(commands)
-            print(f"{label}: copied")
-        else:
-            print(f"{label}: skipped")
+    errors: list[str] = []
+    print(f"\n[bold]Syncing kamma[/bold] [dim]from {ROOT}[/dim]\n")
+    for target in TARGETS:
+        if not target.roots:
+            print(f"  [dim]\\[-] {target.label} skipped[/dim]")
+            continue
+        syncer = SYNCERS[target.label]
+        try:
+            for root in target.roots:
+                syncer(root, commands)
+            print(f"  [green]\\[+][/green] {target.label}")
+        except Exception as exc:
+            errors.append(f"{target.label}: {exc}")
+            print(f"  [red]\\[!] {target.label} {exc}[/red]")
+    copied = len([t for t in TARGETS if t.roots]) - len(errors)
+    skipped = len([t for t in TARGETS if not t.roots])
+    summary = f"\n[bold]{copied} copied[/bold], [dim]{skipped} skipped[/dim]"
+    if errors:
+        summary += f", [red]{len(errors)} failed[/red]"
+    print(summary)
+    if errors:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ name = "kamma-sync"
 version = "0.1.0"
 description = "Sync Kamma commands into supported AI CLI installs"
 requires-python = ">=3.11"
+dependencies = ["rich"]
 
 [tool.uv]
 package = false
