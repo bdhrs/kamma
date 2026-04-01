@@ -153,10 +153,10 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 ---
 
 ## 8.0 HANDOFF
-**PROTOCOL: Return the thread to the implementation flow only after review is clear.**
+**PROTOCOL: Hand the thread off to finalization only after review is clear.**
 
-1.  **If Findings Were Resolved Successfully:** Instruct the user to return to the implementation flow for final user evaluation and thread completion.
+1.  **If Findings Were Resolved Successfully:** Instruct the user to run `/kamma:4-finalize` to complete the thread.
 
-2.  **If Review Is Clear:** State that the thread is review-complete and ready for final user evaluation.
+2.  **If Review Is Clear:** State that the thread is review-complete and ready for `/kamma:4-finalize`.
 
 3.  **If Review Is Blocked:** Clearly state what must happen before review can continue.

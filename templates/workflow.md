@@ -32,18 +32,22 @@ All tasks follow a strict lifecycle:
    - Re-run relevant tests and verification.
    - Repeat review if needed until blocking issues are resolved.
 
-7. **Document Deviations:** If implementation differs from tech stack:
+7. **Finalize the Thread:**
+   - After review is clear, run `/kamma:4-finalize`.
+   - Mark the thread complete, sync project docs, and handle archive/delete/skip cleanup there.
+
+8. **Document Deviations:** If implementation differs from tech stack:
    - **STOP** implementation
    - Update `tech-stack.md` with new design
    - Add dated note explaining the change
    - Resume implementation
 
-8. **Commit Code Changes:**
+9. **Commit Code Changes:**
    - Stage all code changes related to the task.
    - Propose a clear, concise commit message.
    - Perform the commit.
 
-9. **Update Plan:**
+10. **Update Plan:**
    - Update `plan.md`: change the task from `[~]` to `[x]`.
    - Commit the plan update.
 
@@ -72,6 +76,7 @@ Before marking any task complete, verify:
 - [ ] Relevant tests pass
 - [ ] Independent review has been completed
 - [ ] Accepted review findings have been implemented
+- [ ] Finalization has been completed
 - [ ] Code follows project's style guidelines
 - [ ] No linting errors
 - [ ] Documentation updated if needed
@@ -99,6 +104,7 @@ A task is complete when:
 1. All code implemented to specification
 2. Relevant tests passing
 3. Independent review completed and accepted findings addressed
-4. Code passes linting
-5. Changes committed with proper message
-6. `plan.md` updated
+4. Finalization completed
+5. Code passes linting
+6. Changes committed with proper message
+7. `plan.md` updated
