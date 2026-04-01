@@ -1,0 +1,9 @@
+{
+  "name": "kamma",
+  "version": "0.1.0",
+  "description": "Lightweight workflow management",
+  "author": {
+    "name": "Bodhirasa"
+  },
+  "commands": "./commands"
+}
