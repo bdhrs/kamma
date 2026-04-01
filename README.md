@@ -45,7 +45,7 @@ kamma/
 │       └── SKILL.md        # Auto-activation skill
 ├── templates/
 │   └── workflow.md         # Default workflow template
-├── deploy.sh               # Copy to all CLIs
+├── copy.sh               # Copy to all CLIs
 └── README.md
 ```
 
@@ -67,7 +67,7 @@ Edit any file in `commands/`. This is the single source of truth.
 ### Copy
 
 ```bash
-./deploy.sh
+./copy.sh
 ```
 
 This converts and copies prompts to all supported AI CLIs.

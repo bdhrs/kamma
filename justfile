@@ -1,2 +1,2 @@
-deploy:
-    ./deploy.sh
+copy:
+    ./copy.sh
