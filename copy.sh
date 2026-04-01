@@ -11,6 +11,7 @@ set -e
 
 KAMMA_DIR="$(cd "$(dirname "$0")" && pwd)"
 SRC="$KAMMA_DIR/commands"
+TEMPLATES_SRC="$KAMMA_DIR/templates"
 
 echo "Copying kamma from $KAMMA_DIR..."
 
@@ -32,6 +33,9 @@ for f in "$SRC"/*.md; do
     printf 'description = "%s"\nprompt = """\n%s\n"""\n' "$desc" "$body" \
         > "$CLAUDE_DIR/commands/kamma/$base.toml"
 done
+# Copy shared templates for plugin-local assets
+mkdir -p "$CLAUDE_DIR/templates"
+cp -R "$TEMPLATES_SRC/." "$CLAUDE_DIR/templates/"
 
 # --- Gemini CLI ---
 echo "  -> Gemini CLI"
@@ -41,6 +45,8 @@ cp "$KAMMA_DIR/registration/gemini-extension.json" "$GEMINI_DIR/gemini-extension
 cp "$KAMMA_DIR/registration/GEMINI.md" "$GEMINI_DIR/GEMINI.md"
 # Gemini uses same TOML format as Claude
 cp "$CLAUDE_DIR/commands/kamma/"*.toml "$GEMINI_DIR/commands/kamma/"
+mkdir -p "$GEMINI_DIR/templates"
+cp -R "$TEMPLATES_SRC/." "$GEMINI_DIR/templates/"
 
 # --- OpenCode ---
 echo "  -> OpenCode"
@@ -50,6 +56,9 @@ for f in "$SRC"/*.md; do
     base=$(basename "$f" .md)
     cp "$f" "$OPENCODE_DIR/kamma-$base.md"
 done
+OPENCODE_TEMPLATES_DIR="$HOME/.opencode/templates/kamma"
+mkdir -p "$OPENCODE_TEMPLATES_DIR"
+cp -R "$TEMPLATES_SRC/." "$OPENCODE_TEMPLATES_DIR/"
 
 # --- Codex CLI ---
 echo "  -> Codex CLI"
@@ -60,6 +69,9 @@ for f in "$SRC"/*.md; do
     # Strip YAML frontmatter for Codex
     sed '1,/^---$/d; 1,/^---$/d' "$f" > "$CODEX_DIR/kamma-$base.md"
 done
+CODEX_TEMPLATES_DIR="$HOME/.codex/templates/kamma"
+mkdir -p "$CODEX_TEMPLATES_DIR"
+cp -R "$TEMPLATES_SRC/." "$CODEX_TEMPLATES_DIR/"
 
 # --- Kilo CLI (skills format: SKILL.md in named dirs) ---
 echo "  -> Kilo CLI"
@@ -82,6 +94,9 @@ done
 # Also copy the main skill to Kilo
 mkdir -p "$HOME/.kilocode/skills/kamma"
 cp "$KAMMA_DIR/skills/kamma/SKILL.md" "$HOME/.kilocode/skills/kamma/SKILL.md"
+KILO_TEMPLATES_DIR="$HOME/.kilocode/templates/kamma"
+mkdir -p "$KILO_TEMPLATES_DIR"
+cp -R "$TEMPLATES_SRC/." "$KILO_TEMPLATES_DIR/"
 
 echo ""
 echo "Copied kamma to: Claude Code, Gemini CLI, OpenCode, Kilo CLI, Codex CLI"

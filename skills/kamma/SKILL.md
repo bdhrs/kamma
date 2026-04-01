@@ -79,7 +79,7 @@ When completing a phase:
 - `/kamma:2-do` - Execute tasks from the current thread until review handoff
 - `/kamma:3-review` - Perform structured review of the active thread
 - `/kamma:4-finalize` - Complete a reviewed thread and handle cleanup
-- `/kamma:status` - Show project progress
+- `/kamma:5-status` - Show project progress
 
 ## Context Loading
 

@@ -13,7 +13,7 @@ Lightweight, cross-tool workflow management for AI coding CLIs.
 | `/kamma:2-do` | Implement the selected thread until it is ready for independent review |
 | `/kamma:3-review` | Review an implemented thread with an independent agent or tool |
 | `/kamma:4-finalize` | Mark a reviewed thread complete, sync docs, and handle cleanup |
-| `/kamma:status` | Show progress overview of all threads |
+| `/kamma:5-status` | Show progress overview of all threads |
 
 ## Supported Tools
 
@@ -35,7 +35,7 @@ kamma/
 │   ├── 2-do.md
 │   ├── 3-review.md
 │   ├── 4-finalize.md
-│   └── status.md
+│   └── 5-status.md
 ├── registration/           # Tool registration files
 │   ├── claude-plugin.json
 │   ├── gemini-extension.json
