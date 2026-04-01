@@ -15,7 +15,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 1.  **Check for Required Files:** You MUST verify the existence of the following files in the `kamma` directory:
     -   `kamma/tech-stack.md`
     -   `kamma/workflow.md`
-    -   `kamma/product.md`
+    -   `kamma/project.md`
 
 2.  **Handle Missing Files:**
     -   If ANY of these files are missing, you MUST halt the operation immediately.
@@ -82,11 +82,11 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 3.  **Load Thread Specification:** Read `kamma/threads/<thread_id>/spec.md`.
 
 4.  **Load Project Documents:** Read:
-    -   `kamma/product.md`
+    -   `kamma/project.md`
     -   `kamma/tech-stack.md`
 
 5.  **Analyze and Update:**
-    a.  **Update `kamma/product.md`:** If the completed thread significantly impacts the product description, propose changes and get user confirmation before applying.
+    a.  **Update `kamma/project.md`:** If the completed thread significantly impacts the project description, propose changes and get user confirmation before applying.
     b.  **Update `kamma/tech-stack.md`:** If significant tech stack changes detected, propose changes and get user confirmation.
 
 6.  **Final Report:** Summarize what was updated (or that no updates were needed).

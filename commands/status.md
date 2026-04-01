@@ -19,7 +19,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 1.  **Check for Required Files:** Verify existence of:
     -   `kamma/tech-stack.md`
     -   `kamma/workflow.md`
-    -   `kamma/product.md`
+    -   `kamma/project.md`
 
 2.  **Handle Missing Files:**
     -   If ANY are missing, halt immediately.

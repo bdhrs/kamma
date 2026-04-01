@@ -13,7 +13,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 1.  **Check for Required Files:** You MUST verify the existence of the following files in the `kamma` directory:
     -   `kamma/tech-stack.md`
     -   `kamma/workflow.md`
-    -   `kamma/product.md`
+    -   `kamma/project.md`
 
 2.  **Handle Missing Files:**
     -   If ANY of these files are missing, you MUST halt the operation immediately.
@@ -43,7 +43,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 2.  **Questioning Phase:** Ask a series of questions to gather details for the `spec.md`. Tailor questions based on the thread type (Feature or Other).
     *   **CRITICAL:** You MUST ask these questions sequentially (one by one). Do not ask multiple questions in a single turn. Wait for the user's response after each question.
     *   **General Guidelines:**
-        *   Refer to information in `product.md`, `tech-stack.md`, etc., to ask context-aware questions.
+        *   Refer to information in `project.md`, `tech-stack.md`, etc., to ask context-aware questions.
         *   Provide a brief explanation and clear examples for each question.
         *   Whenever possible, present 2-3 plausible options (A, B, C) for the user to choose from.
         *   The last option for every multiple-choice question MUST be "Type your own answer".
@@ -54,7 +54,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 
     *   **If SOMETHING ELSE (Bug, Chore, etc.):**
         *   **Ask 2-3 relevant questions** to obtain necessary details.
-        *   Examples include reproduction steps for bugs, specific scope for chores, or success criteria.
+        *   Examples include reprojection steps for bugs, specific scope for chores, or success criteria.
 
 3.  **Draft `spec.md`:** Once sufficient information is gathered, draft the content for the thread's `spec.md` file, including sections like Overview, Functional Requirements, Non-Functional Requirements (if any), Acceptance Criteria, and Out of Scope.
 
