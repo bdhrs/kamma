@@ -35,42 +35,13 @@ kamma/
 └── threads/                # Individual thread folders
     └── <thread_id>/
         ├── spec.md         # Feature specification
-        └── plan.md         # Implementation plan with tasks
+        ├── plan.md         # Implementation plan with tasks
+        └── review.md       # Review outcome (written by /kamma:3-review)
 ```
 
 ## Task Execution Protocol
 
-When implementing a task from a Kamma plan:
-
-### 1. Select and Mark Task
-- Find the next pending task (marked `[ ]`) in the thread's `plan.md`
-- Update its status to in-progress: `[~]`
-
-### 2. Follow Workflow
-- Read and follow `kamma/workflow.md` for the task lifecycle
-- Implement the task according to the spec
-
-### 3. Hand Off to Review
-1. Verify the implementation works correctly
-2. Stop at review handoff rather than declaring the thread done
-3. Run `/kamma:3-review`, ideally with a different agent or tool
-
-### 4. Finalize After Review
-1. Implement accepted review findings
-2. Run `/kamma:4-finalize`
-3. Mark thread complete: `[x]`
-
-### 5. Phase Completion
-When completing a phase:
-1. Run relevant tests
-2. Provide manual verification steps to user
-3. Update `plan.md` with completion status
-
-## Status Markers
-
-- `[ ]` - Pending (not started)
-- `[~]` - In Progress (currently working)
-- `[x]` - Completed
+Read and follow `kamma/workflow.md` for the full task lifecycle. It is the single source of truth for how tasks are selected, implemented, reviewed, and finalized.
 
 ## Available Commands
 
