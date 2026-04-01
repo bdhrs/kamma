@@ -22,7 +22,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 
 ---
 
-## 2.0 NEW TRACK INITIALIZATION
+## 2.0 NEW THREAD INITIALIZATION
 **PROTOCOL: Follow this sequence precisely.**
 
 ### 2.1 Get Thread Description and Determine Type

@@ -48,8 +48,8 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 ## 3.0 FINALIZE THREAD
 **PROTOCOL: Only finalize a thread that has already passed review.**
 
-1.  **Review Gate Check:** Confirm that `/kamma:3-review` has been completed and that any blocking review findings have been resolved.
-    -   If this cannot be confirmed, halt and instruct the user to run `/kamma:3-review` first.
+1.  **Review Gate Check:** Verify that `kamma/threads/<thread_id>/review.md` exists and contains a `PASSED` verdict.
+    -   If the file does not exist or the verdict is `BLOCKED`, halt and instruct the user to run `/kamma:3-review` first.
 
 2.  **Finalize Thread Status:**
     -   Update the thread's status in `kamma/threads.md` from `[~]` to `[x]`.

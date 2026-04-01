@@ -152,7 +152,21 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 
 ---
 
-## 8.0 HANDOFF
+## 8.0 WRITE REVIEW ARTIFACT
+**PROTOCOL: Persist the review outcome as a machine-verifiable artifact.**
+
+1.  **Write `review.md`:** Once the review is complete (all blocking/major findings resolved or no findings), write a summary file to `kamma/threads/<thread_id>/review.md` containing:
+    -   Review date
+    -   Reviewer identity (agent/tool name)
+    -   Review methods used
+    -   Findings summary (count by severity, or "No findings")
+    -   Verdict: `PASSED` or `BLOCKED`
+
+2.  **Do NOT write `review.md` if blocking findings remain unresolved.** The absence of this file signals that the thread has not cleared review.
+
+---
+
+## 9.0 HANDOFF
 **PROTOCOL: Hand the thread off to finalization only after review is clear.**
 
 1.  **If Findings Were Resolved Successfully:** Instruct the user to run `/kamma:4-finalize` to complete the thread.

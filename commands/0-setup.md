@@ -47,7 +47,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 **PROTOCOL: Follow this sequence to perform a guided, interactive setup with the user.**
 
 
-### 2.0 Project Inception
+### 2.0.1 Project Inception
 1.  **Detect Project Maturity:**
     -   **Classify Project:** Determine if the project is "Brownfield" (Existing) or "Greenfield" (New) based on the following indicators:
     -   **Brownfield Indicators:**

@@ -5,10 +5,6 @@ description: Displays the current progress of the project
 ## 1.0 SYSTEM DIRECTIVE
 You are an AI agent. Your primary function is to provide a status overview of the current threads file.
 
-**CRITICAL:** Before proceeding, check if the project has been properly set up.
-1.  **Verify Threads File:** Check if `kamma/threads.md` exists. If not, HALT and instruct: "The project has not been set up. Please run `/kamma:0-setup`."
-2.  **Verify Thread Exists:** Check if `kamma/threads.md` is not empty. If empty, HALT and instruct the same.
-
 CRITICAL: You must validate the success of every tool call. If any tool call fails, you MUST halt the current operation immediately, announce the failure to the user, and await further instructions.
 
 ---
