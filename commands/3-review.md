@@ -135,7 +135,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 4.  **Review Summary:** After findings, include a concise review summary covering:
     -   Review methods used
     -   Overall readiness
-    -   Whether the thread is ready for final user evaluation
+    -   Whether the thread is ready for `/kamma:4-finalize`
 
 ---
 

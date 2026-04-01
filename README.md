@@ -10,7 +10,9 @@ Lightweight, cross-tool workflow management for AI coding CLIs.
 |---------|-------------|
 | `/kamma:0-setup` | Scaffold a project with project.md, tech-stack.md, workflow.md |
 | `/kamma:1-plan` | Create a new thread (feature, bug fix, chore) with spec + plan |
-| `/kamma:2-do` | Execute tasks from the current thread's plan |
+| `/kamma:2-do` | Implement the selected thread until it is ready for independent review |
+| `/kamma:3-review` | Review an implemented thread with an independent agent or tool |
+| `/kamma:4-finalize` | Mark a reviewed thread complete, sync docs, and handle cleanup |
 | `/kamma:status` | Show progress overview of all threads |
 
 ## Supported Tools
@@ -31,6 +33,8 @@ kamma/
 │   ├── 0-setup.md
 │   ├── 1-plan.md
 │   ├── 2-do.md
+│   ├── 3-review.md
+│   ├── 4-finalize.md
 │   └── status.md
 ├── registration/           # Tool registration files
 │   ├── claude-plugin.json
@@ -46,6 +50,15 @@ kamma/
 ```
 
 ## Usage
+
+### Workflow
+
+Kamma now follows a four-step execution flow for each thread:
+
+1. `/kamma:1-plan` creates the thread spec and implementation plan.
+2. `/kamma:2-do` implements the thread and stops at review handoff.
+3. `/kamma:3-review` performs structured review, ideally with a different agent or tool.
+4. `/kamma:4-finalize` marks the thread complete, syncs docs, and handles archive/delete cleanup.
 
 ### Edit prompts
 

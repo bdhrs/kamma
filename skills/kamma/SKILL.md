@@ -20,6 +20,7 @@ Automatically apply this skill when:
 1. **The Plan is the Source of Truth:** All work must be tracked in `plan.md`
 2. **Spec-Driven Development:** Understand the spec before implementing
 3. **Thread Progress:** Update task status markers (`[ ]` → `[~]` → `[x]`)
+4. **Independent Review Before Completion:** Threads are not done when implementation ends
 
 ## Project Structure Understanding
 
@@ -49,12 +50,17 @@ When implementing a task from a Kamma plan:
 - Read and follow `kamma/workflow.md` for the task lifecycle
 - Implement the task according to the spec
 
-### 3. Complete the Task
+### 3. Hand Off to Review
 1. Verify the implementation works correctly
-2. Follow code style guidelines from the project's CLAUDE.md or equivalent
-3. Mark task complete: `[x]`
+2. Stop at review handoff rather than declaring the thread done
+3. Run `/kamma:3-review`, ideally with a different agent or tool
 
-### 4. Phase Completion
+### 4. Finalize After Review
+1. Implement accepted review findings
+2. Run `/kamma:4-finalize`
+3. Mark thread complete: `[x]`
+
+### 5. Phase Completion
 When completing a phase:
 1. Run relevant tests
 2. Provide manual verification steps to user
@@ -70,7 +76,9 @@ When completing a phase:
 
 - `/kamma:0-setup` - Initialize Kamma in a project
 - `/kamma:1-plan` - Create a new feature/bug thread
-- `/kamma:2-do` - Execute tasks from the current thread
+- `/kamma:2-do` - Execute tasks from the current thread until review handoff
+- `/kamma:3-review` - Perform structured review of the active thread
+- `/kamma:4-finalize` - Complete a reviewed thread and handle cleanup
 - `/kamma:status` - Show project progress
 
 ## Context Loading
