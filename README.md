@@ -21,6 +21,7 @@ Lightweight, cross-tool workflow management for AI coding CLIs.
 |------|--------|------------|
 | Claude Code | TOML commands + plugin.json | `/kamma:0-setup` |
 | Gemini CLI | TOML commands + gemini-extension.json | `/kamma:0-setup` |
+| Antigravity | Global workflows | `/kamma-0-setup` |
 | OpenCode | MD with frontmatter | `/kamma-0-setup` |
 | Kilo CLI | Skills (SKILL.md) | Skill-based activation |
 | Codex CLI | Plain MD prompts | `$kamma-0-setup` |
@@ -45,7 +46,10 @@ kamma/
 │       └── SKILL.md        # Auto-activation skill
 ├── templates/
 │   └── workflow.md         # Default workflow template
-├── copy.sh               # Copy to all CLIs
+├── sync.sh                # Thin shell wrapper around the uv sync tool
+├── pyproject.toml         # uv project metadata for the sync tool
+├── scripts/
+│   └── sync.py            # Sync implementation
 └── README.md
 ```
 
@@ -64,13 +68,21 @@ Kamma now follows a four-step execution flow for each thread:
 
 Edit any file in `commands/`. This is the single source of truth.
 
-### Copy
+### Sync
 
 ```bash
-./copy.sh
+uv run python scripts/sync.py
 ```
 
-This converts and copies prompts to all supported AI CLIs.
+Or use:
+
+```bash
+./sync.sh
+```
+
+This is just a thin wrapper around the same `uv` command.
+
+The sync tool copies prompts to all supported AI CLIs that are already installed on your machine and skips the rest.
 
 ### What it creates in your project
 

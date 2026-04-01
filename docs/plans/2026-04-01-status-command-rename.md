@@ -6,7 +6,7 @@
 
 **Architecture:** Rename the source command file, update every documentation and skill reference that mentions the old command name, then republish the installed command artifacts with the updated filename. Keep command content unchanged aside from invocation references.
 
-**Tech Stack:** Markdown command docs, shell copy script
+**Tech Stack:** Markdown command docs, shell sync script
 
 ---
 
@@ -39,11 +39,12 @@ Change `/kamma:status` references to `/kamma:5-status` and update any file-path 
 ### Task 3: Republish commands
 
 **Files:**
-- Modify: `copy.sh`
+- Modify: `sync.sh`
+- Add: `scripts/sync.py`
 
 **Step 1: Re-run install sync**
 
-Run `./copy.sh` after the rename so installed command artifacts use `kamma-5-status`.
+Run `uv run python scripts/sync.py` after the rename so installed command artifacts use `kamma-5-status`.
 
 ### Task 4: Verify installed outputs
 
