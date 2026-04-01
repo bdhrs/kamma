@@ -6,6 +6,7 @@
 2. **The Tech Stack is Deliberate:** Changes to the tech stack must be documented in `tech-stack.md` *before* implementation
 3. **Write Tests:** Write tests for new functionality where appropriate
 4. **Non-Interactive & CI-Aware:** Prefer non-interactive commands
+5. **Independent Review Before Completion:** Implementation is not complete until it has been independently reviewed
 
 ## Task Workflow
 
@@ -21,18 +22,28 @@ All tasks follow a strict lifecycle:
 
 4. **Test:** Run relevant tests to verify the implementation works correctly.
 
-5. **Document Deviations:** If implementation differs from tech stack:
+5. **Prepare for Independent Review:**
+   - Stop when the work is locally implemented and verified.
+   - Instruct the user to run `/kamma:3-review`.
+   - Recommend using a different agent or tool than the implementation agent when possible.
+
+6. **Implement Accepted Review Findings:**
+   - Apply valid findings from `/kamma:3-review`.
+   - Re-run relevant tests and verification.
+   - Repeat review if needed until blocking issues are resolved.
+
+7. **Document Deviations:** If implementation differs from tech stack:
    - **STOP** implementation
    - Update `tech-stack.md` with new design
    - Add dated note explaining the change
    - Resume implementation
 
-6. **Commit Code Changes:**
+8. **Commit Code Changes:**
    - Stage all code changes related to the task.
    - Propose a clear, concise commit message.
    - Perform the commit.
 
-7. **Update Plan:**
+9. **Update Plan:**
    - Update `plan.md`: change the task from `[~]` to `[x]`.
    - Commit the plan update.
 
@@ -59,6 +70,8 @@ Before marking any task complete, verify:
 
 - [ ] Implementation works correctly
 - [ ] Relevant tests pass
+- [ ] Independent review has been completed
+- [ ] Accepted review findings have been implemented
 - [ ] Code follows project's style guidelines
 - [ ] No linting errors
 - [ ] Documentation updated if needed
@@ -85,6 +98,7 @@ A task is complete when:
 
 1. All code implemented to specification
 2. Relevant tests passing
-3. Code passes linting
-4. Changes committed with proper message
-5. `plan.md` updated
+3. Independent review completed and accepted findings addressed
+4. Code passes linting
+5. Changes committed with proper message
+6. `plan.md` updated

@@ -66,45 +66,8 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
     c. **For Each Task:**
         i. **Defer to Workflow:** The `workflow.md` file is the **single source of truth** for the entire task lifecycle. Follow its procedures for implementation, testing, and committing precisely.
 
-5.  **Finalize Thread:**
-    -   After all tasks are completed, update the thread's status in `kamma/threads.md` from `[~]` to `[x]`.
-    -   Announce that the thread is fully complete.
-
----
-
-## 6.0 SYNCHRONIZE PROJECT DOCUMENTATION
-**PROTOCOL: Update project-level documentation based on the completed thread.**
-
-1.  **Execution Trigger:** Only execute when a thread reaches `[x]` status.
-
-2.  **Announce Synchronization.**
-
-3.  **Load Thread Specification:** Read `kamma/threads/<thread_id>/spec.md`.
-
-4.  **Load Project Documents:** Read:
-    -   `kamma/project.md`
-    -   `kamma/tech-stack.md`
-
-5.  **Analyze and Update:**
-    a.  **Update `kamma/project.md`:** If the completed thread significantly impacts the project description, propose changes and get user confirmation before applying.
-    b.  **Update `kamma/tech-stack.md`:** If significant tech stack changes detected, propose changes and get user confirmation.
-
-6.  **Final Report:** Summarize what was updated (or that no updates were needed).
-
----
-
-## 7.0 THREAD CLEANUP
-**PROTOCOL: Offer to archive or delete the completed thread.**
-
-1.  **Execution Trigger:** Only after implementation and documentation sync are complete.
-
-2.  **Ask for User Choice:**
-    > "Thread '<thread_description>' is now complete. What would you like to do?
-    > A.  **Archive:** Move to `kamma/archive/` and remove from threads file.
-    > B.  **Delete:** Permanently delete the thread's folder and remove from threads file.
-    > C.  **Skip:** Leave it in the threads file.
-
-3.  **Handle User Response:**
-    *   **If "A" (Archive):** Create `kamma/archive/` if needed, move the thread folder there, remove from `kamma/threads.md`.
-    *   **If "B" (Delete):** Ask for final confirmation, then delete and remove from threads file.
-    *   **If "C" (Skip):** Leave as-is.
+5.  **Stop at Review Handoff:**
+    -   After all implementation tasks are completed and local verification is done, DO NOT mark the thread fully complete yet.
+    -   Announce that the thread is ready for independent review.
+    -   Instruct the user to run `/kamma:3-review` with a different agent or tool than the one that performed implementation when possible.
+    -   Explain that the user is responsible for choosing and running the reviewer, and that the thread should only move to final completion after review findings, if any, have been implemented and verified.
