@@ -1,11 +1,11 @@
 #!/bin/bash
-# copy.sh — convert source .md files and copy to all AI CLIs
+# copy.sh — convert source .md files and copy to installed AI CLIs only
 # Run after editing any commands/*.md file
 #
 # Usage: ./copy.sh
 # just copy
 #
-# Copys to: Claude Code, Gemini CLI, OpenCode, Kilo CLI, Codex CLI
+# Copies to installed tools only: Claude Code, Gemini CLI, OpenCode, Kilo CLI, Codex CLI
 
 set -e
 
@@ -13,76 +13,72 @@ KAMMA_DIR="$(cd "$(dirname "$0")" && pwd)"
 SRC="$KAMMA_DIR/commands"
 TEMPLATES_SRC="$KAMMA_DIR/templates"
 
-echo "Copying kamma from $KAMMA_DIR..."
+copy_claude() {
+    local target="$HOME/.claude/plugins/local/kamma"
+    mkdir -p "$target/commands/kamma" "$target/.claude-plugin" "$target/skills/kamma" "$target/templates"
+    cp "$KAMMA_DIR/registration/claude-plugin.json" "$target/.claude-plugin/plugin.json"
+    cp "$KAMMA_DIR/skills/kamma/SKILL.md" "$target/skills/kamma/SKILL.md"
+    for f in "$SRC"/*.md; do
+        local base desc body
+        base=$(basename "$f" .md)
+        desc=$(sed -n 's/^description: *//p' "$f")
+        body=$(sed '1,/^---$/d; 1,/^---$/d' "$f")
+        printf 'description = "%s"\nprompt = """\n%s\n"""\n' "$desc" "$body" > "$target/commands/kamma/$base.toml"
+    done
+    cp -R "$TEMPLATES_SRC/." "$target/templates/"
+}
 
-# --- Claude Code ---
-echo "  -> Claude Code"
-CLAUDE_DIR="$HOME/.claude/plugins/local/kamma"
-mkdir -p "$CLAUDE_DIR/commands/kamma" "$CLAUDE_DIR/.claude-plugin"
-cp "$KAMMA_DIR/registration/claude-plugin.json" "$CLAUDE_DIR/.claude-plugin/plugin.json"
-# Copy SKILL.md for Claude Code
-mkdir -p "$CLAUDE_DIR/skills/kamma"
-cp "$KAMMA_DIR/skills/kamma/SKILL.md" "$CLAUDE_DIR/skills/kamma/SKILL.md"
-for f in "$SRC"/*.md; do
-    base=$(basename "$f" .md)
-    # Extract description from frontmatter
-    desc=$(sed -n 's/^description: *//p' "$f")
-    # Extract body (everything after second ---)
-    body=$(sed '1,/^---$/d; 1,/^---$/d' "$f")
-    # Write TOML
-    printf 'description = "%s"\nprompt = """\n%s\n"""\n' "$desc" "$body" \
-        > "$CLAUDE_DIR/commands/kamma/$base.toml"
-done
-# Copy shared templates for plugin-local assets
-mkdir -p "$CLAUDE_DIR/templates"
-cp -R "$TEMPLATES_SRC/." "$CLAUDE_DIR/templates/"
+copy_gemini() {
+    local target="$HOME/.gemini/extensions/kamma"
+    mkdir -p "$target/commands/kamma" "$target/templates"
+    cp "$KAMMA_DIR/registration/gemini-extension.json" "$target/gemini-extension.json"
+    cp "$KAMMA_DIR/registration/GEMINI.md" "$target/GEMINI.md"
+    for f in "$SRC"/*.md; do
+        local base desc body
+        base=$(basename "$f" .md)
+        desc=$(sed -n 's/^description: *//p' "$f")
+        body=$(sed '1,/^---$/d; 1,/^---$/d' "$f")
+        printf 'description = "%s"\nprompt = """\n%s\n"""\n' "$desc" "$body" > "$target/commands/kamma/$base.toml"
+    done
+    cp -R "$TEMPLATES_SRC/." "$target/templates/"
+}
 
-# --- Gemini CLI ---
-echo "  -> Gemini CLI"
-GEMINI_DIR="$HOME/.gemini/extensions/kamma"
-mkdir -p "$GEMINI_DIR/commands/kamma"
-cp "$KAMMA_DIR/registration/gemini-extension.json" "$GEMINI_DIR/gemini-extension.json"
-cp "$KAMMA_DIR/registration/GEMINI.md" "$GEMINI_DIR/GEMINI.md"
-# Gemini uses same TOML format as Claude
-cp "$CLAUDE_DIR/commands/kamma/"*.toml "$GEMINI_DIR/commands/kamma/"
-mkdir -p "$GEMINI_DIR/templates"
-cp -R "$TEMPLATES_SRC/." "$GEMINI_DIR/templates/"
+copy_opencode() {
+    local command_target="$HOME/.opencode/command"
+    local templates_target="$HOME/.opencode/templates/kamma"
+    mkdir -p "$command_target" "$templates_target"
+    for f in "$SRC"/*.md; do
+        local base
+        base=$(basename "$f" .md)
+        cp "$f" "$command_target/kamma-$base.md"
+    done
+    cp -R "$TEMPLATES_SRC/." "$templates_target/"
+}
 
-# --- OpenCode ---
-echo "  -> OpenCode"
-OPENCODE_DIR="$HOME/.opencode/command"
-mkdir -p "$OPENCODE_DIR"
-for f in "$SRC"/*.md; do
-    base=$(basename "$f" .md)
-    cp "$f" "$OPENCODE_DIR/kamma-$base.md"
-done
-OPENCODE_TEMPLATES_DIR="$HOME/.opencode/templates/kamma"
-mkdir -p "$OPENCODE_TEMPLATES_DIR"
-cp -R "$TEMPLATES_SRC/." "$OPENCODE_TEMPLATES_DIR/"
+copy_codex() {
+    local prompt_target="$HOME/.codex/prompts"
+    local templates_target="$HOME/.codex/templates/kamma"
+    mkdir -p "$prompt_target" "$templates_target"
+    for f in "$SRC"/*.md; do
+        local base
+        base=$(basename "$f" .md)
+        sed '1,/^---$/d; 1,/^---$/d' "$f" > "$prompt_target/kamma-$base.md"
+    done
+    cp -R "$TEMPLATES_SRC/." "$templates_target/"
+}
 
-# --- Codex CLI ---
-echo "  -> Codex CLI"
-CODEX_DIR="$HOME/.codex/prompts"
-mkdir -p "$CODEX_DIR"
-for f in "$SRC"/*.md; do
-    base=$(basename "$f" .md)
-    # Strip YAML frontmatter for Codex
-    sed '1,/^---$/d; 1,/^---$/d' "$f" > "$CODEX_DIR/kamma-$base.md"
-done
-CODEX_TEMPLATES_DIR="$HOME/.codex/templates/kamma"
-mkdir -p "$CODEX_TEMPLATES_DIR"
-cp -R "$TEMPLATES_SRC/." "$CODEX_TEMPLATES_DIR/"
-
-# --- Kilo CLI (skills format: SKILL.md in named dirs) ---
-echo "  -> Kilo CLI"
-for f in "$SRC"/*.md; do
-    base=$(basename "$f" .md)
-    KILO_SKILL="$HOME/.kilocode/skills/kamma-$base"
-    mkdir -p "$KILO_SKILL"
-    # Convert command frontmatter to skill frontmatter
-    desc=$(sed -n 's/^description: *//p' "$f")
-    body=$(sed '1,/^---$/d; 1,/^---$/d' "$f")
-    cat > "$KILO_SKILL/SKILL.md" <<SKILLEOF
+copy_kilo() {
+    local skills_root="$HOME/.kilocode/skills"
+    local templates_target="$HOME/.kilocode/templates/kamma"
+    mkdir -p "$skills_root/kamma" "$templates_target"
+    for f in "$SRC"/*.md; do
+        local base desc body skill_dir
+        base=$(basename "$f" .md)
+        desc=$(sed -n 's/^description: *//p' "$f")
+        body=$(sed '1,/^---$/d; 1,/^---$/d' "$f")
+        skill_dir="$skills_root/kamma-$base"
+        mkdir -p "$skill_dir"
+        cat > "$skill_dir/SKILL.md" <<SKILLEOF
 ---
 name: kamma-$base
 description: $desc
@@ -90,13 +86,58 @@ description: $desc
 
 $body
 SKILLEOF
-done
-# Also copy the main skill to Kilo
-mkdir -p "$HOME/.kilocode/skills/kamma"
-cp "$KAMMA_DIR/skills/kamma/SKILL.md" "$HOME/.kilocode/skills/kamma/SKILL.md"
-KILO_TEMPLATES_DIR="$HOME/.kilocode/templates/kamma"
-mkdir -p "$KILO_TEMPLATES_DIR"
-cp -R "$TEMPLATES_SRC/." "$KILO_TEMPLATES_DIR/"
+    done
+    cp "$KAMMA_DIR/skills/kamma/SKILL.md" "$skills_root/kamma/SKILL.md"
+    cp -R "$TEMPLATES_SRC/." "$templates_target/"
+}
+
+echo "Copying kamma from $KAMMA_DIR..."
+
+copied_tools=()
+
+if [ -d "$HOME/.claude" ]; then
+    echo "  -> Claude Code"
+    copy_claude
+    copied_tools+=("Claude Code")
+else
+    echo "  -> Claude Code (skipped: ~/.claude not found)"
+fi
+
+if [ -d "$HOME/.gemini" ]; then
+    echo "  -> Gemini CLI"
+    copy_gemini
+    copied_tools+=("Gemini CLI")
+else
+    echo "  -> Gemini CLI (skipped: ~/.gemini not found)"
+fi
+
+if [ -d "$HOME/.opencode" ]; then
+    echo "  -> OpenCode"
+    copy_opencode
+    copied_tools+=("OpenCode")
+else
+    echo "  -> OpenCode (skipped: ~/.opencode not found)"
+fi
+
+if [ -d "$HOME/.codex" ]; then
+    echo "  -> Codex CLI"
+    copy_codex
+    copied_tools+=("Codex CLI")
+else
+    echo "  -> Codex CLI (skipped: ~/.codex not found)"
+fi
+
+if [ -d "$HOME/.kilocode" ]; then
+    echo "  -> Kilo CLI"
+    copy_kilo
+    copied_tools+=("Kilo CLI")
+else
+    echo "  -> Kilo CLI (skipped: ~/.kilocode not found)"
+fi
 
 echo ""
-echo "Copied kamma to: Claude Code, Gemini CLI, OpenCode, Kilo CLI, Codex CLI"
+if [ ${#copied_tools[@]} -eq 0 ]; then
+    echo "No supported tool homes found. Nothing was copied."
+else
+    echo "Copied kamma to: ${copied_tools[*]}"
+fi
