@@ -23,7 +23,7 @@ Lightweight, cross-tool workflow management for AI coding CLIs.
 | Gemini CLI | TOML commands + gemini-extension.json | `/kamma:0-setup` |
 | OpenCode | MD with frontmatter | `/kamma-0-setup` |
 | Kilo CLI | Skills (SKILL.md) | Skill-based activation |
-| Codex CLI | Plain MD prompts | `/prompts:kamma-0-setup` |
+| Codex CLI | Plain MD prompts | `$kamma-0-setup` |
 
 ## Project Structure
 

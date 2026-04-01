@@ -1,11 +1,6 @@
 #!/bin/bash
 # copy.sh — convert source .md files and copy to installed AI CLIs only
 # Run after editing any commands/*.md file
-#
-# Usage: ./copy.sh
-# just copy
-#
-# Copies to installed tools only: Claude Code, Gemini CLI, OpenCode, Kilo CLI, Codex CLI
 
 set -e
 
@@ -47,6 +42,7 @@ copy_opencode() {
     local command_target="$HOME/.opencode/command"
     local templates_target="$HOME/.opencode/templates/kamma"
     mkdir -p "$command_target" "$templates_target"
+    rm -f "$command_target"/kamma-status.md
     for f in "$SRC"/*.md; do
         local base
         base=$(basename "$f" .md)
@@ -59,6 +55,19 @@ copy_codex() {
     local prompt_target="$HOME/.codex/prompts"
     local templates_target="$HOME/.codex/templates/kamma"
     mkdir -p "$prompt_target" "$templates_target"
+    rm -rf "$HOME/plugins/kamma"
+    python3 - <<'PY'
+from pathlib import Path
+import json
+
+marketplace = Path.home() / '.agents' / 'plugins' / 'marketplace.json'
+if marketplace.exists():
+    data = json.loads(marketplace.read_text())
+    plugins = [p for p in data.get('plugins', []) if p.get('name') != 'kamma']
+    if plugins != data.get('plugins', []):
+        data['plugins'] = plugins
+        marketplace.write_text(json.dumps(data, indent=2) + '\n')
+PY
     for f in "$SRC"/*.md; do
         local base
         base=$(basename "$f" .md)
@@ -93,51 +102,37 @@ SKILLEOF
 
 echo "Copying kamma from $KAMMA_DIR..."
 
-copied_tools=()
-
 if [ -d "$HOME/.claude" ]; then
-    echo "  -> Claude Code"
+    echo "Claude Code: copied"
     copy_claude
-    copied_tools+=("Claude Code")
 else
-    echo "  -> Claude Code (skipped: ~/.claude not found)"
+    echo "Claude Code: skipped"
 fi
 
 if [ -d "$HOME/.gemini" ]; then
-    echo "  -> Gemini CLI"
+    echo "Gemini CLI: copied"
     copy_gemini
-    copied_tools+=("Gemini CLI")
 else
-    echo "  -> Gemini CLI (skipped: ~/.gemini not found)"
+    echo "Gemini CLI: skipped"
 fi
 
 if [ -d "$HOME/.opencode" ]; then
-    echo "  -> OpenCode"
+    echo "OpenCode: copied"
     copy_opencode
-    copied_tools+=("OpenCode")
 else
-    echo "  -> OpenCode (skipped: ~/.opencode not found)"
+    echo "OpenCode: skipped"
 fi
 
 if [ -d "$HOME/.codex" ]; then
-    echo "  -> Codex CLI"
+    echo "Codex CLI: copied"
     copy_codex
-    copied_tools+=("Codex CLI")
 else
-    echo "  -> Codex CLI (skipped: ~/.codex not found)"
+    echo "Codex CLI: skipped"
 fi
 
 if [ -d "$HOME/.kilocode" ]; then
-    echo "  -> Kilo CLI"
+    echo "Kilo CLI: copied"
     copy_kilo
-    copied_tools+=("Kilo CLI")
 else
-    echo "  -> Kilo CLI (skipped: ~/.kilocode not found)"
-fi
-
-echo ""
-if [ ${#copied_tools[@]} -eq 0 ]; then
-    echo "No supported tool homes found. Nothing was copied."
-else
-    echo "Copied kamma to: ${copied_tools[*]}"
+    echo "Kilo CLI: skipped"
 fi
