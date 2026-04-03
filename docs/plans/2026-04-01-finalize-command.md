@@ -2,9 +2,9 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Restore an explicit finalization stage by adding `/kamma:4-finalize` after `/kamma:3-review`.
+**Goal:** Restore an explicit final step by adding `/kamma:4-finalize` after `/kamma:3-review`.
 
-**Architecture:** Add a dedicated finalize command that owns thread completion, documentation sync, and cleanup. Update the review command so it hands off to finalize after review is clear. Keep the existing implementation and review boundaries intact.
+**Approach:** Add a dedicated finalize command that owns thread completion, documentation sync, and cleanup. Update the review command so it points to finalize after review is clear. Keep the existing implementation and review boundaries intact.
 
 **Tech Stack:** Markdown command docs, Kamma workflow templates
 
@@ -27,23 +27,23 @@ Include thread completion, final documentation sync, and archive/delete/skip cle
 
 Write the final protocol to `commands/4-finalize.md`.
 
-### Task 2: Update review handoff
+### Task 2: Update the review ending
 
 **Files:**
 - Modify: `commands/3-review.md`
 
 **Step 1: Replace generic completion language**
 
-Change the handoff so a clear review result explicitly instructs the user to run `/kamma:4-finalize`.
+Change the ending so a clear review result explicitly tells the user to run `/kamma:4-finalize`.
 
 ### Task 3: Align workflow references
 
 **Files:**
 - Modify: `templates/workflow.md`
 
-**Step 1: Mention finalize in the lifecycle**
+**Step 1: Mention finalize in the flow**
 
-Clarify that independent review clears work for finalization rather than silently implying completion inside the review step.
+Clarify that a clear review means the work is ready to finish rather than silently implying completion inside the review step.
 
 ### Task 4: Verify consistency
 
@@ -54,4 +54,4 @@ Clarify that independent review clears work for finalization rather than silentl
 
 **Step 1: Re-read changed docs**
 
-Check for clean command ordering and no duplicated ownership of completion.
+Check for clean command ordering and no overlap in which step marks work complete.

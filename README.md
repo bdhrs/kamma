@@ -1,19 +1,19 @@
 # Kamma
 
-Lightweight, cross-tool workflow management for AI coding CLIs.
+Lightweight, cross-tool planning and tracking for AI coding CLIs.
 
-*Kamma* a Pāḷi word for action, work, doing.
+*Kamma* a Pali word for action, work, doing.
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `/kamma:0-setup` | Scaffold a project with project.md, tech-stack.md, workflow.md |
+| `/kamma:0-setup` | Scaffold a project with project.md, context.md, workflow.md |
 | `/kamma:1-plan` | Create a new thread (feature, bug fix, chore) with spec + plan |
-| `/kamma:2-do` | Implement the selected thread until it is ready for independent review |
-| `/kamma:3-review` | Review an implemented thread with an independent agent or tool |
-| `/kamma:4-finalize` | Mark a reviewed thread complete, sync docs, and handle cleanup |
-| `/kamma:5-status` | Show progress overview of all threads |
+| `/kamma:2-do` | Work through the selected thread until it is ready to review |
+| `/kamma:3-review` | Review finished work, ideally in a fresh tool or session |
+| `/kamma:4-finalize` | Finish a reviewed thread, update docs, and clean up |
+| `/kamma:5-status` | Show where things stand across all threads |
 
 ## Supported Tools
 
@@ -68,7 +68,7 @@ kamma/
 # 4. Implement the thread
 /kamma:2-do
 
-# 5. Review with a different agent (recommended)
+# 5. Review it, ideally in a fresh session or tool
 /kamma:3-review
 
 # 6. Finalize — mark complete, sync docs, cleanup
@@ -79,12 +79,12 @@ kamma/
 
 ### Workflow
 
-Kamma now follows a four-step execution flow for each thread:
+Each thread usually goes like this:
 
 1. `/kamma:1-plan` creates the thread spec and implementation plan.
-2. `/kamma:2-do` implements the thread and stops at review handoff.
-3. `/kamma:3-review` performs structured review, ideally with a different agent or tool.
-4. `/kamma:4-finalize` marks the thread complete, syncs docs, and handles archive/delete cleanup.
+2. `/kamma:2-do` works through the thread and stops when the work is ready for review.
+3. `/kamma:3-review` reviews the work, ideally in a different tool or session.
+4. `/kamma:4-finalize` marks the thread complete, updates docs, and lets you archive, delete, or keep the thread.
 
 ### Edit prompts
 
@@ -125,8 +125,8 @@ When you run `/kamma:0-setup` in a project:
 your-project/
 └── kamma/
     ├── project.md          # What the project is
-    ├── tech-stack.md       # Languages, frameworks, tools
-    ├── workflow.md         # Task lifecycle rules
+    ├── context.md          # Tools, resources, constraints, and working assumptions
+    ├── workflow.md         # How work moves forward
     ├── threads.md          # Master index of all threads
     └── threads/
         └── <thread_id>/

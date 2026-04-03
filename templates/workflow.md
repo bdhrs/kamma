@@ -3,16 +3,16 @@
 ## Guiding Principles
 
 1. **The Plan is the Source of Truth:** All work must be tracked in `plan.md`
-2. **The Tech Stack is Deliberate:** Changes to the tech stack must be documented in `tech-stack.md` *before* implementation
+2. **Keep the Project Context Up to Date:** Changes to tools, constraints, resources, or working assumptions must be documented in `context.md` *before* implementation
 3. **Write Tests:** Write tests for new functionality where appropriate
 4. **Non-Interactive & CI-Aware:** Prefer non-interactive commands
-5. **Independent Review Before Completion:** Implementation is not complete until it has been independently reviewed
+5. **Review the Work Before Calling It Done:** Implementation is not complete until it has been reviewed
 
 ## Task Workflow
 
-All tasks follow a strict lifecycle:
+Work through tasks in this order:
 
-### Standard Task Workflow
+### Standard Flow
 
 1. **Select Task:** Choose the next available task from `plan.md` in sequential order
 
@@ -22,23 +22,23 @@ All tasks follow a strict lifecycle:
 
 4. **Test:** Run relevant tests to verify the implementation works correctly.
 
-5. **Prepare for Independent Review:**
+5. **Get Ready for Review:**
    - Stop when the work is locally implemented and verified.
    - Instruct the user to run `/kamma:3-review`.
-   - Recommend using a different agent or tool than the implementation agent when possible.
+   - If possible, review it in a different tool or a fresh session.
 
-6. **Implement Accepted Review Findings:**
+6. **Fix Review Findings:**
    - Apply valid findings from `/kamma:3-review`.
    - Re-run relevant tests and verification.
    - Repeat review if needed until blocking issues are resolved.
 
-7. **Finalize the Thread:**
+7. **Finish the Thread:**
    - After review is clear, run `/kamma:4-finalize`.
    - Mark the thread complete, sync project docs, and handle archive/delete/skip cleanup there.
 
-8. **Document Deviations:** If implementation differs from tech stack:
+8. **Document Deviations:** If implementation differs from project context:
    - **STOP** implementation
-   - Update `tech-stack.md` with new design
+   - Update `context.md` with the change
    - Add dated note explaining the change
    - Resume implementation
 
@@ -51,7 +51,7 @@ All tasks follow a strict lifecycle:
    - Update `plan.md`: change the task from `[~]` to `[x]`.
    - Commit the plan update.
 
-### Phase Completion Verification
+### When a Phase Ends
 
 **Trigger:** Executed when a task completes a phase in `plan.md`.
 
@@ -68,15 +68,15 @@ All tasks follow a strict lifecycle:
 
 6.  **Update Plan:** Record the checkpoint in `plan.md`.
 
-### Quality Gates
+### Before You Mark It Done
 
 Before marking any task complete, verify:
 
 - [ ] Implementation works correctly
 - [ ] Relevant tests pass
-- [ ] Independent review has been completed
+- [ ] The work has been reviewed
 - [ ] Accepted review findings have been implemented
-- [ ] Finalization has been completed
+- [ ] The thread has been finished
 - [ ] Code follows project's style guidelines
 - [ ] No linting errors
 - [ ] Documentation updated if needed
@@ -97,14 +97,12 @@ Follow the project's commit conventions. If none defined, use:
 - `test`: Adding missing tests
 - `chore`: Maintenance tasks
 
-## Definition of Done
-
-A task is complete when:
+## A Task Is Done When
 
 1. All code implemented to specification
 2. Relevant tests passing
-3. Independent review completed and accepted findings addressed
-4. Finalization completed
+3. The work has been reviewed and accepted findings addressed
+4. The thread has been finished
 5. Code passes linting
 6. Changes committed with proper message
 7. `plan.md` updated
