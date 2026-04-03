@@ -11,7 +11,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 **Verify that the Kamma environment is set up correctly.**
 
 1.  **Check for Required Files:** You MUST verify the existence of the following files in the `kamma` directory:
-    -   `kamma/context.md`
+    -   `kamma/tech.md`
     -   `kamma/workflow.md`
     -   `kamma/project.md`
 
@@ -27,7 +27,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 ### 2.1 Get the Thread Description and Work Out the Type
 
-1.  **Load Project Context:** Read and understand the content of the `kamma` directory files.
+1.  **Load Project Files:** Read and understand the content of the `kamma` directory files.
 2.  **Get Thread Description:**
     *   **If `{{args}}` contains a description:** Use the content of `{{args}}`.
     *   **If `{{args}}` is empty:** Ask the user:
@@ -43,7 +43,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 2.  **Ask a Few Questions:** Ask a series of questions to gather details for `spec.md`. Tailor the questions based on the thread type.
     *   **CRITICAL:** Ask these questions one at a time. Do not ask multiple questions in a single turn. Wait for the user's response after each question.
     *   **General Guidelines:**
-        *   Refer to information in `project.md`, `context.md`, and related files so the questions fit the project.
+        *   Refer to information in `project.md`, `tech.md`, and related files so the questions fit the project.
         *   Provide a brief explanation and clear examples for each question.
         *   Whenever possible, present 2-3 plausible options (A, B, C) for the user to choose from.
         *   The last option for every multiple-choice question MUST be "Type your own answer".

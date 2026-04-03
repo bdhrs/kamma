@@ -29,7 +29,7 @@ When working on a Kamma project, familiarize yourself with:
 ```
 kamma/
 ├── project.md              # Project vision and goals
-├── context.md              # Technology choices and constraints
+├── tech.md                 # Technology choices and constraints
 ├── workflow.md             # How work moves forward
 ├── threads.md              # Master list of all threads
 └── threads/                # Individual thread folders
@@ -56,7 +56,7 @@ Read and follow `kamma/workflow.md` for the full task flow. It is the single sou
 
 Before starting any implementation work, always load:
 1. `kamma/workflow.md` - For the project's step-by-step flow
-2. `kamma/context.md` - For tools, constraints, and resources
+2. `kamma/tech.md` - For tools, constraints, and resources
 3. The active thread's `spec.md` - For requirements
 4. The active thread's `plan.md` - For current task status
 

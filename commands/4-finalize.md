@@ -13,7 +13,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 **Verify that the Kamma environment is properly set up.**
 
 1.  **Check for Required Files:** You MUST verify the existence of the following files in the `kamma` directory:
-    -   `kamma/context.md`
+    -   `kamma/tech.md`
     -   `kamma/workflow.md`
     -   `kamma/project.md`
     -   `kamma/threads.md`
@@ -67,11 +67,11 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 2.  **Load Project Documents:** Read:
     -   `kamma/project.md`
-    -   `kamma/context.md`
+    -   `kamma/tech.md`
 
 3.  **Analyze and Update:**
     a.  **Update `kamma/project.md`:** If the completed thread significantly changes the project description, propose changes and get user confirmation before applying.
-    b.  **Update `kamma/context.md`:** If the thread changed the tools, who this is for, constraints, resources, or working assumptions, propose changes and get user confirmation before applying.
+    b.  **Update `kamma/tech.md`:** If the thread changed the tools, who this is for, constraints, resources, or working assumptions, propose changes and get user confirmation before applying.
 
 4.  **Final Report:** Summarize what was updated, or say that no updates were needed.
 

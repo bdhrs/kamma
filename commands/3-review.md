@@ -13,7 +13,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 **Verify that the Kamma environment is properly set up.**
 
 1.  **Check for Required Files:** You MUST verify the existence of the following files in the `kamma` directory:
-    -   `kamma/context.md`
+    -   `kamma/tech.md`
     -   `kamma/workflow.md`
     -   `kamma/project.md`
     -   `kamma/threads.md`
@@ -73,7 +73,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     -   `kamma/threads/<thread_id>/plan.md`
     -   `kamma/workflow.md`
     -   `kamma/project.md`
-    -   `kamma/context.md`
+    -   `kamma/tech.md`
 
 3.  **Inspect Implementation Evidence:**
     -   Review the current git diff and recent commits relevant to the thread.

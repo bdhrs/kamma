@@ -20,8 +20,8 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     - Let the value of `last_successful_step` in the JSON file be `STEP`.
     - Based on the value of `STEP`, jump to the next section.
 
-    - If `STEP` is "2.1_project_guide", announce "Resuming setup: `project.md` is already done. Next, we will define `context.md`." and proceed to **Section 2.2**.
-    - If `STEP` is "2.2_context", announce "Resuming setup: `project.md` and `context.md` are already done. Next, we will define the project workflow." and proceed to **Section 2.3**.
+    - If `STEP` is "2.1_project_guide", announce "Resuming setup: `project.md` is already done. Next, we will define `tech.md`." and proceed to **Section 2.2**.
+    - If `STEP` is "2.2_tech", announce "Resuming setup: `project.md` and `tech.md` are already done. Next, we will define the project workflow." and proceed to **Section 2.3**.
     - If `STEP` is "2.3_workflow", announce "Resuming setup: the initial project files are ready. Next, we will generate the first thread." and proceed to **Phase 2 (3.0)**.
     - If `STEP` is "3.3_initial_thread_generated":
         - Announce: "The project has already been initialized. You can create a new thread with `/kamma:1-plan` or start working on an existing thread with `/kamma:2-do`."
@@ -137,18 +137,18 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 6.  **Commit State:** Write to `kamma/setup_state.json`: `{"last_successful_step": "2.1_project_guide"}`
 7.  **Continue:** Immediately proceed to the next section.
 
-### 2.2 Create `context.md`
-1.  **Introduce the Section:** Announce that you will now help define the project context.
+### 2.2 Create `tech.md`
+1.  **Introduce the Section:** Announce that you will now help define the project's tech notes.
 2.  **Ask Questions One at a Time:** Ask one question at a time. Maximum 5 questions.
     -   **SUGGESTIONS:** Generate 3 high-quality suggested answers for each question.
     -   **Example Topics:** tools and platforms being used, who this is for, constraints (timeline, budget, available time), available resources, primary format of deliverables.
     -   **Format:** Present as vertical list with options A-E (E = autogenerate).
     -   **FOR EXISTING PROJECTS:** State the inferred context and ask for confirmation.
     -   **AUTO-GENERATE LOGIC:** If E selected, infer remaining details and generate.
-3.  **Draft the Document:** Generate `context.md` content based on user answers only. Include sections for: Tools & Platforms, Who This Is For, Constraints, Resources, and Deliverable Format.
+3.  **Draft the Document:** Generate `tech.md` content based on user answers only. Include sections for: Tools & Platforms, Who This Is For, Constraints, Resources, and Deliverable Format.
 4.  **Review Loop:** Present for review, loop until approved.
-5.  **Write File:** Write to `kamma/context.md`.
-6.  **Commit State:** Write to `kamma/setup_state.json`: `{"last_successful_step": "2.2_context"}`
+5.  **Write File:** Write to `kamma/tech.md`.
+6.  **Commit State:** Write to `kamma/setup_state.json`: `{"last_successful_step": "2.2_tech"}`
 7.  **Continue:** Immediately proceed to the next section.
 
 ### 2.3 Pick a Workflow

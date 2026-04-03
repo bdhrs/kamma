@@ -8,7 +8,7 @@ Lightweight, cross-tool planning and tracking for AI coding CLIs.
 
 | Command | Description |
 |---------|-------------|
-| `/kamma:0-setup` | Scaffold a project with project.md, context.md, workflow.md |
+| `/kamma:0-setup` | Scaffold a project with project.md, tech.md, workflow.md |
 | `/kamma:1-plan` | Create a new thread (feature, bug fix, chore) with spec + plan |
 | `/kamma:2-do` | Work through the selected thread until it is ready to review |
 | `/kamma:3-review` | Review finished work, ideally in a fresh tool or session |
@@ -125,7 +125,7 @@ When you run `/kamma:0-setup` in a project:
 your-project/
 └── kamma/
     ├── project.md          # What the project is
-    ├── context.md          # Tools, resources, constraints, and working assumptions
+    ├── tech.md             # Tools, resources, constraints, and working assumptions
     ├── workflow.md         # How work moves forward
     ├── threads.md          # Master index of all threads
     └── threads/

@@ -3,7 +3,7 @@
 ## Guiding Principles
 
 1. **The Plan is the Source of Truth:** All work must be tracked in `plan.md`
-2. **Keep the Project Context Up to Date:** Changes to tools, constraints, resources, or working assumptions must be documented in `context.md` *before* implementation
+2. **Keep the Project Tech Notes Up to Date:** Changes to tools, constraints, resources, or working assumptions must be documented in `tech.md` *before* implementation
 3. **Write Tests:** Write tests for new functionality where appropriate
 4. **Non-Interactive & CI-Aware:** Prefer non-interactive commands
 5. **Review the Work Before Calling It Done:** Implementation is not complete until it has been reviewed
@@ -36,9 +36,9 @@ Work through tasks in this order:
    - After review is clear, run `/kamma:4-finalize`.
    - Mark the thread complete, sync project docs, and handle archive/delete/skip cleanup there.
 
-8. **Document Deviations:** If implementation differs from project context:
+8. **Document Deviations:** If implementation differs from the notes in `tech.md`:
    - **STOP** implementation
-   - Update `context.md` with the change
+   - Update `tech.md` with the change
    - Add dated note explaining the change
    - Resume implementation
 

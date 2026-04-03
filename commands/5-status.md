@@ -13,7 +13,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 **Verify that the Kamma environment is properly set up.**
 
 1.  **Check for Required Files:** Verify existence of:
-    -   `kamma/context.md`
+    -   `kamma/tech.md`
     -   `kamma/workflow.md`
     -   `kamma/project.md`
 
