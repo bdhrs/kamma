@@ -290,9 +290,15 @@ SYNCERS = {
 }
 
 
+COMMAND_PREFIX: dict[str, str] = {
+    "Codex CLI": "$kamma",
+}
+
+
 def main() -> None:
     commands = read_commands()
     errors: list[str] = []
+    synced_labels: list[str] = []
     print(f"\n[bold]Syncing kamma[/bold] [dim]from {ROOT}[/dim]\n")
     for target in TARGETS:
         if not target.roots:
@@ -303,6 +309,7 @@ def main() -> None:
             for root in target.roots:
                 syncer(root, commands)
             print(f"  [green]\\[+][/green] {target.label}")
+            synced_labels.append(target.label)
         except Exception as exc:
             errors.append(f"{target.label}: {exc}")
             print(f"  [red]\\[!] {target.label} {exc}[/red]")
@@ -312,6 +319,13 @@ def main() -> None:
     if errors:
         summary += f", [red]{len(errors)} failed[/red]"
     print(summary)
+
+    if synced_labels:
+        print("\n[bold]To use kamma:[/bold]")
+        for label in synced_labels:
+            prefix = COMMAND_PREFIX.get(label, "/kamma")
+            print(f"  [cyan]{label}:[/cyan]  {prefix}")
+
     if errors:
         raise SystemExit(1)
 

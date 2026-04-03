@@ -2,14 +2,30 @@
 
 Lightweight, cross-tool planning and tracking for AI coding CLIs.
 
-## Install
+## Quick Install
+
+**Mac/Linux:**
+```bash
+curl -sSL https://raw.githubusercontent.com/bdhrs/kamma/main/install.sh | bash
+```
+
+**Windows (PowerShell):**
+```powershell
+irm https://raw.githubusercontent.com/bdhrs/kamma/main/install.ps1 | iex
+```
+
+Downloads the latest version to `~/kamma` and syncs to all installed AI tools. Re-run any time to update.
+
+Requires [uv](https://docs.astral.sh/uv/). The script will offer to install it if missing.
+
+## Manual Install
 
 ```bash
 git clone https://github.com/bdhrs/kamma.git
 cd kamma
 ```
 
-Then sync Kamma to your installed AI tools:
+Then sync:
 
 ```bash
 # With just
