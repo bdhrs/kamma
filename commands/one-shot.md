@@ -91,9 +91,9 @@ Apply any requested changes and re-present until the user confirms. Then immedia
 
 ### 4.1 — STOP 2: Ask the User to Test
 
-When all tasks are done and the implementation is locally verified:
+When all tasks are done and the implementation is locally verified, explain specifically how to test the changes — what commands to run, what to click, what to observe, what the expected outcome is. Then ask:
 
-> "Implementation is complete. Please test it now and let me know when you're done, or if you found any issues."
+> "Please test it using the steps above and let me know when you're done, or if you found any issues."
 
 Wait for the user's response. If they report issues, fix them. Then immediately ask:
 
@@ -108,10 +108,20 @@ This question repeats after every round of changes. Keep fixing and re-asking un
 
 ### 5.2 Review
 
-1. Re-read `spec.md`, `plan.md`, the git diff, and recent commits.
-2. Check: spec coverage, plan completion, code correctness, test coverage, regressions, edge cases.
-3. Fix any blocking or major findings immediately without stopping. Re-verify after each fix.
-4. Write `kamma/threads/<thread_id>/review.md`:
+**CRITICAL: You must actually perform the review before writing the file. Do not write `review.md` first and call it done.**
+
+1. Re-read `kamma/threads/<thread_id>/spec.md` and `plan.md`.
+2. Run `git diff` and read every changed file.
+3. Run the test suite and read the output.
+4. For each of the following, read the relevant code and report what you found — do not skip any:
+   - **Spec coverage:** Does every requirement in `spec.md` have a corresponding implementation?
+   - **Plan completion:** Is every task in `plan.md` marked done and actually implemented?
+   - **Code correctness:** Are there logic errors, missing cases, or broken assumptions in the changed files?
+   - **Test coverage:** Do the tests verify the key behaviors described in the spec?
+   - **Regressions:** Could any change break existing behavior?
+5. For each finding, state: severity (`blocking`, `major`, `minor`, `nit`), file and line, what is wrong, why it matters, recommended fix.
+6. Fix any blocking or major findings immediately. Re-run tests after each fix. Repeat until none remain.
+7. Only then write `kamma/threads/<thread_id>/review.md`:
    - Review date
    - Reviewer: "one-shot (inline)"
    - Findings summary (count by severity, or "No findings")
