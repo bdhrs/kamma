@@ -1,6 +1,10 @@
 # Kamma
 
-Lightweight, cross-tool planning and tracking for AI coding CLIs.
+A lightweight plan-do-review process for your CLI agents.
+
+## Supported Tools
+
+Claude Code, Gemini CLI, Antigravity, OpenCode, Kilo Code, Codex CLI
 
 ## Quick Install
 
@@ -61,11 +65,7 @@ The sync tool detects which AI CLIs are installed on your machine and copies the
 
 ### One-shot
 
-`/kamma:one-shot` runs the full cycle in a single session. It stops three times: to confirm the plan, to ask you to test, and to confirm before finalizing.
-
-## Supported Tools
-
-Claude Code, Gemini CLI, Antigravity, OpenCode, Kilo Code, Codex CLI
+`/kamma:one-shot` runs the full cycle in a single session. It stops twice: to confirm the plan, and to ask you to test. If testing passes, it reviews and finalizes automatically.
 
 ---
 
