@@ -182,19 +182,14 @@ def resolve_opencode_command_dir(root: Path) -> Path:
 
 
 def sync_claude(root: Path, commands: list[Command]) -> None:
-    target = root / "plugins" / "local" / "kamma"
+    target = root / "commands" / "kamma"
     remove_stale([
-        target / "commands" / "kamma" / "status.toml",
-        target / "commands" / "kamma" / "kamma-status.toml",
+        target / "status.md",
+        target / "kamma-status.md",
     ])
-    ensure_dir(target / "commands" / "kamma")
-    ensure_dir(target / ".claude-plugin")
-    ensure_dir(target / "skills" / "kamma")
-    shutil.copy2(REGISTRATION_DIR / "claude-plugin.json", target / ".claude-plugin" / "plugin.json")
-    shutil.copy2(SKILLS_DIR / "kamma" / "SKILL.md", target / "skills" / "kamma" / "SKILL.md")
+    ensure_dir(target)
     for command in commands:
-        write_text(target / "commands" / "kamma" / f"{command.base}.toml", render_toml(command))
-    copy_tree_contents(TEMPLATES_DIR, target / "templates")
+        shutil.copy2(command.source, target / f"{command.base}.md")
 
 
 def sync_gemini(root: Path, commands: list[Command]) -> None:
