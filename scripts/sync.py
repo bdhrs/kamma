@@ -234,9 +234,13 @@ def sync_opencode(root: Path, commands: list[Command]) -> None:
         command_target / "kamma-status.md",
         command_target / "status.md",
         command_target / "kamma-one-shot.md",
+        command_target / "kamma-kamma.md",
     ])
     for command in commands:
-        shutil.copy2(command.source, command_target / f"kamma-{command.base}.md")
+        if command.base == "kamma":
+            shutil.copy2(command.source, command_target / "kamma.md")
+        else:
+            shutil.copy2(command.source, command_target / f"kamma-{command.base}.md")
     copy_tree_contents(TEMPLATES_DIR, root / "templates" / "kamma")
 
 
@@ -261,13 +265,23 @@ def sync_kilo(root: Path, commands: list[Command]) -> None:
         skills_root / "kamma-status",
         skills_root / "status",
         skills_root / "kamma-one-shot",
+        skills_root / "kamma-kamma",
     ])
     ensure_dir(skills_root / "kamma")
     for command in commands:
-        skill_dir = skills_root / f"kamma-{command.base}"
-        ensure_dir(skill_dir)
-        write_text(skill_dir / "SKILL.md", render_markdown_frontmatter(command))
-    shutil.copy2(SKILLS_DIR / "kamma" / "SKILL.md", skills_root / "kamma" / "SKILL.md")
+        if command.base == "kamma":
+            write_text(
+                skills_root / "kamma" / "SKILL.md",
+                "---\n"
+                "name: kamma\n"
+                f"description: {command.description}\n"
+                "---\n\n"
+                f"{command.body}",
+            )
+        else:
+            skill_dir = skills_root / f"kamma-{command.base}"
+            ensure_dir(skill_dir)
+            write_text(skill_dir / "SKILL.md", render_markdown_frontmatter(command))
     copy_tree_contents(TEMPLATES_DIR, root / "templates" / "kamma")
 
 
