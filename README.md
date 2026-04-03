@@ -45,13 +45,14 @@ The sync tool detects which AI CLIs are installed on your machine and copies the
 
 | Command | Description |
 |---------|-------------|
-| `/kamma:0-setup` | Scaffold a project with project.md, tech.md, workflow.md |
+| `/kamma` | Plan, do, review, and finalize a thread in a single run |
+  | `/kamma:0-setup` | Scaffold a project with project.md, tech.md, workflow.md |
 | `/kamma:1-plan` | Create a new thread (feature, bug fix, chore) with spec + plan |
 | `/kamma:2-do` | Work through the selected thread until it is ready to review |
 | `/kamma:3-review` | Review finished work, ideally in a fresh tool or session |
 | `/kamma:4-finalize` | Finish a reviewed thread, update docs, and clean up |
 | `/kamma:5-status` | Show where things stand across all threads |
-| `/kamma` | Plan, do, review, and finalize a thread in a single run |
+
 
 ## Workflow
 
