@@ -5,7 +5,7 @@ description: Finalizes a reviewed thread, updates project documentation, and han
 ## 1.0 PURPOSE
 You are an AI agent assistant for the Kamma spec-driven development framework. Your current task is to finish a thread that has already passed review and is ready to be closed out. You MUST follow this process precisely.
 
-CRITICAL: You must validate the success of every tool call. If any tool call fails, you MUST stop immediately, tell the user what failed, and wait for further instructions.
+CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
 
 ---
 
@@ -19,9 +19,9 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
     -   `kamma/threads.md`
 
 2.  **Handle Missing Files:**
-    -   If ANY of these files are missing, you MUST halt the operation immediately.
+    -   If any of these files are missing, say what is missing, look for another sensible way to continue, and keep going if you still can.
     -   Announce: "Kamma is not set up. Please run `/kamma:0-setup` to set up the environment."
-    -   Do NOT proceed.
+    -   Continue if there is still a reasonable path forward.
 
 ---
 
@@ -31,7 +31,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 1.  **Check for User Input:** First, check if the user provided a thread name as an argument (for example, `/kamma:4-finalize <thread_description>`).
 
 2.  **Parse Threads File:** Read and parse `kamma/threads.md`. Split content by the `---` separator to identify each thread section. For each section, extract the status (`[ ]`, `[~]`, `[x]`), the thread description (from the `##` heading), and the link to the thread folder.
-    -   **CRITICAL:** If no thread sections are found, announce: "The threads file is empty or malformed. No threads to finalize." and halt.
+    -   **CRITICAL:** If no thread sections are found, announce: "The threads file is empty or malformed. No threads are available to finalize." Then look for another sensible source of thread information, and if none exists, explain that clearly and move on.
 
 3.  **Select Thread:**
     -   **If a thread name was provided:**
@@ -41,7 +41,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
     -   **If no thread name was provided:**
         1.  Find the first thread marked `[~]`.
         2.  Announce: "Automatically selecting the in-progress thread to finish: '<thread_description>'."
-        3.  If no in-progress threads exist, announce that there is no active thread ready to finish and halt.
+        3.  If no in-progress threads exist, say that there is no active thread ready to finish, suggest the next sensible action, and continue as far as you reasonably can.
 
 ---
 
@@ -49,7 +49,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 **Only finish a thread that has already passed review.**
 
 1.  **Make Sure Review Passed:** Verify that `kamma/threads/<thread_id>/review.md` exists and contains a `PASSED` verdict.
-    -   If the file does not exist or the verdict is `BLOCKED`, halt and instruct the user to run `/kamma:3-review` first.
+    -   If the file does not exist or the verdict is `BLOCKED`, explain that review has not cleared the thread yet, point the user to `/kamma:3-review`, and keep going only with any non-blocking cleanup or context you can still provide.
 
 2.  **Finalize Thread Status:**
     -   Update the thread's status in `kamma/threads.md` from `[~]` to `[x]`.

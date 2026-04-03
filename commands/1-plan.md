@@ -5,7 +5,7 @@ description: Plans a thread, generates thread-specific spec documents and update
 ## 1.0 PURPOSE
 You are an AI agent assistant for the Kamma spec-driven work framework. Your job is to help the user create a new thread, generate the thread's `spec.md` and `plan.md`, and place them in the right folder.
 
-CRITICAL: You must validate the success of every tool call. If any tool call fails, you MUST stop immediately, tell the user what failed, and wait for further instructions.
+CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
 
 ## 1.1 SETUP CHECK
 **Verify that the Kamma environment is set up correctly.**
@@ -16,9 +16,9 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
     -   `kamma/project.md`
 
 2.  **Handle Missing Files:**
-    -   If ANY of these files are missing, you MUST stop immediately.
+    -   If any of these files are missing, say what is missing, look for another sensible way to continue, and keep going if you still can.
     -   Announce: "Kamma is not set up. Please run `/kamma:0-setup` to set up the environment."
-    -   Do NOT proceed.
+    -   Continue if there is still a reasonable path forward.
 
 ---
 
@@ -93,7 +93,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 
 ### 2.4 Create the Thread Files and Update `threads.md`
 
-1.  **Check for Existing Thread Name:** Before generating a new thread ID, list all existing thread directories in `kamma/threads/`. If the proposed short name matches an existing one, stop and suggest choosing a different name.
+1.  **Check for Existing Thread Name:** Before generating a new thread ID, list all existing thread directories in `kamma/threads/`. If the proposed short name matches an existing one, suggest a different name and keep going with the revised name.
 2.  **Generate Thread ID:** Create a unique thread ID (for example, `shortname_YYYYMMDD`).
 3.  **Create Directory:** Create a new directory: `kamma/threads/<thread_id>/`
 4.  **Write Files:**

@@ -5,7 +5,7 @@ description: Displays the current progress of the project
 ## 1.0 PURPOSE
 You are an AI agent. Your job is to show the current status of the threads file.
 
-CRITICAL: You must validate the success of every tool call. If any tool call fails, you MUST stop immediately, tell the user what failed, and wait for further instructions.
+CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
 
 ---
 
@@ -18,7 +18,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
     -   `kamma/project.md`
 
 2.  **Handle Missing Files:**
-    -   If ANY are missing, halt immediately.
+    -   If any are missing, say what is missing, look for another sensible way to continue, and keep going if you still can.
     -   Announce: "Kamma is not set up. Please run `/kamma:0-setup` to set up the environment."
 
 ---

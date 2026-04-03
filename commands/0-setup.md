@@ -5,7 +5,7 @@ description: Scaffolds the project and sets up the Kamma environment
 ## 1.0 PURPOSE
 You are an AI agent. Your job is to help set up a project with the Kamma workflow. Follow these instructions in order. Do not guess.
 
-CRITICAL: You must validate the success of every tool call. If any tool call fails, you MUST stop immediately, tell the user what failed, and wait for further instructions.
+CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
 
 ---
 
@@ -25,8 +25,8 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
     - If `STEP` is "2.3_workflow", announce "Resuming setup: the initial project files are ready. Next, we will generate the first thread." and proceed to **Phase 2 (3.0)**.
     - If `STEP` is "3.3_initial_thread_generated":
         - Announce: "The project has already been initialized. You can create a new thread with `/kamma:1-plan` or start working on an existing thread with `/kamma:2-do`."
-        - Halt the `setup` process.
-    - If `STEP` is unrecognized, announce an error and halt.
+        - End setup here and tell the user what they can do next.
+    - If `STEP` is unrecognized, say that the state is unclear, make the safest reasonable assumption you can, and continue from there.
 
 ---
 
@@ -70,7 +70,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
                     > B) No
                     >
                     > Please respond with A or B.
-                3.  **Handle Denial:** If permission is denied, halt the process and wait for further instructions.
+                3.  **Handle Denial:** If permission is denied, skip the scan, say what was skipped, and keep going with whatever information is already available.
                 4.  **Confirmation:** Upon confirmation, proceed to the next step.
 
             -   **2.0 Analyze the Codebase:**

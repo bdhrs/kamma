@@ -63,6 +63,6 @@ Before starting any implementation work, always load:
 ## Error Handling
 
 If something goes wrong:
-1. Do not proceed without user confirmation
-2. Announce the failure clearly
-3. Wait for user instructions
+1. Tell the user what failed in plain language
+2. Try a sensible fallback or alternate path
+3. Keep going whenever there is still a reasonable way to make progress
