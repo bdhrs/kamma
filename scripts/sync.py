@@ -186,10 +186,14 @@ def sync_claude(root: Path, commands: list[Command]) -> None:
     remove_stale([
         target / "status.md",
         target / "kamma-status.md",
+        target / "one-shot.md",
     ])
     ensure_dir(target)
     for command in commands:
-        shutil.copy2(command.source, target / f"{command.base}.md")
+        if command.base == "kamma":
+            shutil.copy2(command.source, root / "commands" / "kamma.md")
+        else:
+            shutil.copy2(command.source, target / f"{command.base}.md")
 
 
 def sync_gemini(root: Path, commands: list[Command]) -> None:
@@ -199,6 +203,7 @@ def sync_gemini(root: Path, commands: list[Command]) -> None:
         target / "commands" / "kamma" / "kamma-status.toml",
         root / "commands" / "kamma" / "status.toml",
         root / "commands" / "kamma" / "kamma-status.toml",
+        target / "commands" / "kamma" / "one-shot.toml",
     ])
     ensure_dir(target / "commands" / "kamma")
     shutil.copy2(REGISTRATION_DIR / "gemini-extension.json", target / "gemini-extension.json")
@@ -228,6 +233,7 @@ def sync_opencode(root: Path, commands: list[Command]) -> None:
     remove_stale([
         command_target / "kamma-status.md",
         command_target / "status.md",
+        command_target / "kamma-one-shot.md",
     ])
     for command in commands:
         shutil.copy2(command.source, command_target / f"kamma-{command.base}.md")
@@ -240,6 +246,7 @@ def sync_codex(root: Path, commands: list[Command]) -> None:
     remove_stale([
         prompt_target / "kamma-status.md",
         prompt_target / "status.md",
+        prompt_target / "kamma-one-shot.md",
     ])
     remove_if_exists(root.parent / "plugins" / "kamma")
     remove_marketplace_kamma()
@@ -253,6 +260,7 @@ def sync_kilo(root: Path, commands: list[Command]) -> None:
     remove_stale([
         skills_root / "kamma-status",
         skills_root / "status",
+        skills_root / "kamma-one-shot",
     ])
     ensure_dir(skills_root / "kamma")
     for command in commands:

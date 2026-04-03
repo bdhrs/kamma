@@ -121,7 +121,7 @@ Wait for the user's response.
 6. Fix any blocking or major findings immediately. Re-run tests after each fix. Repeat until none remain.
 7. Only then write `kamma/threads/<thread_id>/review.md`:
    - Review date
-   - Reviewer: "one-shot (inline)"
+   - Reviewer: "kamma (inline)"
    - Findings summary (count by severity, or "No findings")
    - Verdict: `PASSED`
 

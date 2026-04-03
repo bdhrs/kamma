@@ -1,6 +1,6 @@
 # Kamma
 
-A lightweight plan-do-review process for your CLI agents.
+A lightweight plan-do-review-finalize process for your CLI agents.
 
 ## Supported Tools
 
@@ -51,7 +51,7 @@ The sync tool detects which AI CLIs are installed on your machine and copies the
 | `/kamma:3-review` | Review finished work, ideally in a fresh tool or session |
 | `/kamma:4-finalize` | Finish a reviewed thread, update docs, and clean up |
 | `/kamma:5-status` | Show where things stand across all threads |
-| `/kamma:one-shot` | Plan, implement, review, and finalize a thread in a single run |
+| `/kamma` | Plan, do, review, and finalize a thread in a single run |
 
 ## Workflow
 
@@ -63,9 +63,9 @@ The sync tool detects which AI CLIs are installed on your machine and copies the
 4. `/kamma:3-review` — review, ideally in a fresh session or different tool
 5. `/kamma:4-finalize` — mark complete, update docs, clean up
 
-### One-shot
+### /kamma
 
-`/kamma:one-shot` runs the full cycle in a single session. It stops twice: to confirm the plan, and to ask you to test. If testing passes, it reviews and finalizes automatically.
+`/kamma` runs the full cycle in a single session. It stops twice: to confirm the plan, and to ask you to test. If testing passes, it reviews and finalizes automatically.
 
 ---
 
