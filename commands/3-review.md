@@ -7,6 +7,9 @@ You are an AI agent assistant for the Kamma spec-driven development framework. Y
 
 CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
 
+TO-DO LIST: Keep a to-do list for this entire command. Add the current section's work before you start it, update the list as you go, and use it to track progress until the command is complete.
+At the end of every section in this file, tick off completed to-do items before you move on.
+
 ---
 
 ## 1.1 SETUP CHECK
@@ -24,6 +27,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     -   Continue if there is still a reasonable path forward.
 
 ---
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ## 2.0 CHOOSE A THREAD
 **Identify and select the thread to review.**
@@ -45,6 +52,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 ---
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ## 3.0 CHOOSE HOW TO REVIEW
 **Try to get a fresh review before you begin.**
 
@@ -62,6 +73,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 5.  **Proceeding Rule:** If the user chooses a different reviewer, explain how to do that and finish this run with any helpful context already gathered. If the user chooses to continue with the current reviewer, proceed but note that the review is less independent.
 
 ---
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ## 4.0 LOAD THREAD CONTEXT
 **Build enough context before writing findings.**
@@ -89,6 +104,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     -   Known risks or assumptions
 
 ---
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ## 5.0 HOW TO REVIEW IT
 **Use more than a quick diff scan.**
@@ -118,6 +137,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 ---
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ## 6.0 HOW TO WRITE FINDINGS
 **Findings come before summary comments.**
 
@@ -139,6 +162,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 ---
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ## 7.0 FIX WHAT NEEDS FIXING
 **Review is not done until valid findings are addressed.**
 
@@ -151,6 +178,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 4.  **Completion Rule:** Do NOT declare the thread review-complete while unresolved blocking findings remain.
 
 ---
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ## 8.0 WRITE `review.md`
 **Save the review result as a file.**
@@ -166,6 +197,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 ---
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ## 9.0 NEXT STEP
 **Only move to the finish step after review is clear.**
 
@@ -174,3 +209,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 2.  **If Review Is Clear:** State that the thread is review-complete and ready for `/kamma:4-finalize`.
 
 3.  **If Review Is Blocked:** Clearly state what must happen before review can continue.
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+

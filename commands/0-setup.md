@@ -7,6 +7,9 @@ You are an AI agent. Your job is to help set up a project with the Kamma workflo
 
 CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
 
+TO-DO LIST: Keep a to-do list for this entire command. Add the current section's work before you start it, update the list as you go, and use it to track progress until the command is complete.
+At the end of every section in this file, tick off completed to-do items before you move on.
+
 ---
 
 ## 1.1 CHECK WHETHER SETUP IS ALREADY IN PROGRESS
@@ -21,8 +24,8 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     - Based on the value of `STEP`, jump to the next section.
 
     - If `STEP` is "2.1_project_guide", announce "Resuming setup: `project.md` is already done. Next, we will define `tech.md`." and proceed to **Section 2.2**.
-    - If `STEP` is "2.2_tech", announce "Resuming setup: `project.md` and `tech.md` are already done. Next, we will define the project workflow." and proceed to **Section 2.3**.
-    - If `STEP` is "2.3_workflow", announce "Resuming setup: the initial project files are ready. Next, we will generate the first thread." and proceed to **Phase 2 (3.0)**.
+    - If `STEP` is "2.2_tech", announce "Resuming setup: `project.md` and `tech.md` are already done. Next, we will create `kamma/workflow.md` for this project." and proceed to **Section 2.3**.
+    - If `STEP` is "2.3_workflow", announce "Resuming setup: `project.md`, `tech.md`, and `kamma/workflow.md` are ready. Next, we will generate the first thread." and proceed to **Phase 2 (3.0)**.
     - If `STEP` is "3.3_initial_thread_generated":
         - Announce: "The project has already been initialized. You can create a new thread with `/kamma:1-plan` or start working on an existing thread with `/kamma:2-do`."
         - End setup here and tell the user what they can do next.
@@ -30,18 +33,26 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 ---
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ## 1.2 BEFORE SETUP
 1.  **Give a Quick Overview:**
     -   Present the following overview of the setup process to the user:
         > "Welcome to Kamma. I will help you set up the project in four steps:
         > 1. **Project Discovery:** Check the current directory and figure out whether this is a new or existing project.
         > 2. **Project Definition:** Define what the project is for, who it is for, and the basic context.
-        > 3. **Workflow Setup:** Choose the workflow you want to use.
+        > 3. **Workflow Setup:** Create `kamma/workflow.md` from the standard Kamma workflow.
         > 4. **First Thread:** Create the first thread and a detailed plan so work can start.
         >
         > Let's get started!"
 
 ---
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ## 2.0 SET UP THE PROJECT
 **Follow this sequence to perform a guided setup with the user.**
@@ -97,6 +108,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 5.  **Continue:** Immediately proceed to the next section.
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ### 2.1 Create `project.md`
 1.  **Introduce the Section:** Announce that you will now help the user create `project.md`.
 2.  **Ask Only What You Need To:** Only ask questions when the answer is not already clear from the codebase or context. For existing projects, the code itself answers most things — focus questions on intent, not facts you can read. Ask one question at a time and wait for the response before continuing.
@@ -126,6 +141,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 6.  **Commit State:** Write to `kamma/setup_state.json`: `{"last_successful_step": "2.1_project_guide"}`
 7.  **Continue:** Immediately proceed to the next section.
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ### 2.2 Create `tech.md`
 1.  **Introduce the Section:** Announce that you will now help define the project's tech notes.
 2.  **Ask Only What You Need To:** Only ask about things you cannot infer from the codebase or prior answers. For existing projects, state what you've inferred and ask the user to confirm or correct it rather than asking from scratch. Ask one question at a time.
@@ -139,23 +158,32 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 6.  **Commit State:** Write to `kamma/setup_state.json`: `{"last_successful_step": "2.2_tech"}`
 7.  **Continue:** Immediately proceed to the next section.
 
-### 2.3 Pick a Workflow
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
+### 2.3 Create `kamma/workflow.md`
 1.  **Copy Initial Workflow:**
     -   Copy the default workflow template into `kamma/workflow.md`.
-2.  **Customize Workflow:**
-    -   Ask the user: "Do you want to use the default workflow or customize it?"
-        -   A) Default
-        -   B) Customize
-    -   If the user chooses to **customize** (Option B):
-        -   Present the workflow content and allow the user to suggest changes.
-        -   Apply changes and confirm.
-    -   **Commit State:** Write to `kamma/setup_state.json`: `{"last_successful_step": "2.3_workflow"}`
+2.  **Explain What Was Created:**
+    -   Announce that `kamma/workflow.md` is the project's workflow file and that setup created it from the bundled Kamma template.
+    -   Do not offer workflow customization during setup.
+3.  **Commit State:**
+    -   Write to `kamma/setup_state.json`: `{"last_successful_step": "2.3_workflow"}`
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ### 2.4 Wrap Up Setup
 1.  **Summarize Actions:** Present a summary of all actions taken during setup.
 2.  **Transition:** Announce that the initial setup is complete and proceed to define the first thread.
 
 ---
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ## 3.0 CREATE THE FIRST THREAD
 **Define the project requirements, propose a single thread, and create the thread folder and plan.**
@@ -166,10 +194,18 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 3.  **Ask Only What You Need To:** Only ask questions that cannot be answered from the codebase or project context. Ask one at a time with suggested answers in A-E format (E = auto-generate).
 4.  **Continue:** Once you have enough to proceed, do so.
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ### 3.2 Propose a Single Initial Thread
 1.  **State Your Goal:** Announce that you will propose an initial thread.
 2.  **Generate Thread Title:** Analyze project context and generate a single thread title.
 3.  **User Confirmation:** Present for review and approval.
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ### 3.3 Create the Initial Thread Files
 1.  **State Your Goal:** Announce that you will create the files for this initial thread.
@@ -199,6 +235,14 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
     d. **Announce Progress:** Announce that the thread has been created.
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ### 3.4 Final Announcement
 1.  **Announce Completion:** The project setup and initial thread generation are complete.
 2.  **Next Steps:** Inform the user to run `/kamma:2-do` to begin work.
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+

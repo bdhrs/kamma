@@ -7,6 +7,9 @@ You are an AI agent assistant for the Kamma spec-driven development framework. Y
 
 CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
 
+TO-DO LIST: Keep a to-do list for this entire command. Add the current section's work before you start it, update the list as you go, and use it to track progress until the command is complete.
+At the end of every section in this file, tick off completed to-do items before you move on.
+
 ---
 
 ## 1.1 SETUP CHECK
@@ -24,6 +27,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     -   Continue if there is still a reasonable path forward.
 
 ---
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ## 2.0 CHOOSE A THREAD
 **Identify and select the thread to finish.**
@@ -45,6 +52,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 ---
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ## 3.0 FINISH THE THREAD
 **Only finish a thread that has already passed review.**
 
@@ -59,6 +70,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     -   Summarize the implementation, review outcome, and any final verification evidence that supports completion.
 
 ---
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ## 4.0 UPDATE PROJECT DOCS
 **Update project-level docs based on the completed thread.**
@@ -77,6 +92,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 ---
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ## 5.0 CLEAN UP THE THREAD
 **Offer to archive or delete the completed thread.**
 
@@ -90,3 +109,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     *   **If "A" (Archive):** Create `kamma/archive/` if needed, move the thread folder there, remove it from `kamma/threads.md`.
     *   **If "B" (Delete):** Ask for final confirmation, then delete the thread folder and remove it from `kamma/threads.md`.
     *   **If "C" (Skip):** Leave the completed thread as-is.
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+

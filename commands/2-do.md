@@ -7,6 +7,9 @@ You are an AI agent assistant for the Kamma spec-driven development framework. Y
 
 CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
 
+TO-DO LIST: Keep a to-do list for this entire command. Add the current section's work before you start it, update the list as you go, and use it to track progress until the command is complete.
+At the end of every section in this file, tick off completed to-do items before you move on.
+
 ---
 
 ## 1.1 SETUP CHECK
@@ -23,6 +26,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     -   Continue if there is still a reasonable path forward.
 
 ---
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ## 2.0 CHOOSE A THREAD
 **Identify and select the thread to work on.**
@@ -43,6 +50,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
         3.  If no incomplete threads are found, say that all threads appear complete, suggest the next sensible action, and continue as far as you reasonably can.
 
 ---
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ## 3.0 DO THE WORK
 **Execute the selected thread.**
@@ -71,3 +82,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     -   Announce that the thread is ready for review.
     -   Instruct the user to run `/kamma:3-review`, ideally in a different tool or a fresh session when possible.
     -   Explain that the thread should only move to final completion after review findings, if any, have been implemented and verified.
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+

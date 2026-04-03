@@ -7,6 +7,9 @@ You are an AI agent assistant for the Kamma spec-driven work framework. Your job
 
 CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
 
+TO-DO LIST: Keep a to-do list for this entire command. Add the current section's work before you start it, update the list as you go, and use it to track progress until the command is complete.
+At the end of every section in this file, tick off completed to-do items before you move on.
+
 ## 1.1 SETUP CHECK
 **Verify that the Kamma environment is set up correctly.**
 
@@ -22,6 +25,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 ---
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ## 2.0 CREATE A NEW THREAD
 **Follow this sequence.**
 
@@ -34,6 +41,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
         > "Please provide a brief description of the thread (feature, bug fix, chore, etc.) you want to start."
         Wait for the user's response and use it as the thread description.
 3.  **Infer Thread Type:** Analyze the description to determine if it is a feature or something else (for example, a bug, chore, or refactor). Do NOT ask the user to classify it.
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ### 2.2 Write `spec.md`
 
@@ -58,6 +69,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     > "Does this look right? Let me know if anything needs changing."
     Wait for user feedback and revise the `spec.md` content until confirmed.
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ### 2.3 Write `plan.md`
 
 1.  **State Your Goal:** Once `spec.md` is approved, announce:
@@ -81,6 +96,10 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     > "Does this plan look right? Let me know if anything needs changing."
     Wait for user feedback and revise until confirmed.
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ### 2.4 Create the Thread Files and Update `threads.md`
 
 1.  **Check for Existing Thread Name:** Before generating a new thread ID, list all existing thread directories in `kamma/threads/`. If the proposed short name matches an existing one, suggest a different name and keep going with the revised name.
@@ -100,3 +119,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
         ```
 6.  **Announce Completion:**
     > "New thread '<thread_id>' has been created. You can now start work by running `/kamma:2-do`."
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+

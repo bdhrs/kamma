@@ -12,6 +12,9 @@ You are an AI agent assistant for the Kamma spec-driven work framework. Your job
 
 CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
 
+TO-DO LIST: Keep a to-do list for this entire command. Add the current section's work before you start it, update the list as you go, and use it to track progress until the command is complete.
+At the end of every section in this file, tick off completed to-do items before you move on.
+
 ---
 
 ## 2.0 ENVIRONMENT BOOTSTRAP
@@ -29,6 +32,10 @@ Create the `kamma/` directory if it does not exist. Continue immediately.
 
 ---
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ## 3.0 PLAN THE THREAD
 **Run silently. Do not stop except for the plan presentation.**
 
@@ -39,11 +46,19 @@ Create the `kamma/` directory if it does not exist. Continue immediately.
 
 Infer the thread type (feature, bug, chore, refactor) from the description. Do not ask.
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ### 3.2 Generate Spec and Plan
 
 1. Read `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md`. Scan the codebase to fill in any gaps. Do not ask the user questions.
 2. Generate `spec.md`: Overview, What it should do, Constraints, How we'll know it's done, What's not included.
 3. Generate `plan.md`: Hierarchical Phases → Tasks → Sub-tasks with `[ ]` markers, following `kamma/workflow.md`. Inject a Phase Completion verification task at the end of each phase if the workflow defines one.
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ### 3.3 — STOP 1: Present the Plan
 
@@ -65,6 +80,10 @@ Present the spec and plan together and wait for approval:
 
 Apply any requested changes and re-present until the user confirms. Then immediately continue.
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ### 3.4 Create Thread Files
 
 - Check for name collisions in `kamma/threads/`. Use a variant if the name exists.
@@ -80,6 +99,10 @@ Apply any requested changes and re-present until the user confirms. Then immedia
   ```
 
 ---
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ## 4.0 IMPLEMENT THE THREAD
 **Run autonomously. Do not stop for phase checkpoints or mid-task confirmations.**
@@ -100,6 +123,10 @@ Wait for the user's response.
 - **If they report issues**: fix them, then ask: "Can I review and finalize the thread?" Keep fixing and re-asking until the user confirms. Never wait passively — always push forward.
 
 ---
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
 
 ## 5.0 REVIEW AND FINALIZE
 **Runs autonomously once the user confirms.**
@@ -125,9 +152,17 @@ Wait for the user's response.
    - Findings summary (count by severity, or "No findings")
    - Verdict: `PASSED`
 
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ### 5.3 Finalize
 
 1. Update thread status in `kamma/threads.md` from `[~]` to `[x]`.
 2. Update `kamma/project.md` and `kamma/tech.md` if the thread changed anything significant. Apply sensible updates without asking unless the change is ambiguous.
 3. Archive the thread folder to `kamma/archive/` and remove it from `kamma/threads.md`.
 4. Announce that the thread is complete.
+
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
