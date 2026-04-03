@@ -63,16 +63,6 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
         -   Announce that an existing project has been detected.
         -   If the `git status --porcelain` command showed uncommitted changes, tell the user: "WARNING: You have uncommitted changes in your Git repository. Please commit or stash them before proceeding, because Kamma will be making changes."
         -   **Begin Existing Project Setup:**
-            -   **1.0 Ask Before Scanning:**
-                1.  **Request Permission:** Inform the user that an existing project has been detected.
-                2.  **Ask for Permission:** Request permission for a read-only scan to analyze the project with the following options:
-                    > A) Yes
-                    > B) No
-                    >
-                    > Please respond with A or B.
-                3.  **Handle Denial:** If permission is denied, skip the scan, say what was skipped, and keep going with whatever information is already available.
-                4.  **Confirmation:** Upon confirmation, proceed to the next step.
-
             -   **2.0 Analyze the Codebase:**
                 1.  **Announce Action:** Inform the user that you will now analyze the project.
                 2.  **Prioritize README:** Begin by analyzing the `README.md` file, if it exists.
@@ -109,12 +99,11 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 ### 2.1 Create `project.md`
 1.  **Introduce the Section:** Announce that you will now help the user create `project.md`.
-2.  **Ask Questions One at a Time:** Ask one question at a time. Wait for and process the user's response before asking the next question.
-        -   **CONSTRAINT:** Limit your inquiry to a maximum of 5 questions.
+2.  **Ask Only What You Need To:** Only ask questions when the answer is not already clear from the codebase or context. For existing projects, the code itself answers most things — focus questions on intent, not facts you can read. Ask one question at a time and wait for the response before continuing.
         -   **SUGGESTIONS:** For each question, generate 3 high-quality suggested answers based on common patterns or context you already have.
-        -   **Example Topics:** project goal, who it is for, whether the project is ongoing or temporary, key deliverables, success criteria.
+        -   **Example Topics:** what the project is for, who it is for, whether it is a one-off or ongoing, what it will produce, how you'll know it worked.
         *   **General Guidelines:**
-            *   **CRITICAL:** You MUST ask questions sequentially (one by one). Do not ask multiple questions in a single turn.
+            *   Ask questions sequentially (one by one). Do not ask multiple questions in a single turn.
             *   The last two options for every multiple-choice question MUST be "Type your own answer", and "Autogenerate and review project.md".
             - **Format:** Present these as a vertical list.
             - **Structure:**
@@ -123,9 +112,9 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
                 C) [Option C]
                 D) [Type your own answer]
                 E) [Autogenerate and review project.md]
-    -   **FOR EXISTING PROJECTS:** Ask context-aware questions based on the analysis.
+    -   **FOR EXISTING PROJECTS:** The codebase already answers most questions. Only ask about things you genuinely cannot infer.
     -   **AUTO-GENERATE LOGIC:** If the user selects option E, immediately stop asking questions, use your best judgment to infer the remaining details, generate the full `project.md` content, write it to the file, and proceed.
-3.  **Draft the Document:** Generate the content for `project.md`. Include sections for: Purpose & Goal, Who It Is For, Duration (ongoing or temporary), Deliverables, and Success Criteria.
+3.  **Draft the Document:** Generate the content for `project.md`. Include sections for: What it is and why, Who it is for, One-off or ongoing, What it will produce, and How you'll know it worked.
     -   **CRITICAL:** The source of truth is **only the user's selected answer(s)**. Ignore unselected options.
 4.  **Review Loop:** Present the drafted content for review.
     > "I've drafted the project guide. Please review:"
@@ -139,13 +128,12 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 ### 2.2 Create `tech.md`
 1.  **Introduce the Section:** Announce that you will now help define the project's tech notes.
-2.  **Ask Questions One at a Time:** Ask one question at a time. Maximum 5 questions.
+2.  **Ask Only What You Need To:** Only ask about things you cannot infer from the codebase or prior answers. For existing projects, state what you've inferred and ask the user to confirm or correct it rather than asking from scratch. Ask one question at a time.
     -   **SUGGESTIONS:** Generate 3 high-quality suggested answers for each question.
-    -   **Example Topics:** tools and platforms being used, who this is for, constraints (timeline, budget, available time), available resources, primary format of deliverables.
+    -   **Example Topics:** tools and platforms being used, who this is for, any time or budget limits to be aware of, available resources, what the output looks like.
     -   **Format:** Present as vertical list with options A-E (E = autogenerate).
-    -   **FOR EXISTING PROJECTS:** State the inferred context and ask for confirmation.
     -   **AUTO-GENERATE LOGIC:** If E selected, infer remaining details and generate.
-3.  **Draft the Document:** Generate `tech.md` content based on user answers only. Include sections for: Tools & Platforms, Who This Is For, Constraints, Resources, and Deliverable Format.
+3.  **Draft the Document:** Generate `tech.md` content based on user answers only. Include sections for: Tools & Platforms, Who This Is For, Constraints, Resources, and What the output looks like.
 4.  **Review Loop:** Present for review, loop until approved.
 5.  **Write File:** Write to `kamma/tech.md`.
 6.  **Commit State:** Write to `kamma/setup_state.json`: `{"last_successful_step": "2.2_tech"}`
@@ -175,9 +163,8 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 ### 3.1 Generate Project Requirements (For New Projects Only)
 1.  **Transition to Requirements:** Announce that you will now define high-level project requirements.
 2.  **Analyze Context:** Read `kamma/project.md`.
-3.  **Ask Questions Sequentially:** Maximum 5 questions with suggested answers.
-    -   Format with options A-E (E = auto-generate).
-4.  **Continue:** After gathering enough information, proceed.
+3.  **Ask Only What You Need To:** Only ask questions that cannot be answered from the codebase or project context. Ask one at a time with suggested answers in A-E format (E = auto-generate).
+4.  **Continue:** Once you have enough to proceed, do so.
 
 ### 3.2 Propose a Single Initial Thread
 1.  **State Your Goal:** Announce that you will propose an initial thread.

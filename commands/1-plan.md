@@ -37,26 +37,16 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 
 ### 2.2 Write `spec.md`
 
-1.  **State Your Goal:** Announce:
-    > "I'll now ask a few questions so I can write a solid `spec.md` for this thread."
-
-2.  **Ask a Few Questions:** Ask a series of questions to gather details for `spec.md`. Tailor the questions based on the thread type.
-    *   **CRITICAL:** Ask these questions one at a time. Do not ask multiple questions in a single turn. Wait for the user's response after each question.
+1.  **Ask Only What You Need To:** Use `project.md`, `tech.md`, and the codebase to answer as much as you can before asking anything. Only ask questions when the answer genuinely cannot be inferred. Ask one at a time and wait for the response.
     *   **General Guidelines:**
-        *   Refer to information in `project.md`, `tech.md`, and related files so the questions fit the project.
-        *   Provide a brief explanation and clear examples for each question.
         *   Whenever possible, present 2-3 plausible options (A, B, C) for the user to choose from.
         *   The last option for every multiple-choice question MUST be "Type your own answer".
 
-    *   **If FEATURE:**
-        *   **Ask 3-5 relevant questions** to clarify the feature request.
-        *   Examples include how the feature should work, how it should be built, interactions, inputs/outputs, and edge cases.
+    *   **If FEATURE:** Focus questions on intent and edge cases the codebase cannot answer — how it should behave, who it is for, what success looks like.
 
-    *   **If SOMETHING ELSE (Bug, Chore, etc.):**
-        *   **Ask 2-3 relevant questions** to get the needed details.
-        *   Examples include reproduction steps for bugs, specific scope for chores, or success criteria.
+    *   **If SOMETHING ELSE (Bug, Chore, etc.):** Focus on what you need to reproduce or scope the work — reproduction steps, specific scope, or how you'll know it's fixed.
 
-3.  **Draft `spec.md`:** Once you have enough information, draft the thread's `spec.md`, including sections like Overview, Functional Requirements, Non-Functional Requirements (if any), Acceptance Criteria, and Out of Scope.
+3.  **Draft `spec.md`:** Once you have enough information, draft the thread's `spec.md`, including sections like Overview, What it should do, Constraints (if any), How we'll know it's done, and What's not included.
 
 4.  **Check the Draft:** Present the drafted `spec.md` content to the user for review and approval.
     > "I've drafted the specification for this thread. Please review the following:"
@@ -65,7 +55,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     > [Drafted spec.md content here]
     > ```
     >
-    > "Does this accurately capture the requirements? Please suggest any changes or confirm."
+    > "Does this look right? Let me know if anything needs changing."
     Wait for user feedback and revise the `spec.md` content until confirmed.
 
 ### 2.3 Write `plan.md`
@@ -88,7 +78,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
     > [Drafted plan.md content here]
     > ```
     >
-    > "Does this plan look correct? Please suggest any changes or confirm."
+    > "Does this plan look right? Let me know if anything needs changing."
     Wait for user feedback and revise until confirmed.
 
 ### 2.4 Create the Thread Files and Update `threads.md`
