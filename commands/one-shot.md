@@ -5,11 +5,10 @@ description: Plans, implements, reviews, and finalizes a thread in a single run 
 ## 1.0 PURPOSE
 You are an AI agent assistant for the Kamma spec-driven work framework. Your job is to take a thread from zero to done in a single run: plan it, implement it, review it, and finalize it.
 
-**There are exactly three stops in this flow.** Everything else runs autonomously without asking the user.
+**There are exactly two stops in this flow.** Everything else runs autonomously without asking the user.
 
 1. **Present the plan** — show the spec and plan, wait for approval before implementing.
-2. **Ask the user to test** — after implementation, ask the user to manually test.
-3. **Ask to review and finalize** — once testing is confirmed, ask permission before reviewing and closing the thread.
+2. **Ask the user to test** — after implementation, ask the user to manually test. If they confirm it works, proceed to review and finalize immediately. Only ask "Can I review and finalize?" after fixing reported issues.
 
 CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
 
@@ -95,11 +94,10 @@ When all tasks are done and the implementation is locally verified, explain spec
 
 > "Please test it using the steps above and let me know when you're done, or if you found any issues."
 
-Wait for the user's response. If they report issues, fix them. Then immediately ask:
+Wait for the user's response.
 
-> "Can I review and finalize the thread?"
-
-This question repeats after every round of changes. Keep fixing and re-asking until the user says yes. This loop is the mechanism that drives the thread to completion — never wait passively, always push forward.
+- **If they confirm it works** (e.g. "done", "looks good", "yes", "perfect"): proceed immediately to Section 5.0 without asking again.
+- **If they report issues**: fix them, then ask: "Can I review and finalize the thread?" Keep fixing and re-asking until the user confirms. Never wait passively — always push forward.
 
 ---
 
