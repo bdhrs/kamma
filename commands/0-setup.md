@@ -191,7 +191,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
             - **CRITICAL:** The task structure must adhere to `kamma/workflow.md`.
             - **CRITICAL: Inject Phase Completion Tasks.** If a "Phase Completion" protocol exists in `workflow.md`, append a final verification task to each Phase.
     b. **Create Thread Files:**
-        i. **Generate Thread ID:** Format `shortname_YYYYMMDD`.
+        i. **Generate Thread ID:** Format `YYYYMMDD_shortname`.
         ii. **Create Directory:** `kamma/threads/<thread_id>/`.
         iii. **Write `spec.md` and `plan.md`** in the new directory.
 

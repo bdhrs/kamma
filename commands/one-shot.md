@@ -69,7 +69,7 @@ Apply any requested changes and re-present until the user confirms. Then immedia
 ### 3.4 Create Thread Files
 
 - Check for name collisions in `kamma/threads/`. Use a variant if the name exists.
-- Generate thread ID: `shortname_YYYYMMDD`.
+- Generate thread ID: `YYYYMMDD_shortname`.
 - Create `kamma/threads/<thread_id>/` and write `spec.md` and `plan.md`.
 - Append to `kamma/threads.md`:
   ```markdown

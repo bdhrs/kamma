@@ -84,7 +84,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 ### 2.4 Create the Thread Files and Update `threads.md`
 
 1.  **Check for Existing Thread Name:** Before generating a new thread ID, list all existing thread directories in `kamma/threads/`. If the proposed short name matches an existing one, suggest a different name and keep going with the revised name.
-2.  **Generate Thread ID:** Create a unique thread ID (for example, `shortname_YYYYMMDD`).
+2.  **Generate Thread ID:** Create a unique thread ID (for example, `YYYYMMDD_shortname`).
 3.  **Create Directory:** Create a new directory: `kamma/threads/<thread_id>/`
 4.  **Write Files:**
     *   Write the confirmed specification to `kamma/threads/<thread_id>/spec.md`.
