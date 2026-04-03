@@ -51,6 +51,7 @@ Read and follow `kamma/workflow.md` for the full task flow. It is the single sou
 - `/kamma:3-review` - Review the active thread
 - `/kamma:4-finalize` - Complete a reviewed thread and handle cleanup
 - `/kamma:5-status` - Show project progress
+- `/kamma:one-shot` - Plan, implement, review, and finalize a thread in a single run (no prior setup required)
 
 ## Context Loading
 
