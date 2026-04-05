@@ -4,7 +4,7 @@ A lightweight plan-do-review-finalize process for your CLI agents.
 
 ## Supported Tools
 
-Claude Code, Gemini CLI, Antigravity, OpenCode, Kilo Code, Codex CLI
+Claude Code, Gemini CLI, Antigravity, OpenCode, Kilo Code, Codex CLI, Qwen Code
 
 ## Quick Install
 

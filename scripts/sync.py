@@ -259,6 +259,20 @@ def sync_codex(root: Path, commands: list[Command]) -> None:
     copy_tree_contents(TEMPLATES_DIR, root / "templates" / "kamma")
 
 
+def sync_qwen(root: Path, commands: list[Command]) -> None:
+    target = root / "extensions" / "kamma"
+    remove_stale([
+        target / "commands" / "kamma" / "status.toml",
+        target / "commands" / "kamma" / "kamma-status.toml",
+    ])
+    ensure_dir(target / "commands" / "kamma")
+    shutil.copy2(REGISTRATION_DIR / "qwen-extension.json", target / "qwen-extension.json")
+    shutil.copy2(REGISTRATION_DIR / "QWEN.md", target / "QWEN.md")
+    for command in commands:
+        write_text(target / "commands" / "kamma" / f"{command.base}.toml", render_toml(command))
+    copy_tree_contents(TEMPLATES_DIR, target / "templates")
+
+
 def sync_kilo(root: Path, commands: list[Command]) -> None:
     skills_root = root / "skills"
     remove_stale([
@@ -301,6 +315,7 @@ TARGETS = [
     ),
     Target("Codex CLI", existing([home / ".codex" for home in HOME_DIRS])),
     Target("Kilo CLI", existing([home / ".kilocode" for home in HOME_DIRS])),
+    Target("Qwen Code", existing([home / ".qwen" for home in HOME_DIRS])),
 ]
 SYNCERS = {
     "Claude Code": sync_claude,
@@ -309,6 +324,7 @@ SYNCERS = {
     "OpenCode": sync_opencode,
     "Codex CLI": sync_codex,
     "Kilo CLI": sync_kilo,
+    "Qwen Code": sync_qwen,
 }
 
 
