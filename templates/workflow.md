@@ -34,7 +34,7 @@ Work through tasks in this order:
 
 7. **Finish the Thread:**
    - After review is clear, run `/kamma:4-finalize`.
-   - Mark the thread complete, sync project docs, and handle archive/delete/skip cleanup there.
+   - Mark the thread complete, sync project docs, and archive the completed thread there.
 
 8. **Document Deviations:** If implementation differs from the notes in `tech.md`:
    - **STOP** implementation

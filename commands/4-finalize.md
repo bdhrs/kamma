@@ -97,19 +97,16 @@ At the end of every section in this file, tick off completed to-do items before 
 
 
 ## 5.0 CLEAN UP THE THREAD
-**Offer to archive or delete the completed thread.**
+**Archive the completed thread automatically.**
 
-1.  **Ask for User Choice:**
-    > "Thread '<thread_description>' is now complete. What would you like to do?
-    > A.  **Archive:** Move to `kamma/archive/` and remove from the threads file.
-    > B.  **Delete:** Permanently delete the thread folder and remove it from the threads file.
-    > C.  **Skip:** Leave it in the threads file."
+1.  **Archive by Default:**
+    -   Ensure `kamma/archive/` exists.
+    -   Move the completed thread folder to `kamma/archive/`.
+    -   Remove the thread entry from `kamma/threads.md`.
+    -   If the archive path already exists, choose a unique variant and continue.
 
-2.  **Handle User Response:**
-    *   **If "A" (Archive):** Create `kamma/archive/` if needed, move the thread folder there, remove it from `kamma/threads.md`.
-    *   **If "B" (Delete):** Ask for final confirmation, then delete the thread folder and remove it from `kamma/threads.md`.
-    *   **If "C" (Skip):** Leave the completed thread as-is.
+2.  **Report the Result:**
+    -   Announce where the thread was archived and confirm that it was removed from the active threads file.
 
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-
