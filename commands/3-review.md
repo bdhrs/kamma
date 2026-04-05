@@ -56,21 +56,14 @@ At the end of every section in this file, tick off completed to-do items before 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
 
 
-## 3.0 CHOOSE HOW TO REVIEW
-**Try to get a fresh review before you begin.**
+## 3.0 START THE REVIEW
+**Begin the review immediately.**
 
-1.  **State the Goal:** Announce that this command is meant to give the selected thread a fresh review.
+1.  **State the Goal:** Announce that this command is meant to give the selected thread a fresh review and then continue straight into the review.
 
-2.  **Offer Review Choices:** Present the user with explicit choices before continuing:
-    -   A) Continue with the current agent
-    -   B) Switch to a different agent or tool for one fresh review
-    -   C) Use two different reviewers for two fresh reviews
+2.  **Independence Note:** If the current reviewer appears to be the same agent or tool that did the implementation, note briefly that the review is less independent, but continue without stopping for approval.
 
-3.  **Recommendation:** Recommend Option B by default. Explain that review is usually stronger when the reviewer is different from the agent or tool that did the implementation.
-
-4.  **Examples of Alternate Reviewers:** Mention concrete examples such as Claude, Codex, OpenCode, or any other available agent/tool in the user's environment.
-
-5.  **Proceeding Rule:** If the user chooses a different reviewer, explain how to do that and finish this run with any helpful context already gathered. If the user chooses to continue with the current reviewer, proceed but note that the review is less independent.
+3.  **No Reviewer-Selection Stop:** Do not add any reviewer-selection gate before the review starts.
 
 ---
 
@@ -212,4 +205,3 @@ At the end of every section in this file, tick off completed to-do items before 
 
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-
