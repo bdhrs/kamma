@@ -41,7 +41,7 @@ If any Kamma files are missing, do not stop and do not perform setup here. Conti
 ### 3.1 Get the Thread Description
 
 - **If `{{args}}` is provided:** Use it as the thread description.
-- **If `{{args}}` is empty:** Ask: "What would you like to work on?" Wait for the response. This is a pre-flight question, not one of the two stops.
+- **If `{{args}}` is empty:** Ask "What would you like to work on?" using the environment's native question or input tool when available; otherwise ask in a normal message. Wait for the response. This is a pre-flight question, not one of the two stops.
 
 Infer the thread type (feature, bug, chore, refactor) from the description. Do not ask.
 
@@ -49,7 +49,7 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Do n
 
 ### 3.2 Generate Spec and Plan
 
-1. Read `kamma/project.md`, `kamma/tech.md`, and `kamma/threads.md` if they exist. Fill gaps from discoverable repo context. Only ask the user questions if absolutely necessary.
+1. Read `kamma/project.md`, `kamma/tech.md`, and `kamma/threads.md` if they exist. Fill gaps from discoverable repo context. Only ask the user questions if absolutely necessary. If more information is still required, batch all necessary questions into a single round and use the environment's native question or input tools when available; otherwise ask them in one normal message and wait for the response.
 2. Generate `spec.md` with sections for Overview, What it should do, Constraints, How we'll know it's done, and What's not included.
 3. Generate a self-contained `plan.md` with hierarchical Phases -> Tasks -> Sub-tasks using `[ ]` markers.
 4. The `plan.md` structure must be executable by this command on its own.

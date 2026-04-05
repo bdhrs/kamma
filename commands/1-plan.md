@@ -37,7 +37,7 @@ At the end of every section in this file, tick off completed to-do items before 
 1.  **Load Project Files:** Read and understand the content of the `kamma` directory files.
 2.  **Get Thread Description:**
     *   **If `{{args}}` contains a description:** Use the content of `{{args}}`.
-    *   **If `{{args}}` is empty:** Ask the user:
+    *   **If `{{args}}` is empty:** Ask the user using the environment's native question or input tool when available; otherwise ask in a normal message:
         > "Please provide a brief description of the thread (feature, bug fix, chore, etc.) you want to start."
         Wait for the user's response and use it as the thread description.
 3.  **Infer Thread Type:** Analyze the description to determine if it is a feature or something else (for example, a bug, chore, or refactor). Do NOT ask the user to classify it.
@@ -48,9 +48,9 @@ At the end of every section in this file, tick off completed to-do items before 
 
 ### 2.2 Write `spec.md`
 
-1.  **Ask Only What You Need To:** Use `project.md`, `tech.md`, and the codebase to answer as much as you can before asking anything. Only ask questions when the answer genuinely cannot be inferred. Ask one at a time and wait for the response.
+1.  **Ask Only What You Need To:** Use `project.md`, `tech.md`, and the codebase to answer as much as you can before asking anything. Only ask questions when the answer genuinely cannot be inferred. Batch all remaining unknowns into a single round and wait for the response. Use the environment's native question or input tools when available; otherwise send one normal message containing the full batch.
     *   **General Guidelines:**
-        *   Whenever possible, present 2-3 plausible options (A, B, C) for the user to choose from.
+        *   Whenever possible, present 2-3 plausible options (A, B, C) for the user to choose from for each question in the batch.
         *   The last option for every multiple-choice question MUST be "Type your own answer".
 
     *   **If FEATURE:** Focus questions on intent and edge cases the codebase cannot answer — how it should behave, who it is for, what success looks like.
@@ -122,4 +122,3 @@ At the end of every section in this file, tick off completed to-do items before 
 
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-

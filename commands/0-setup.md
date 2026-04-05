@@ -99,7 +99,7 @@ At the end of every section in this file, tick off completed to-do items before 
     -   If a `.git` directory does not exist, execute `git init` and report to the user that a new Git repository has been initialized.
 
 4.  **Ask About the Project Goal (for New Projects):**
-    -   **Ask the user the following question and wait for their response before proceeding:** "What is the goal of this project?"
+    -   **Ask the user the following question using the environment's native question or input tool when available; otherwise ask it in a normal message, and wait for their response before proceeding:** "What is the goal of this project?"
     -   **CRITICAL: You MUST NOT execute any tool calls until the user has provided a response.**
     -   **Upon receiving the user's response:**
         -   Execute `mkdir -p kamma`.
@@ -114,11 +114,12 @@ At the end of every section in this file, tick off completed to-do items before 
 
 ### 2.1 Create `project.md`
 1.  **Introduce the Section:** Announce that you will now help the user create `project.md`.
-2.  **Ask Only What You Need To:** Only ask questions when the answer is not already clear from the codebase or context. For existing projects, the code itself answers most things — focus questions on intent, not facts you can read. Ask one question at a time and wait for the response before continuing.
-        -   **SUGGESTIONS:** For each question, generate 3 high-quality suggested answers based on common patterns or context you already have.
+2.  **Ask Only What You Need To:** Only ask questions when the answer is not already clear from the codebase or context. For existing projects, the code itself answers most things — focus questions on intent, not facts you can read. Batch all remaining unknowns into a single round of questions and wait for the response before continuing. Use the environment's native question or input tools when available; otherwise send one normal message containing the full batch.
+        -   **SUGGESTIONS:** For each question in the batch, generate 3 high-quality suggested answers based on common patterns or context you already have.
         -   **Example Topics:** what the project is for, who it is for, whether it is a one-off or ongoing, what it will produce, how you'll know it worked.
         *   **General Guidelines:**
-            *   Ask questions sequentially (one by one). Do not ask multiple questions in a single turn.
+            *   Ask all necessary unresolved questions together in a single batch.
+            *   Present each question as its own block in the batch.
             *   The last two options for every multiple-choice question MUST be "Type your own answer", and "Autogenerate and review project.md".
             - **Format:** Present these as a vertical list.
             - **Structure:**
@@ -147,10 +148,10 @@ At the end of every section in this file, tick off completed to-do items before 
 
 ### 2.2 Create `tech.md`
 1.  **Introduce the Section:** Announce that you will now help define the project's tech notes.
-2.  **Ask Only What You Need To:** Only ask about things you cannot infer from the codebase or prior answers. For existing projects, state what you've inferred and ask the user to confirm or correct it rather than asking from scratch. Ask one question at a time.
-    -   **SUGGESTIONS:** Generate 3 high-quality suggested answers for each question.
+2.  **Ask Only What You Need To:** Only ask about things you cannot infer from the codebase or prior answers. For existing projects, state what you've inferred and ask the user to confirm or correct it rather than asking from scratch. Batch all remaining unknowns into a single round of questions. Use the environment's native question or input tools when available; otherwise send one normal message containing the full batch and wait for the response.
+    -   **SUGGESTIONS:** Generate 3 high-quality suggested answers for each question in the batch.
     -   **Example Topics:** tools and platforms being used, who this is for, any time or budget limits to be aware of, available resources, what the output looks like.
-    -   **Format:** Present as vertical list with options A-E (E = autogenerate).
+    -   **Format:** Present each question as its own vertical list with options A-E (E = autogenerate).
     -   **AUTO-GENERATE LOGIC:** If E selected, infer remaining details and generate.
 3.  **Draft the Document:** Generate `tech.md` content based on user answers only. Include sections for: Tools & Platforms, Who This Is For, Constraints, Resources, and What the output looks like.
 4.  **Review Loop:** Present for review, loop until approved.
@@ -191,7 +192,7 @@ At the end of every section in this file, tick off completed to-do items before 
 ### 3.1 Generate Project Requirements (For New Projects Only)
 1.  **Transition to Requirements:** Announce that you will now define high-level project requirements.
 2.  **Analyze Context:** Read `kamma/project.md`.
-3.  **Ask Only What You Need To:** Only ask questions that cannot be answered from the codebase or project context. Ask one at a time with suggested answers in A-E format (E = auto-generate).
+3.  **Ask Only What You Need To:** Only ask questions that cannot be answered from the codebase or project context. Ask all necessary questions in a single batch with suggested answers in A-E format for each question (E = auto-generate). Use the environment's native question or input tools when available; otherwise send one normal message containing the full batch and wait for the response.
 4.  **Continue:** Once you have enough to proceed, do so.
 
 
@@ -245,4 +246,3 @@ At the end of every section in this file, tick off completed to-do items before 
 
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-
