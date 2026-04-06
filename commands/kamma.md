@@ -171,8 +171,9 @@ Wait for the user's response.
 2. If `kamma/project.md` exists and the thread changed anything significant about the project description, update it. If the file does not exist, do not stop and do not create it just for this command.
 3. If `kamma/tech.md` exists and the thread changed tools, constraints, resources, or working assumptions, update it. If the file does not exist, do not stop and do not create it just for this command.
 4. Ensure `kamma/archive/` exists.
-5. Move `kamma/threads/<thread_id>/` to `kamma/archive/<thread_id>/`. If that archive path already exists, choose a unique variant and continue.
-6. Remove the thread entry from `kamma/threads.md` if it exists.
+5. Copy `kamma/threads/<thread_id>/` to `kamma/archive/<thread_id>/`. If that archive path already exists, choose a unique variant and continue.
+6. Delete `kamma/threads/<thread_id>/` and all its contents.
+7. Remove the thread entry from `kamma/threads.md` if it exists.
 7. Announce that the thread is complete.
 
 ### 5.3 Reflect and Learn

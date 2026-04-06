@@ -101,9 +101,9 @@ At the end of every section in this file, tick off completed to-do items before 
 
 1.  **Archive by Default:**
     -   Ensure `kamma/archive/` exists.
-    -   Move the completed thread folder to `kamma/archive/`.
+    -   Copy the completed thread folder to `kamma/archive/<thread_id>/`. If that archive path already exists, choose a unique variant and continue.
+    -   Delete the original `kamma/threads/<thread_id>/` folder and all its contents.
     -   Remove the thread entry from `kamma/threads.md`.
-    -   If the archive path already exists, choose a unique variant and continue.
 
 2.  **Report the Result:**
     -   Announce where the thread was archived and confirm that it was removed from the active threads file.
