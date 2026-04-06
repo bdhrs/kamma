@@ -245,17 +245,36 @@ def sync_opencode(root: Path, commands: list[Command]) -> None:
 
 
 def sync_codex(root: Path, commands: list[Command]) -> None:
+    if not any(command.base == "kamma" for command in commands):
+        raise ValueError("Codex sync requires the kamma command")
+
     prompt_target = root / "prompts"
+    skills_root = root / "skills"
     ensure_dir(prompt_target)
     remove_stale([
         prompt_target / "kamma-status.md",
         prompt_target / "status.md",
         prompt_target / "kamma-one-shot.md",
     ])
+    remove_if_exists(skills_root / "kamma")
+    for old in skills_root.glob("kamma-*"):
+        remove_if_exists(old)
+    for old in prompt_target.glob("kamma-*.md"):
+        old.unlink()
     remove_if_exists(root.parent / "plugins" / "kamma")
     remove_marketplace_kamma()
     for command in commands:
         write_text(prompt_target / f"kamma-{command.base}.md", command.body)
+
+    skill_target = skills_root / "kamma"
+    ensure_dir(skill_target)
+    shutil.copy2(SKILLS_DIR / "kamma" / "SKILL.md", skill_target / "SKILL.md")
+    for command in commands:
+        write_text(
+            skills_root / f"kamma-{command.base}" / "SKILL.md",
+            render_markdown_frontmatter(command),
+        )
+
     copy_tree_contents(TEMPLATES_DIR, root / "templates" / "kamma")
 
 
