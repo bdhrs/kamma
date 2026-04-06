@@ -176,7 +176,22 @@ Wait for the user's response.
 7. Remove the thread entry from `kamma/threads.md` if it exists.
 7. Announce that the thread is complete.
 
-### 5.3 Reflect and Learn
+### 5.3 GitHub Issue
+
+If the thread description or `spec.md` references a GitHub issue number (e.g., `#123`, `issue 123`, `fixes #123`):
+
+1. Extract the issue number.
+2. Summarize the fix in 2–4 sentences: what the issue was, what was changed, and how it was verified.
+3. Use `gh issue comment <number> --body "<summary>"` to post the fix summary to the issue.
+4. Use `gh issue close <number>` to close the issue.
+5. Provide the user with a suggested commit message that references the issue, for example:
+   > `fix: <short description> (closes #<number>)`
+
+If no issue is referenced, skip this section entirely.
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+### 5.4 Reflect and Learn
 **Run autonomously. Keep the user informed but do not ask for approval.**
 
 1. Reflect on the conversation that just happened. Identify moments where:

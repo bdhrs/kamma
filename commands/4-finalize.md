@@ -112,6 +112,22 @@ At the end of every section in this file, tick off completed to-do items before 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
 
 
+## 5.5 GITHUB ISSUE
+**Run autonomously. Skip entirely if no issue is referenced.**
+
+1. Check the thread description and `kamma/threads/<thread_id>/spec.md` (or the archived copy) for a GitHub issue reference (e.g., `#123`, `issue 123`, `fixes #123`).
+2. If one is found:
+   a. Extract the issue number.
+   b. Summarize the fix in 2–4 sentences: what the issue was, what was changed, and how it was verified.
+   c. Run `gh issue comment <number> --body "<summary>"` to post the fix summary.
+   d. Run `gh issue close <number>` to close the issue.
+   e. Provide the user with a suggested commit message, for example:
+      > `fix: <short description> (closes #<number>)`
+3. If no issue is referenced, skip this section entirely.
+
+**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+
+
 ## 6.0 REFLECT AND LEARN
 **Run autonomously. Keep the user informed but do not ask for approval.**
 
