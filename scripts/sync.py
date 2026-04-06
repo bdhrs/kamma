@@ -270,6 +270,8 @@ def sync_codex(root: Path, commands: list[Command]) -> None:
     ensure_dir(skill_target)
     shutil.copy2(SKILLS_DIR / "kamma" / "SKILL.md", skill_target / "SKILL.md")
     for command in commands:
+        if command.base == "kamma":
+            continue
         write_text(
             skills_root / f"kamma-{command.base}" / "SKILL.md",
             render_markdown_frontmatter(command),
