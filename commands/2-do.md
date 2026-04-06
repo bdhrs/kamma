@@ -75,12 +75,12 @@ At the end of every section in this file, tick off completed to-do items before 
     a. **Announce:** State that you will work through the thread's `plan.md` by following `workflow.md`.
     b. **Iterate Through Tasks:** Loop through each task in `plan.md` one by one.
     c. **For Each Task:**
-        i. **Defer to Workflow:** `workflow.md` is the single source of truth for the full task flow. Follow its instructions for implementation, testing, and committing.
+        i. **Defer to Workflow:** `workflow.md` is the single source of truth for the full task flow. Follow its instructions for implementation and testing.
 
-5.  **Stop When It Is Ready for Review:**
+5.  **Hand Off for Review:**
     -   After all implementation tasks are completed and local verification is done, DO NOT mark the thread fully complete yet.
-    -   Announce that the thread is ready for review.
-    -   Instruct the user to run `/kamma:3-review`, ideally in a different tool or a fresh session when possible.
+    -   Ask the user to apply any manual changes or test the result themselves, and wait for them to confirm the work is done.
+    -   Once confirmed, suggest running `/kamma:3-review` in a fresh session using a different model than the one currently in use (e.g. if on Sonnet, suggest Opus; if on Opus, suggest Sonnet) for an independent review.
     -   Explain that the thread should only move to final completion after review findings, if any, have been implemented and verified.
 
 

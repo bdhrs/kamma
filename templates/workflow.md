@@ -22,34 +22,23 @@ Work through tasks in this order:
 
 4. **Test:** Run relevant tests to verify the implementation works correctly.
 
-5. **Get Ready for Review:**
-   - Stop when the work is locally implemented and verified.
-   - Instruct the user to run `/kamma:3-review`.
-   - If possible, review it in a different tool or a fresh session.
-
-6. **Fix Review Findings:**
+5. **Fix Review Findings:**
    - Apply valid findings from `/kamma:3-review`.
    - Re-run relevant tests and verification.
    - Repeat review if needed until blocking issues are resolved.
 
-7. **Finish the Thread:**
+6. **Finish the Thread:**
    - After review is clear, run `/kamma:4-finalize`.
    - Mark the thread complete, sync project docs, and archive the completed thread there.
 
-8. **Document Deviations:** If implementation differs from the notes in `tech.md`:
+7. **Document Deviations:** If implementation differs from the notes in `tech.md`:
    - **STOP** implementation
    - Update `tech.md` with the change
    - Add dated note explaining the change
    - Resume implementation
 
-9. **Commit Code Changes:**
-   - Stage all code changes related to the task.
-   - Propose a clear, concise commit message.
-   - Perform the commit.
-
-10. **Update Plan:**
+8. **Update Plan:**
    - Update `plan.md`: change the task from `[~]` to `[x]`.
-   - Commit the plan update.
 
 ### When a Phase Ends
 
@@ -64,9 +53,7 @@ Work through tasks in this order:
 
 4.  **Await Confirmation:** Ask the user: "Does this meet your expectations? Please confirm or provide feedback."
 
-5.  **Create Checkpoint:** Commit with message like `kamma(checkpoint): End of Phase X`.
-
-6.  **Update Plan:** Record the checkpoint in `plan.md`.
+5.  **Update Plan:** Record the phase completion in `plan.md`.
 
 ### Before You Mark It Done
 
@@ -104,5 +91,4 @@ Follow the project's commit conventions. If none defined, use:
 3. The work has been reviewed and accepted findings addressed
 4. The thread has been finished
 5. Code passes linting
-6. Changes committed with proper message
-7. `plan.md` updated
+6. `plan.md` updated
