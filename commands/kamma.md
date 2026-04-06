@@ -175,4 +175,22 @@ Wait for the user's response.
 6. Remove the thread entry from `kamma/threads.md` if it exists.
 7. Announce that the thread is complete.
 
+### 5.3 Reflect and Learn
+**Run autonomously. Keep the user informed but do not ask for approval.**
+
+1. Reflect on the conversation that just happened. Identify moments where:
+   - The user had to correct you or repeat an instruction (`[REPEATED]`)
+   - There was process friction or wasted effort (`[WORKFLOW]`)
+   - You misunderstood something (`[CONFUSION]`)
+   - You violated a rule or missed an expected action (`[BEHAVIOR]`)
+   - Something worked particularly well (`[POSITIVE]`)
+2. If there is nothing notable, skip the rest of this section.
+3. Append each observation as a one-liner to `kamma/lessons.md` (create the file if it does not exist). Format:
+   ```
+   - YYYY-MM-DD [TAG] Short description of what happened
+   ```
+   Do not add headers, preamble, or "no lessons" entries. Just append the lines.
+4. Read the full `kamma/lessons.md`. For any lesson — even a single occurrence — that suggests a concrete, lasting improvement to the project's `CLAUDE.md` or `AGENTS.md`, apply the change directly and tell the user what you added and why. Keep additions minimal: one or two sentences per rule.
+5. If no improvements apply, say nothing and move on.
+
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
