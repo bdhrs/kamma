@@ -178,7 +178,14 @@ Wait for the user's response.
 5. Copy `kamma/threads/<thread_id>/` to `kamma/archive/<thread_id>/`. If that archive path already exists, choose a unique variant and continue.
 6. Delete `kamma/threads/<thread_id>/` and all its contents.
 7. Remove the thread entry from `kamma/threads.md` if it exists.
-7. Announce that the thread is complete.
+8. **Generate commit message and description:**
+   - Create a concise commit message (one line) that summarizes what changed.
+   - Create a commit description as a **single continuous line** (no line breaks) that explains what the issue was, what was changed, and how it was verified. This must be copy-paste friendly.
+   - If a GitHub issue is referenced, include it in both: e.g., `fix: ensure consistent commit descriptions (closes #123)`
+   - Present both to the user:
+     > **Commit message:** `<message>`
+     > **Commit description:** `<single-line description>`
+9. Announce that the thread is complete.
 
 ### 5.3 GitHub Issue
 

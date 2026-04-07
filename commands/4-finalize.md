@@ -121,10 +121,17 @@ At the end of every section in this file, tick off completed to-do items before 
    b. Summarize the fix in 2–4 sentences: what the issue was, what was changed, and how it was verified.
    c. Run `gh issue comment <number> --body "<summary>"` to post the fix summary.
    d. Run `gh issue close <number>` to close the issue.
-   e. Provide the user with a suggested commit message that references the same issue number, for example:
-      > `fix: <short description> (closes #<number>)`
+   e. **Generate commit message and description:**
+      - Create a concise commit message (one line) that includes the issue reference: e.g., `fix: <short description> (closes #<number>)`
+      - Create a commit description as a **single continuous line** (no line breaks) that explains what the issue was, what was changed, and how it was verified. This must be copy-paste friendly.
+      - Present both to the user:
+        > **Commit message:** `<message>`
+        > **Commit description:** `<single-line description>`
 3. If no issue is referenced, skip this section entirely.
-4. At the end of the finalize process, always suggest a commit name using the repository's commit syntax if one is evident. If no clear syntax is discoverable, provide a concise sensible commit name. When an issue number exists, the suggested commit name must include it.
+4. **Always generate commit message and description (even without an issue):**
+   - Create a concise commit message (one line) that summarizes what changed.
+   - Create a commit description as a **single continuous line** (no line breaks) that explains what the issue was, what was changed, and how it was verified.
+   - Present both to the user as shown above.
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
 
