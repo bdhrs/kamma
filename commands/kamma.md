@@ -189,6 +189,8 @@ If the thread description or `spec.md` references a GitHub issue number (e.g., `
 
 If no issue is referenced, skip this section entirely.
 
+6. At the end of the finalize process, always suggest a commit name using the repository's commit syntax if one is evident. If no clear syntax is discoverable, provide a concise sensible commit name.
+
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
 
 ### 5.4 Reflect and Learn

@@ -124,6 +124,7 @@ At the end of every section in this file, tick off completed to-do items before 
    e. Provide the user with a suggested commit message, for example:
       > `fix: <short description> (closes #<number>)`
 3. If no issue is referenced, skip this section entirely.
+4. At the end of the finalize process, always suggest a commit name using the repository's commit syntax if one is evident. If no clear syntax is discoverable, provide a concise sensible commit name.
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
 
