@@ -40,7 +40,8 @@ At the end of every section in this file, tick off completed to-do items before 
     *   **If `{{args}}` is empty:** Ask the user using the environment's native question or input tool when available; otherwise ask in a normal message:
         > "Please provide a brief description of the thread (feature, bug fix, chore, etc.) you want to start."
         Wait for the user's response and use it as the thread description.
-3.  **Infer Thread Type:** Analyze the description to determine if it is a feature or something else (for example, a bug, chore, or refactor). Do NOT ask the user to classify it.
+3.  **Capture GitHub Issue Reference:** If the work is tied to a GitHub issue, ask for or preserve the issue number and include it directly in the thread description so it stays visible throughout the thread lifecycle.
+4.  **Infer Thread Type:** Analyze the description to determine if it is a feature or something else (for example, a bug, chore, or refactor). Do NOT ask the user to classify it.
 
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
@@ -58,6 +59,7 @@ At the end of every section in this file, tick off completed to-do items before 
     *   **If SOMETHING ELSE (Bug, Chore, etc.):** Focus on what you need to reproduce or scope the work — reproduction steps, specific scope, or how you'll know it's fixed.
 
 3.  **Draft `spec.md`:** Once you have enough information, draft the thread's `spec.md`, including sections like Overview, What it should do, Constraints (if any), How we'll know it's done, and What's not included.
+    -   If the thread is tied to a GitHub issue, include a dedicated issue reference near the top of `spec.md` and repeat the exact issue number used in the thread description.
 
 4.  **Check the Draft:** Present the drafted `spec.md` content to the user for review and approval.
     > "I've drafted the specification for this thread. Please review the following:"
@@ -79,12 +81,13 @@ At the end of every section in this file, tick off completed to-do items before 
     > "Now I will create `plan.md` based on the specification."
 
 2.  **Generate Plan:**
-    *   Read the confirmed `spec.md` content for this thread.
-    *   Read `kamma/workflow.md`.
-    *   Generate a `plan.md` with a hierarchical list of Phases, Tasks, and Sub-tasks.
-    *   **CRITICAL:** The plan structure MUST follow the workflow file.
-    *   Include status markers `[ ]` for each task/sub-task.
-    *   **CRITICAL: Inject Phase Completion Tasks.** If a "Phase Completion" protocol exists in `kamma/workflow.md`, append a final verification task to each Phase.
+     *   Read the confirmed `spec.md` content for this thread.
+     *   Read `kamma/workflow.md`.
+     *   Generate a `plan.md` with a hierarchical list of Phases, Tasks, and Sub-tasks.
+     *   If the thread is tied to a GitHub issue, include the same issue reference near the top of `plan.md` so later commands can recover it reliably.
+     *   **CRITICAL:** The plan structure MUST follow the workflow file.
+     *   Include status markers `[ ]` for each task/sub-task.
+     *   **CRITICAL: Inject Phase Completion Tasks.** If a "Phase Completion" protocol exists in `kamma/workflow.md`, append a final verification task to each Phase.
 
 3.  **Check the Draft:** Present the drafted `plan.md` to the user for review and approval.
     > "I've drafted the implementation plan. Please review the following:"
@@ -114,7 +117,7 @@ At the end of every section in this file, tick off completed to-do items before 
 
         ---
 
-        ## [ ] Thread: <Thread Description>
+        ## [ ] Thread: <Thread Description, including issue number if one exists>
         *Link: [./kamma/threads/<thread_id>/](./kamma/threads/<thread_id>/)*
         ```
 6.  **Announce Completion:**

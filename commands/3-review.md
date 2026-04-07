@@ -82,6 +82,7 @@ At the end of every section in this file, tick off completed to-do items before 
     -   `kamma/workflow.md`
     -   `kamma/project.md`
     -   `kamma/tech.md`
+    -   Verify that any GitHub issue reference stays visible and consistent in the thread description, `spec.md`, and `plan.md`.
 
 3.  **Inspect Implementation Evidence:**
     -   Review the current git diff and recent commits relevant to the thread.

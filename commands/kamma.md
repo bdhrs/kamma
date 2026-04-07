@@ -43,6 +43,8 @@ If any Kamma files are missing, do not stop and do not perform setup here. Conti
 - **If `{{args}}` is provided:** Use it as the thread description.
 - **If `{{args}}` is empty:** Ask "What would you like to work on?" using the environment's native question or input tool when available; otherwise ask in a normal message. Wait for the response. This is a pre-flight question, not one of the two stops.
 
+If the work is tied to a GitHub issue, ask for or preserve the issue number and include it directly in the thread description so it remains visible throughout the thread lifecycle.
+
 Infer the thread type (feature, bug, chore, refactor) from the description. Do not ask.
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
@@ -51,7 +53,9 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Do n
 
 1. Read `kamma/project.md`, `kamma/tech.md`, and `kamma/threads.md` if they exist. Fill gaps from discoverable repo context. Only ask the user questions if absolutely necessary. If more information is still required, batch all necessary questions into a single round and use the environment's native question or input tools when available; otherwise ask them in one normal message and wait for the response.
 2. Generate `spec.md` with sections for Overview, What it should do, Constraints, How we'll know it's done, and What's not included.
+   - If the thread is tied to a GitHub issue, include a dedicated issue reference near the top of `spec.md`.
 3. Generate a self-contained `plan.md` with hierarchical Phases -> Tasks -> Sub-tasks using `[ ]` markers.
+   - If the thread is tied to a GitHub issue, include the same issue reference near the top of `plan.md`.
 4. The `plan.md` structure must be executable by this command on its own.
 5. Make tasks concrete, sequential, and small enough to mark in progress and complete as the work proceeds.
 6. Add a verification task at the end of each phase.
@@ -99,7 +103,7 @@ Apply any requested changes and re-present until the user confirms. Then immedia
 
    ---
 
-   ## [ ] Thread: <Thread Description>
+   ## [ ] Thread: <Thread Description, including issue number if one exists>
    *Link: [./kamma/threads/<thread_id>/](./kamma/threads/<thread_id>/)*
    ```
 9. Re-read the created thread files and the new `threads.md` entry so later sections use the exact path that was written.
@@ -178,18 +182,18 @@ Wait for the user's response.
 
 ### 5.3 GitHub Issue
 
-If the thread description or `spec.md` references a GitHub issue number (e.g., `#123`, `issue 123`, `fixes #123`):
+If the thread description, `threads.md` entry, `spec.md`, or `plan.md` references a GitHub issue number (e.g., `#123`, `issue 123`, `fixes #123`):
 
 1. Extract the issue number.
 2. Summarize the fix in 2–4 sentences: what the issue was, what was changed, and how it was verified.
 3. Use `gh issue comment <number> --body "<summary>"` to post the fix summary to the issue.
 4. Use `gh issue close <number>` to close the issue.
-5. Provide the user with a suggested commit message that references the issue, for example:
+5. Provide the user with a suggested commit message that references the same issue number, for example:
    > `fix: <short description> (closes #<number>)`
 
 If no issue is referenced, skip this section entirely.
 
-6. At the end of the finalize process, always suggest a commit name using the repository's commit syntax if one is evident. If no clear syntax is discoverable, provide a concise sensible commit name.
+6. At the end of the finalize process, always suggest a commit name using the repository's commit syntax if one is evident. If no clear syntax is discoverable, provide a concise sensible commit name. When an issue number exists, the suggested commit name must include it.
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
 

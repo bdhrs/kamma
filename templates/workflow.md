@@ -8,6 +8,16 @@
 4. **Non-Interactive & CI-Aware:** Prefer non-interactive commands
 5. **Review the Work Before Calling It Done:** Implementation is not complete until it has been reviewed
 
+## GitHub Issue Continuity
+
+If a thread is tied to a GitHub issue, preserve that issue number prominently from start to finish.
+
+1. Include the issue number in the thread title or description.
+2. Include the issue number in the `kamma/threads.md` entry.
+3. Include a dedicated issue reference near the top of the thread `spec.md`.
+4. Include the same issue reference near the top of the thread `plan.md`.
+5. Do not drop or rewrite the issue reference during implementation, review, or finalize.
+
 ## Task Workflow
 
 Work through tasks in this order:
@@ -30,6 +40,7 @@ Work through tasks in this order:
 6. **Finish the Thread:**
    - After review is clear, run `/kamma:4-finalize`.
    - Mark the thread complete, sync project docs, and archive the completed thread there.
+   - If the thread references a GitHub issue, use the preserved issue number to post a summary comment and close the issue during finalize.
 
 7. **Document Deviations:** If implementation differs from the notes in `tech.md`:
    - **STOP** implementation
@@ -75,6 +86,8 @@ Follow the project's commit conventions. If none defined, use:
 ```
 <type>(<scope>): <description>
 ```
+
+If the thread references a GitHub issue, the suggested commit message must also reference that issue number, for example `fix(parser): handle empty input (closes #123)`.
 
 ### Types
 - `feat`: New feature

@@ -69,7 +69,8 @@ At the end of every section in this file, tick off completed to-do items before 
         - `kamma/threads/<thread_id>/plan.md`
         - `kamma/threads/<thread_id>/spec.md`
         - `kamma/workflow.md`
-    c. **Error Handling:** If you fail to read any of these files, say what failed, try another sensible way to recover the missing context, and keep going if you still can.
+    c. **Preserve Issue Visibility:** If the thread references a GitHub issue, keep that issue number visible and unchanged in the thread description, `spec.md`, and `plan.md` throughout implementation so review and finalize can rely on it.
+    d. **Error Handling:** If you fail to read any of these files, say what failed, try another sensible way to recover the missing context, and keep going if you still can.
 
 4.  **Execute Tasks and Update the Thread Plan:**
     a. **Announce:** State that you will work through the thread's `plan.md` by following `workflow.md`.
@@ -85,4 +86,3 @@ At the end of every section in this file, tick off completed to-do items before 
 
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-

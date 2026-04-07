@@ -208,9 +208,9 @@ At the end of every section in this file, tick off completed to-do items before 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
 
 
-### 3.3 Create the Initial Thread Files
-1.  **State Your Goal:** Announce that you will create the files for this initial thread.
-2.  **Initialize Threads File:** Create `kamma/threads.md`:
+ ### 3.3 Create the Initial Thread Files
+ 1.  **State Your Goal:** Announce that you will create the files for this initial thread.
+ 2.  **Initialize Threads File:** Create `kamma/threads.md`:
     ```markdown
     # Project Threads
 
@@ -218,15 +218,15 @@ At the end of every section in this file, tick off completed to-do items before 
 
     ---
 
-    ## [ ] Thread: <Thread Description>
+    ## [ ] Thread: <Thread Description, including issue number if one exists>
     *Link: [./kamma/threads/<thread_id>/](./kamma/threads/<thread_id>/)*
     ```
-3.  **Generate Thread Files:**
-    a. **Generate Thread-Specific Spec & Plan:**
-        i. Generate a detailed `spec.md`.
-        ii. Generate a `plan.md`.
-            - **CRITICAL:** The task structure must adhere to `kamma/workflow.md`.
-            - **CRITICAL: Inject Phase Completion Tasks.** If a "Phase Completion" protocol exists in `workflow.md`, append a final verification task to each Phase.
+ 3.  **Generate Thread Files:**
+     a. **Generate Thread-Specific Spec & Plan:**
+        i. Generate a detailed `spec.md` with a prominent issue reference near the top when the thread is tied to a GitHub issue.
+        ii. Generate a `plan.md` with the same issue reference near the top when the thread is tied to a GitHub issue.
+             - **CRITICAL:** The task structure must adhere to `kamma/workflow.md`.
+             - **CRITICAL: Inject Phase Completion Tasks.** If a "Phase Completion" protocol exists in `workflow.md`, append a final verification task to each Phase.
     b. **Create Thread Files:**
         i. **Generate Thread ID:** Format `YYYYMMDD_shortname`.
         ii. **Create Directory:** `kamma/threads/<thread_id>/`.

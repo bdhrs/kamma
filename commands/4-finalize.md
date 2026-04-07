@@ -115,16 +115,16 @@ At the end of every section in this file, tick off completed to-do items before 
 ## 5.5 GITHUB ISSUE
 **Run autonomously. Skip entirely if no issue is referenced.**
 
-1. Check the thread description and `kamma/threads/<thread_id>/spec.md` (or the archived copy) for a GitHub issue reference (e.g., `#123`, `issue 123`, `fixes #123`).
+1. Check the thread description, `kamma/threads.md`, and `kamma/threads/<thread_id>/spec.md` and `plan.md` (or the archived copies) for a GitHub issue reference (e.g., `#123`, `issue 123`, `fixes #123`). Treat these stored references as the canonical source because the issue number should have been preserved from thread creation.
 2. If one is found:
    a. Extract the issue number.
    b. Summarize the fix in 2–4 sentences: what the issue was, what was changed, and how it was verified.
    c. Run `gh issue comment <number> --body "<summary>"` to post the fix summary.
    d. Run `gh issue close <number>` to close the issue.
-   e. Provide the user with a suggested commit message, for example:
+   e. Provide the user with a suggested commit message that references the same issue number, for example:
       > `fix: <short description> (closes #<number>)`
 3. If no issue is referenced, skip this section entirely.
-4. At the end of the finalize process, always suggest a commit name using the repository's commit syntax if one is evident. If no clear syntax is discoverable, provide a concise sensible commit name.
+4. At the end of the finalize process, always suggest a commit name using the repository's commit syntax if one is evident. If no clear syntax is discoverable, provide a concise sensible commit name. When an issue number exists, the suggested commit name must include it.
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
 
