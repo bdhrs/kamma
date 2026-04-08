@@ -50,10 +50,16 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Do n
 
 ### 3.2 Generate Spec and Plan
 
-1. Read `kamma/project.md` and `kamma/tech.md` if they exist. Fill gaps from discoverable repo context. Only ask the user questions if absolutely necessary. If more information is still required, batch all necessary questions into a single round and use the environment's native question or input tools when available; otherwise ask them in one normal message and wait for the response.
+1. Read `kamma/project.md` and `kamma/tech.md` if they exist. Fill gaps from discoverable repo context. Treat loss of chat context and handoff to a different agent as the normal case, not an edge case. Only ask the user questions if absolutely necessary. If more information is still required, batch all necessary questions into a single round and use the environment's native question or input tools when available; otherwise ask them in one normal message and wait for the response. When a critical planning detail is missing and the repository does not answer it, ask instead of guessing.
 2. Generate `spec.md` with sections for Overview, What it should do, Constraints, How we'll know it's done, and What's not included.
+   - The spec must be self-contained and preserve the project context needed by a different agent in a later session.
+   - Write down the relevant repo context you discovered, including current behavior, affected files or systems, important constraints, assumptions you are relying on, and any project-specific terminology or workflow details that matter to execution.
+   - Do not rely on unstated chat context or "the agent already knows this" assumptions. Put the necessary context into the written spec.
    - If the thread is tied to a GitHub issue, include a dedicated issue reference near the top of `spec.md`.
 3. Generate a self-contained `plan.md` with hierarchical Phases -> Tasks -> Sub-tasks using `[ ]` markers.
+   - Assume the plan will be executed by a different agent with zero memory of this conversation.
+   - Include the concrete context needed for execution: exact file paths to inspect or edit when known, the relevant code areas or docs to check, task ordering, verification steps, expected outcomes, and any assumptions or constraints that the executor must preserve.
+   - Prefer explicit instructions over shorthand. A fresh agent should be able to execute the plan directly from `plan.md` without reconstructing missing context.
    - If the thread is tied to a GitHub issue, include the same issue reference near the top of `plan.md`.
 4. The `plan.md` structure must be executable by this command on its own.
 5. Make tasks concrete, sequential, and small enough to mark in progress and complete as the work proceeds.

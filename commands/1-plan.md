@@ -49,7 +49,7 @@ At the end of every section in this file, tick off completed to-do items before 
 
 ### 2.2 Write `spec.md`
 
-1.  **Ask Only What You Need To:** Use `project.md`, `tech.md`, and the codebase to answer as much as you can before asking anything. Only ask questions when the answer genuinely cannot be inferred. Batch all remaining unknowns into a single round and wait for the response. Use the environment's native question or input tools when available; otherwise send one normal message containing the full batch.
+1.  **Ask Only What You Need To:** Use `project.md`, `tech.md`, and the codebase to answer as much as you can before asking anything. Treat loss of chat context and handoff to a different agent as the normal case. Only ask questions when the answer genuinely cannot be inferred. If a critical planning detail is missing and the repo does not answer it, ask instead of guessing. Batch all remaining unknowns into a single round and wait for the response. Use the environment's native question or input tools when available; otherwise send one normal message containing the full batch.
     *   **General Guidelines:**
         *   Whenever possible, present 2-3 plausible options (A, B, C) for the user to choose from for each question in the batch.
         *   The last option for every multiple-choice question MUST be "Type your own answer".
@@ -59,6 +59,9 @@ At the end of every section in this file, tick off completed to-do items before 
     *   **If SOMETHING ELSE (Bug, Chore, etc.):** Focus on what you need to reproduce or scope the work — reproduction steps, specific scope, or how you'll know it's fixed.
 
 3.  **Draft `spec.md`:** Once you have enough information, draft the thread's `spec.md`, including sections like Overview, What it should do, Constraints (if any), How we'll know it's done, and What's not included.
+    -   The spec must be self-contained and understandable by a different agent in a later session.
+    -   Preserve the important repo context in writing instead of relying on conversational memory: current behavior, affected files or systems, discovered constraints, assumptions, relevant workflow details, and any project-specific terminology that matters to execution.
+    -   When file paths, commands, or affected areas are already known from the repo, include them in the spec so the next agent does not need to rediscover them.
     -   If the thread is tied to a GitHub issue, include a dedicated issue reference near the top of `spec.md` and repeat the exact issue number used in the thread description.
 
 4.  **Check the Draft:** Present the drafted `spec.md` content to the user for review and approval.
@@ -84,6 +87,9 @@ At the end of every section in this file, tick off completed to-do items before 
      *   Read the confirmed `spec.md` content for this thread.
      *   Read `kamma/workflow.md`.
      *   Generate a `plan.md` with a hierarchical list of Phases, Tasks, and Sub-tasks.
+     *   Assume the plan will be executed by a different agent with zero prior context from the planning session.
+     *   Make the plan handoff-safe by including the concrete execution context the next agent will need: exact files to inspect or edit when known, relevant docs to read, concrete task sequencing, verification steps, expected outcomes, and assumptions or constraints that must be preserved.
+     *   Do not leave important context implicit. If the executor would need to know it, write it into `plan.md`.
      *   If the thread is tied to a GitHub issue, include the same issue reference near the top of `plan.md` so later commands can recover it reliably.
      *   **CRITICAL:** The plan structure MUST follow the workflow file.
      *   Include status markers `[ ]` for each task/sub-task.
