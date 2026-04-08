@@ -19,7 +19,6 @@ At the end of every section in this file, tick off completed to-do items before 
     -   `kamma/tech.md`
     -   `kamma/workflow.md`
     -   `kamma/project.md`
-    -   `kamma/threads.md`
 
 2.  **Handle Missing Files:**
     -   If any of these files are missing, say what is missing, look for another sensible way to continue, and keep going if you still can.
@@ -37,18 +36,18 @@ At the end of every section in this file, tick off completed to-do items before 
 
 1.  **Check for User Input:** First, check if the user provided a thread name as an argument (for example, `/kamma:4-finalize <thread_description>`).
 
-2.  **Parse Threads File:** Read and parse `kamma/threads.md`. Split content by the `---` separator to identify each thread section. For each section, extract the status (`[ ]`, `[~]`, `[x]`), the thread description (from the `##` heading), and the link to the thread folder.
-    -   **CRITICAL:** If no thread sections are found, announce: "The threads file is empty or malformed. No threads are available to finalize." Then look for another sensible source of thread information, and if none exists, explain that clearly and move on.
+2.  **Scan Thread Directories:** List all directories in `kamma/threads/`. For each directory, read `spec.md` for the thread description and check for `review.md` with a `PASSED` verdict.
+    -   **CRITICAL:** If no thread directories are found, announce: "No active threads found in `kamma/threads/`. No threads are available to finalize." Then move on.
 
 3.  **Select Thread:**
     -   **If a thread name was provided:**
-        1.  Perform an exact, case-insensitive match against thread descriptions.
+        1.  Perform a case-insensitive match against thread directory names and spec descriptions.
         2.  If a unique match is found, confirm with the user.
-        3.  If no match or ambiguous, inform the user and suggest the next review-cleared thread.
+        3.  If no match or ambiguous, inform the user and list available threads.
     -   **If no thread name was provided:**
-        1.  Find the first thread marked `[~]`.
-        2.  Announce: "Automatically selecting the in-progress thread to finish: '<thread_description>'."
-        3.  If no in-progress threads exist, say that there is no active thread ready to finish, suggest the next sensible action, and continue as far as you reasonably can.
+        1.  Find the first thread that has a `review.md` with a `PASSED` verdict.
+        2.  Announce: "Automatically selecting the review-passed thread to finish: '<thread_description>'."
+        3.  If no review-passed threads exist, say that there is no active thread ready to finish, suggest the next sensible action, and continue as far as you reasonably can.
 
 ---
 
@@ -62,8 +61,7 @@ At the end of every section in this file, tick off completed to-do items before 
 1.  **Make Sure Review Passed:** Verify that `kamma/threads/<thread_id>/review.md` exists and contains a `PASSED` verdict.
     -   If the file does not exist or the verdict is `BLOCKED`, explain that review has not cleared the thread yet, point the user to `/kamma:3-review`, and keep going only with any non-blocking cleanup or context you can still provide.
 
-2.  **Finalize Thread Status:**
-    -   Update the thread's status in `kamma/threads.md` from `[~]` to `[x]`.
+2.  **Announce Completion:**
     -   Announce that the thread is now complete.
 
 3.  **Wrap-Up Summary:**
@@ -103,10 +101,10 @@ At the end of every section in this file, tick off completed to-do items before 
     -   Ensure `kamma/archive/` exists.
     -   Copy the completed thread folder to `kamma/archive/<thread_id>/`. If that archive path already exists, choose a unique variant and continue.
     -   Delete the original `kamma/threads/<thread_id>/` folder and all its contents.
-    -   Remove the thread entry from `kamma/threads.md`.
+    -   If `kamma/threads.md` exists, delete it — it is a legacy file that is no longer used.
 
 2.  **Report the Result:**
-    -   Announce where the thread was archived and confirm that it was removed from the active threads file.
+    -   Announce where the thread was archived and whether any legacy `kamma/threads.md` file was removed.
 
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
@@ -115,7 +113,7 @@ At the end of every section in this file, tick off completed to-do items before 
 ## 5.5 GITHUB ISSUE
 **Run autonomously. Skip entirely if no issue is referenced.**
 
-1. Check the thread description, `kamma/threads.md`, and `kamma/threads/<thread_id>/spec.md` and `plan.md` (or the archived copies) for a GitHub issue reference (e.g., `#123`, `issue 123`, `fixes #123`). Treat these stored references as the canonical source because the issue number should have been preserved from thread creation.
+1. Check the thread description, `kamma/threads/<thread_id>/spec.md` and `plan.md` (or the archived copies) for a GitHub issue reference (e.g., `#123`, `issue 123`, `fixes #123`). Treat these stored references as the canonical source because the issue number should have been preserved from thread creation.
 2. If one is found:
    a. Extract the issue number.
    b. Summarize the fix in 2–4 sentences: what the issue was, what was changed, and how it was verified.

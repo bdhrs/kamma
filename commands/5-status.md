@@ -3,7 +3,7 @@ description: Displays the current progress of the project
 ---
 
 ## 1.0 PURPOSE
-You are an AI agent. Your job is to show the current status of the threads file.
+You are an AI agent. Your job is to show the current status of the project's active threads.
 
 CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
 
@@ -27,8 +27,7 @@ CRITICAL: Check the result of every tool call. If a tool call fails, do not stop
 **Follow this sequence to show the current status.**
 
 ### 2.1 Read the Project Plan
-1.  **Locate and Read:** Read the content of `kamma/threads.md`.
-2.  **Locate and Read:** List the threads using `ls kamma/threads`. For each thread, read its `kamma/threads/<thread_id>/plan.md`.
+1.  **Locate and Read:** List all thread directories in `kamma/threads/`. For each directory, read its `kamma/threads/<thread_id>/plan.md` and `kamma/threads/<thread_id>/spec.md` to determine status.
 
 ### 2.2 Parse and Summarize the Plan
 1.  **Parse Content:**

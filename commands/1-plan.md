@@ -1,5 +1,5 @@
 ---
-description: Plans a thread, generates thread-specific spec documents and updates the threads file
+description: Plans a thread and generates thread-specific spec documents
 ---
 
 ## 1.0 PURPOSE
@@ -103,7 +103,7 @@ At the end of every section in this file, tick off completed to-do items before 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
 
 
-### 2.4 Create the Thread Files and Update `threads.md`
+### 2.4 Create the Thread Files
 
 1.  **Check for Existing Thread Name:** Before generating a new thread ID, list all existing thread directories in `kamma/threads/`. If the proposed short name matches an existing one, suggest a different name and keep going with the revised name.
 2.  **Generate Thread ID:** Create a unique thread ID (for example, `YYYYMMDD_shortname`).
@@ -111,15 +111,7 @@ At the end of every section in this file, tick off completed to-do items before 
 4.  **Write Files:**
     *   Write the confirmed specification to `kamma/threads/<thread_id>/spec.md`.
     *   Write the confirmed plan to `kamma/threads/<thread_id>/plan.md`.
-5.  **Update Threads File:**
-    -   Append a new section to `kamma/threads.md`:
-        ```markdown
-
-        ---
-
-        ## [ ] Thread: <Thread Description, including issue number if one exists>
-        *Link: [./kamma/threads/<thread_id>/](./kamma/threads/<thread_id>/)*
-        ```
+5.  **Clean Up Legacy File:** If `kamma/threads.md` exists, delete it — it is a legacy file that is no longer used.
 6.  **Announce Completion:**
     > "New thread '<thread_id>' has been created. You can now start work by running `/kamma:2-do`."
 

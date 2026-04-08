@@ -12,7 +12,7 @@ This skill helps you work effectively in projects that use Kamma, a spec-driven 
 Automatically apply this skill when:
 - A `kamma/` directory exists in the project root
 - The user mentions "threads", "kamma", "spec", or "plan" in the context of project work
-- Files like `kamma/threads.md`, `kamma/workflow.md`, or `kamma/project.md` are present
+- Files like `kamma/workflow.md`, or `kamma/project.md` are present
 - The user runs any `/kamma:*` command
 
 ## Core Principles
@@ -31,7 +31,6 @@ kamma/
 ├── project.md              # Project vision and goals
 ├── tech.md                 # Technology choices and constraints
 ├── workflow.md             # How work moves forward
-├── threads.md              # Master list of all threads
 └── threads/                # Individual thread folders
     └── <thread_id>/
         ├── spec.md         # Feature specification

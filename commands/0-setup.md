@@ -210,18 +210,7 @@ At the end of every section in this file, tick off completed to-do items before 
 
  ### 3.3 Create the Initial Thread Files
  1.  **State Your Goal:** Announce that you will create the files for this initial thread.
- 2.  **Initialize Threads File:** Create `kamma/threads.md`:
-    ```markdown
-    # Project Threads
-
-    This file lists all major threads for the project. Each thread has its own detailed plan in its respective folder.
-
-    ---
-
-    ## [ ] Thread: <Thread Description, including issue number if one exists>
-    *Link: [./kamma/threads/<thread_id>/](./kamma/threads/<thread_id>/)*
-    ```
- 3.  **Generate Thread Files:**
+ 2.  **Generate Thread Files:**
      a. **Generate Thread-Specific Spec & Plan:**
         i. Generate a detailed `spec.md` with a prominent issue reference near the top when the thread is tied to a GitHub issue.
         ii. Generate a `plan.md` with the same issue reference near the top when the thread is tied to a GitHub issue.
@@ -232,9 +221,11 @@ At the end of every section in this file, tick off completed to-do items before 
         ii. **Create Directory:** `kamma/threads/<thread_id>/`.
         iii. **Write `spec.md` and `plan.md`** in the new directory.
 
-    c. **Commit State:** Write to `kamma/setup_state.json`: `{"last_successful_step": "3.3_initial_thread_generated"}`
+    c. **Clean Up Legacy File:** If `kamma/threads.md` exists, delete it — it is a legacy file that is no longer used.
 
-    d. **Announce Progress:** Announce that the thread has been created.
+    d. **Commit State:** Write to `kamma/setup_state.json`: `{"last_successful_step": "3.3_initial_thread_generated"}`
+
+    e. **Announce Progress:** Announce that the thread has been created.
 
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.

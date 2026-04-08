@@ -23,7 +23,6 @@ At the end of every section in this file, tick off completed to-do items before 
 Try to read and use the best available project context from files such as:
 - `kamma/project.md`
 - `kamma/tech.md`
-- `kamma/threads.md`
 - `README.md`
 - dependency manifests, source files, and other discoverable project docs
 
@@ -51,7 +50,7 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Do n
 
 ### 3.2 Generate Spec and Plan
 
-1. Read `kamma/project.md`, `kamma/tech.md`, and `kamma/threads.md` if they exist. Fill gaps from discoverable repo context. Only ask the user questions if absolutely necessary. If more information is still required, batch all necessary questions into a single round and use the environment's native question or input tools when available; otherwise ask them in one normal message and wait for the response.
+1. Read `kamma/project.md` and `kamma/tech.md` if they exist. Fill gaps from discoverable repo context. Only ask the user questions if absolutely necessary. If more information is still required, batch all necessary questions into a single round and use the environment's native question or input tools when available; otherwise ask them in one normal message and wait for the response.
 2. Generate `spec.md` with sections for Overview, What it should do, Constraints, How we'll know it's done, and What's not included.
    - If the thread is tied to a GitHub issue, include a dedicated issue reference near the top of `spec.md`.
 3. Generate a self-contained `plan.md` with hierarchical Phases -> Tasks -> Sub-tasks using `[ ]` markers.
@@ -87,26 +86,13 @@ Apply any requested changes and re-present until the user confirms. Then immedia
 ### 3.4 Create Thread Files
 
 1. Ensure `kamma/` and `kamma/threads/` exist.
-2. If `kamma/threads.md` does not exist, create it with this content:
-   ```markdown
-   # Project Threads
-
-   This file lists all major threads for the project. Each thread has its own detailed plan in its respective folder.
-   ```
-3. Check for name collisions in existing `kamma/threads/` directories and in `kamma/threads.md`. Use a variant if needed.
-4. Generate a thread ID in the format `YYYYMMDD_shortname`.
-5. Create `kamma/threads/<thread_id>/`.
-6. Write the confirmed `spec.md` to `kamma/threads/<thread_id>/spec.md`.
-7. Write the confirmed `plan.md` to `kamma/threads/<thread_id>/plan.md`.
-8. Append this thread entry to `kamma/threads.md`:
-   ```markdown
-
-   ---
-
-   ## [ ] Thread: <Thread Description, including issue number if one exists>
-   *Link: [./kamma/threads/<thread_id>/](./kamma/threads/<thread_id>/)*
-   ```
-9. Re-read the created thread files and the new `threads.md` entry so later sections use the exact path that was written.
+2. Generate a thread ID in the format `YYYYMMDD_shortname`.
+3. Check for name collisions in existing `kamma/threads/` directories. Use a variant if needed.
+4. Create `kamma/threads/<thread_id>/`.
+5. Write the confirmed `spec.md` to `kamma/threads/<thread_id>/spec.md`.
+6. Write the confirmed `plan.md` to `kamma/threads/<thread_id>/plan.md`.
+7. If `kamma/threads.md` exists, delete it — it is a legacy file that is no longer used.
+8. Re-read the created thread files so later sections use the exact path that was written.
 
 ---
 
@@ -115,8 +101,7 @@ Apply any requested changes and re-present until the user confirms. Then immedia
 ## 4.0 IMPLEMENT THE THREAD
 **Run autonomously. Do not stop for phase checkpoints or mid-task confirmations.**
 
-1. If the thread entry exists in `kamma/threads.md`, update its status from `[ ]` to `[~]`.
-2. Read `kamma/threads/<thread_id>/spec.md` and `kamma/threads/<thread_id>/plan.md`.
+1. Read `kamma/threads/<thread_id>/spec.md` and `kamma/threads/<thread_id>/plan.md`.
 3. Work through every unchecked task and sub-task in `plan.md` in sequential order.
 4. For each task or sub-task:
    - Change `[ ]` to `[~]` before you begin.
@@ -171,14 +156,13 @@ Wait for the user's response.
 
 ### 5.2 Finalize
 
-1. If the thread entry exists in `kamma/threads.md`, update its status from `[~]` to `[x]`.
-2. If `kamma/project.md` exists and the thread changed anything significant about the project description, update it. If the file does not exist, do not stop and do not create it just for this command.
-3. If `kamma/tech.md` exists and the thread changed tools, constraints, resources, or working assumptions, update it. If the file does not exist, do not stop and do not create it just for this command.
-4. Ensure `kamma/archive/` exists.
-5. Copy `kamma/threads/<thread_id>/` to `kamma/archive/<thread_id>/`. If that archive path already exists, choose a unique variant and continue.
-6. Delete `kamma/threads/<thread_id>/` and all its contents.
-7. Remove the thread entry from `kamma/threads.md` if it exists.
-8. **Suggest commit message and description (do NOT run `git commit`):**
+1. If `kamma/project.md` exists and the thread changed anything significant about the project description, update it. If the file does not exist, do not stop and do not create it just for this command.
+2. If `kamma/tech.md` exists and the thread changed tools, constraints, resources, or working assumptions, update it. If the file does not exist, do not stop and do not create it just for this command.
+3. Ensure `kamma/archive/` exists.
+4. Copy `kamma/threads/<thread_id>/` to `kamma/archive/<thread_id>/`. If that archive path already exists, choose a unique variant and continue.
+5. Delete `kamma/threads/<thread_id>/` and all its contents.
+6. If `kamma/threads.md` exists, delete it — it is a legacy file that is no longer used.
+7. **Suggest commit message and description (do NOT run `git commit`):**
    - Draft a concise commit message (one line) that summarizes what changed.
    - Draft a commit description as a **single continuous line** (no line breaks) that explains what the issue was, what was changed, and how it was verified. This must be copy-paste friendly.
    - If a GitHub issue is referenced, include it in both: e.g., `fix: ensure consistent commit descriptions (closes #123)`
@@ -189,7 +173,7 @@ Wait for the user's response.
 
 ### 5.3 GitHub Issue
 
-If the thread description, `threads.md` entry, `spec.md`, or `plan.md` references a GitHub issue number (e.g., `#123`, `issue 123`, `fixes #123`):
+If the thread description, `spec.md`, or `plan.md` references a GitHub issue number (e.g., `#123`, `issue 123`, `fixes #123`):
 
 1. Extract the issue number.
 2. Summarize the fix in 2–4 sentences: what the issue was, what was changed, and how it was verified.

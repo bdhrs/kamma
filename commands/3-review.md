@@ -19,7 +19,6 @@ At the end of every section in this file, tick off completed to-do items before 
     -   `kamma/tech.md`
     -   `kamma/workflow.md`
     -   `kamma/project.md`
-    -   `kamma/threads.md`
 
 2.  **Handle Missing Files:**
     -   If any of these files are missing, say what is missing, look for another sensible way to continue, and keep going if you still can.
@@ -37,18 +36,18 @@ At the end of every section in this file, tick off completed to-do items before 
 
 1.  **Check for User Input:** First, check if the user provided a thread name as an argument (for example, `/kamma:3-review <thread_description>`).
 
-2.  **Parse Threads File:** Read and parse `kamma/threads.md`. Split content by the `---` separator to identify each thread section. For each section, extract the status (`[ ]`, `[~]`, `[x]`), the thread description (from the `##` heading), and the link to the thread folder.
-    -   **CRITICAL:** If no thread sections are found, announce: "The threads file is empty or malformed. No threads are available to review." Then look for another sensible source of thread information, and if none exists, explain that clearly and move on.
+2.  **Scan Thread Directories:** List all directories in `kamma/threads/`. For each directory, read `spec.md` for the thread description, `plan.md` to determine progress, and `review.md` if it exists to see whether review has already passed.
+    -   **CRITICAL:** If no thread directories are found, announce: "No active threads found in `kamma/threads/`. No threads are available to review." Then move on.
 
 3.  **Select Thread:**
     -   **If a thread name was provided:**
-        1.  Perform an exact, case-insensitive match against thread descriptions.
+        1.  Perform a case-insensitive match against thread directory names and spec descriptions.
         2.  If a unique match is found, confirm with the user.
-        3.  If no match or ambiguous, inform the user and suggest the next review-ready thread.
+        3.  If no match or ambiguous, inform the user and list available threads.
     -   **If no thread name was provided:**
-        1.  Find the first thread marked `[~]`.
-        2.  Announce: "Automatically selecting the in-progress thread for review: '<thread_description>'."
-        3.  If no in-progress threads exist, say that there is no active thread ready for review, suggest the next sensible action, and continue as far as you reasonably can.
+        1.  Prefer the first thread with in-progress `[~]` tasks in its `plan.md`. If none exist, select the first active thread that does not already have a `PASSED` review.
+        2.  Announce which fallback was used, for example: "Automatically selecting the in-progress thread for review: '<thread_description>'." or "Automatically selecting the active thread awaiting review: '<thread_description>'."
+        3.  If every active thread already has a `PASSED` review, say that there is no active thread ready for review, suggest the next sensible action, and continue as far as you reasonably can.
 
 ---
 
@@ -74,7 +73,7 @@ At the end of every section in this file, tick off completed to-do items before 
 ## 4.0 LOAD THREAD CONTEXT
 **Build enough context before writing findings.**
 
-1.  **Identify Thread Folder:** Get the `<thread_id>` from the threads file link.
+1.  **Identify Thread Folder:** Use the `<thread_id>` from the selected thread directory.
 
 2.  **Read Required Files:**
     -   `kamma/threads/<thread_id>/spec.md`

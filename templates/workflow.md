@@ -13,10 +13,9 @@
 If a thread is tied to a GitHub issue, preserve that issue number prominently from start to finish.
 
 1. Include the issue number in the thread title or description.
-2. Include the issue number in the `kamma/threads.md` entry.
-3. Include a dedicated issue reference near the top of the thread `spec.md`.
-4. Include the same issue reference near the top of the thread `plan.md`.
-5. Do not drop or rewrite the issue reference during implementation, review, or finalize.
+2. Include a dedicated issue reference near the top of the thread `spec.md`.
+3. Include the same issue reference near the top of the thread `plan.md`.
+4. Do not drop or rewrite the issue reference during implementation, review, or finalize.
 
 ## Task Workflow
 
