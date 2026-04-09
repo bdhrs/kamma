@@ -214,8 +214,8 @@ At the end of every section in this file, tick off completed to-do items before 
      a. **Generate Thread-Specific Spec & Plan:**
         i. Generate a detailed `spec.md` with a prominent issue reference near the top when the thread is tied to a GitHub issue.
         ii. Generate a `plan.md` with the same issue reference near the top when the thread is tied to a GitHub issue.
-             - **CRITICAL:** The task structure must adhere to `kamma/workflow.md`.
-             - **CRITICAL: Inject Phase Completion Tasks.** If a "Phase Completion" protocol exists in `workflow.md`, append a final verification task to each Phase.
+           - **CRITICAL:** The task structure must adhere to `kamma/workflow.md`.
+           - **CRITICAL: Inject Phase Completion Tasks.** If a "Phase Completion" protocol exists in `workflow.md`, append a final automatic verification task to each Phase. Do not require user manual testing or approval at the end of each phase.
     b. **Create Thread Files:**
         i. **Generate Thread ID:** Format `YYYYMMDD_shortname`.
         ii. **Create Directory:** `kamma/threads/<thread_id>/`.

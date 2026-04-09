@@ -56,14 +56,12 @@ Work through tasks in this order:
 
 1.  **Announce:** Inform the user that the phase is complete.
 
-2.  **Run Tests:** Execute the project's test suite for the affected area.
-    -   If tests fail, inform the user and attempt to fix (max 2 attempts). If still failing, stop and ask for guidance.
+2.  **Run Tests:** Execute the most relevant local verification for the affected area.
+    -   If verification fails, inform the user and attempt to fix (max 2 attempts). If still failing, stop and ask for guidance.
 
-3.  **Manual Verification:** Propose step-by-step manual verification steps to the user.
+3.  **Record Remaining Gaps:** If the phase cannot be fully validated yet because the broader feature is still incomplete, note what was checked and what must wait until end-to-end verification.
 
-4.  **Await Confirmation:** Ask the user: "Does this meet your expectations? Please confirm or provide feedback."
-
-5.  **Update Plan:** Record the phase completion in `plan.md`.
+4.  **Update Plan:** Record the phase completion in `plan.md`.
 
 ### Before You Mark It Done
 

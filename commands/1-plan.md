@@ -93,7 +93,7 @@ At the end of every section in this file, tick off completed to-do items before 
      *   If the thread is tied to a GitHub issue, include the same issue reference near the top of `plan.md` so later commands can recover it reliably.
      *   **CRITICAL:** The plan structure MUST follow the workflow file.
      *   Include status markers `[ ]` for each task/sub-task.
-     *   **CRITICAL: Inject Phase Completion Tasks.** If a "Phase Completion" protocol exists in `kamma/workflow.md`, append a final verification task to each Phase.
+     *   **CRITICAL: Inject Phase Completion Tasks.** If a "Phase Completion" protocol exists in `kamma/workflow.md`, append a final automatic verification task to each Phase. Do not require user manual testing or approval at the end of each phase.
 
 3.  **Check the Draft:** Present the drafted `plan.md` to the user for review and approval.
     > "I've drafted the implementation plan. Please review the following:"

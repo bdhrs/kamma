@@ -63,7 +63,7 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Do n
    - If the thread is tied to a GitHub issue, include the same issue reference near the top of `plan.md`.
 4. The `plan.md` structure must be executable by this command on its own.
 5. Make tasks concrete, sequential, and small enough to mark in progress and complete as the work proceeds.
-6. Add a verification task at the end of each phase.
+6. Add an automatic verification task at the end of each phase. Do not add any phase-end manual testing or user confirmation step.
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
 
@@ -115,7 +115,7 @@ Apply any requested changes and re-present until the user confirms. Then immedia
    - Run the most relevant verification for that item.
    - If verification fails, attempt to fix it up to 2 times. If it still fails, note the remaining issue clearly in `plan.md` and continue if there is still a reasonable path forward.
    - Change `[~]` to `[x]` only after the item is implemented and locally verified, or after the remaining issue has been explicitly recorded.
-5. At the end of each phase, run a broader verification pass for that phase and complete the phase's verification task in `plan.md`.
+5. At the end of each phase, run a broader automatic verification pass for that phase and complete the phase's verification task in `plan.md`.
 6. Do not defer to any external process document at any point in this command.
 
 ### 4.1 - STOP 2: Ask the User to Test
