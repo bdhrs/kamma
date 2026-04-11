@@ -1,12 +1,14 @@
 from dataclasses import dataclass, field
 from typing import Any
 
+from kammika.agents import DEFAULT_AGENT_ORDER
+
 
 @dataclass
 class KammikaConfig:
     repo: str
     project: str
-    agents: list[str] = field(default_factory=lambda: ["claude", "opencode"])
+    agents: list[str] = field(default_factory=lambda: list(DEFAULT_AGENT_ORDER))
     models: dict[str, str] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -22,6 +24,6 @@ class KammikaConfig:
         return cls(
             repo=data["repo"],
             project=data["project"],
-            agents=data.get("agents", ["claude", "opencode"]),
+            agents=data.get("agents", list(DEFAULT_AGENT_ORDER)),
             models=data.get("models", {}),
         )

@@ -1,0 +1,53 @@
+import subprocess
+from pathlib import Path
+
+import pytest
+from click.exceptions import Exit
+
+from kammika.commands import run as run_command
+
+
+def test_choose_agent_retries_until_valid(monkeypatch):
+    answers = iter(["9", "2"])
+
+    monkeypatch.setattr(run_command, "prompt_text", lambda *_args, **_kwargs: next(answers))
+    monkeypatch.setattr(run_command, "muted", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(run_command.console, "print", lambda *_args, **_kwargs: None)
+
+    assert run_command._choose_agent(["claude", "opencode"]) == "opencode"
+
+
+def test_choose_agent_exits_when_no_supported_agents():
+    with pytest.raises(Exit) as exc:
+        run_command._choose_agent(["unknown"])
+
+    assert exc.value.exit_code == 1
+
+
+def test_launch_agent_uses_selected_agent_command(monkeypatch):
+    recorded = {}
+
+    def fake_run(args, cwd=None):
+        recorded["args"] = args
+        recorded["cwd"] = cwd
+        return subprocess.CompletedProcess(args=args, returncode=0, stdout="", stderr="")
+
+    monkeypatch.setattr(run_command.subprocess, "run", fake_run)
+    monkeypatch.setattr(run_command, "info", lambda *_args, **_kwargs: None)
+
+    exit_code = run_command._launch_agent(
+        "do the work",
+        "opencode",
+        Path("/tmp/repo"),
+        models={"opencode": "custom/model"},
+    )
+
+    assert exit_code == 0
+    assert recorded == {
+        "args": ["opencode", "--model", "custom/model", "--prompt", "do the work"],
+        "cwd": "/tmp/repo",
+    }
+
+
+def test_launch_agent_returns_error_for_unknown_agent():
+    assert run_command._launch_agent("do the work", "missing", Path("/tmp/repo")) == 1

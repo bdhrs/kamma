@@ -7,6 +7,7 @@ from pathlib import Path
 
 import typer
 
+from kammika.agents import describe_agent, get_agent_model
 from kammika.config import KammikaConfig
 from kammika.paths import config_path, kamma_dir, queue_path, target_repo_root
 from kammika.ui import console, error, muted, show_banner, success, warning, warm_panel
@@ -161,10 +162,11 @@ def _fetch_project_items(owner: str, number: str) -> dict[int, str]:
         stderr = result.stderr.strip()
         if "unknown owner type" in stderr:
             warning(
-                "Could not fetch GitHub project items — token is missing the 'read:project' scope.\n"
-                "If GITHUB_TOKEN is set in your environment, update that token's scopes at "
+                "Could not fetch GitHub project items — token is missing the 'read:org' scope.\n"
+                "(gh surfaces this as the opaque error 'unknown owner type'.)\n"
+                "If GITHUB_TOKEN is set in your environment, add 'read:org' to that token at "
                 "https://github.com/settings/tokens\n"
-                "Otherwise run: gh auth refresh -s read:project"
+                "Otherwise run: gh auth refresh -s read:org"
             )
         else:
             warning(f"Could not fetch project items: {stderr}")
@@ -271,7 +273,7 @@ def _extract_chosen(text: str) -> dict | None:
     return None
 
 
-def _llm_pick(candidates: list[Candidate], agents: list[str]) -> int | None:
+def _llm_pick(candidates: list[Candidate], agents: list[str], models: dict[str, str] | None = None) -> int | None:
     top = candidates[:20]
     payload = [
         {
@@ -300,7 +302,7 @@ def _llm_pick(candidates: list[Candidate], agents: list[str]) -> int | None:
                 "-p",
                 prompt,
                 "--model",
-                CLAUDE_MODEL,
+                get_agent_model("claude", models) or CLAUDE_MODEL,
                 "--output-format",
                 "json",
             ]
@@ -310,7 +312,7 @@ def _llm_pick(candidates: list[Candidate], agents: list[str]) -> int | None:
                 "run",
                 prompt,
                 "--model",
-                OPENCODE_MODEL,
+                get_agent_model("opencode", models) or OPENCODE_MODEL,
                 "--format",
                 "json",
             ]
@@ -319,7 +321,10 @@ def _llm_pick(candidates: list[Candidate], agents: list[str]) -> int | None:
 
         result = _run(cmd)
         if result.returncode != 0:
-            muted(f"LLM pick via {agent} failed (exit {result.returncode}), trying next.")
+            muted(
+                f"Recommendation via {describe_agent(agent, models)} failed "
+                f"(exit {result.returncode}), trying next."
+            )
             continue
 
         try:
@@ -338,7 +343,10 @@ def _llm_pick(candidates: list[Candidate], agents: list[str]) -> int | None:
         except (json.JSONDecodeError, KeyError, ValueError, TypeError):
             pass
 
-        muted(f"LLM pick via {agent} returned unparseable output, trying next.")
+        muted(
+            f"Recommendation via {describe_agent(agent, models)} returned "
+            "unparseable output, trying next."
+        )
 
     return None
 
@@ -399,15 +407,19 @@ def run_triage() -> None:
         warning("I could not find a good next issue to queue.")
         raise typer.Exit(0)
 
-    muted("Asking the model to choose the best next issue.")
-    chosen_number = _llm_pick(candidates, config.agents)
+    llm_agent = next((agent for agent in config.agents if agent in {"claude", "opencode"}), None)
+    if llm_agent is not None:
+        muted(f"Asking {describe_agent(llm_agent, config.models)} to choose the best next issue.")
+    else:
+        muted("No configured recommendation model available; built-in ranking will be used if needed.")
+    chosen_number = _llm_pick(candidates, config.agents, config.models)
 
     if chosen_number is not None:
         chosen = next(c for c in candidates if c.number == chosen_number)
         source = "llm"
-        success(f"The model chose issue #{chosen.number}.")
+        success(f"{describe_agent(llm_agent, config.models) if llm_agent else 'The configured model'} chose issue #{chosen.number}.")
     else:
-        warning("The model could not choose, so I picked the top issue using the built-in rules.")
+        warning("The configured recommendation model could not choose, so I picked the top issue using the built-in rules.")
         chosen = candidates[0]
         source = "rule-based"
 

@@ -1,5 +1,8 @@
+default:
+    @just --list
+
 sync:
     uv run python scripts/sync.py
 
 kammika-rebuild:
-    uv tool install --reinstall ./kammika
+    uv tool install --force ./kammika

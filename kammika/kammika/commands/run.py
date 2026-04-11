@@ -7,6 +7,7 @@ from pathlib import Path
 
 import typer
 
+from kammika.agents import build_launch_command, describe_agent, get_agent_spec, supported_agent_keys
 from kammika.config import KammikaConfig
 from kammika.paths import config_path, kamma_dir, queue_path, target_repo_root
 from kammika.ui import (
@@ -22,8 +23,6 @@ from kammika.ui import (
     warm_panel,
 )
 
-CLAUDE_MODEL = "opus"
-OPENCODE_MODEL = "openai/gpt-5.4"
 IDLE_SLEEP_SECONDS = 3600
 
 BRANCH_BANNER = """
@@ -325,36 +324,51 @@ def _checkout_branch(branch: str, repo_root: Path) -> bool:
     return result.returncode == 0
 
 
-def _launch_agent(initial_instruction: str, agents: list[str], repo_root: Path) -> int:
-    """Launch the first available agent interactively. Returns exit code."""
-    for agent in agents:
-        if agent == "claude":
-            cmd = ["claude", "--model", CLAUDE_MODEL, "--dangerously-skip-permissions", initial_instruction]
-        elif agent == "opencode":
-            cmd = [
-                "opencode",
-                "--model",
-                OPENCODE_MODEL,
-                "--prompt",
-                initial_instruction,
-            ]
-        else:
-            warning(f"Unknown agent '{agent}', skipping.")
-            continue
+def _launch_agent(
+    initial_instruction: str,
+    agent: str,
+    repo_root: Path,
+    models: dict[str, str] | None = None,
+) -> int:
+    spec = get_agent_spec(agent)
+    if spec is None:
+        error(f"Unknown agent '{agent}'.")
+        return 1
 
-        info(f"Launching {agent}...")
+    cmd = build_launch_command(agent, initial_instruction, models=models)
+    info(f"Launching {describe_agent(agent, models)}...")
+    try:
+        result = subprocess.run(cmd, cwd=str(repo_root))
+    except FileNotFoundError:
+        error(f"{spec.label} is not available on PATH. Run `kammika init` again to refresh detected agents.")
+        return 1
+
+    if result.returncode != 0:
+        error(f"{spec.label} exited with code {result.returncode}. Queue preserved for retry.")
+    return result.returncode
+
+
+def _choose_agent(agents: list[str]) -> str:
+    available = supported_agent_keys(agents)
+    if not available:
+        error("No supported agents are configured. Run `kammika init` to detect local agents.")
+        raise typer.Exit(1)
+
+    console.print()
+    for i, agent in enumerate(available, 1):
+        spec = get_agent_spec(agent)
+        muted(f"{i}. {spec.label if spec else agent}")
+    console.print()
+
+    while True:
+        choice = prompt_text(f"Choose agent [1-{len(available)}]", default="1")
         try:
-            result = subprocess.run(cmd, cwd=str(repo_root))
-            if result.returncode == 0:
-                return 0
-            warning(f"{agent} exited with code {result.returncode}, trying next agent.")
-            continue
-        except FileNotFoundError:
-            warning(f"{agent} not found on PATH, trying next agent.")
-            continue
-
-    error("No agent could be launched. Install claude or opencode.")
-    return 1
+            idx = int(choice) - 1
+        except ValueError:
+            idx = -1
+        if 0 <= idx < len(available):
+            return available[idx]
+        warning(f"Enter a number between 1 and {len(available)}.")
 
 
 def _choose_branch_mode(repo_root: Path) -> str:
@@ -512,8 +526,12 @@ def _pick_issue(config: KammikaConfig) -> dict | None:
         warning("No actionable issues found.")
         return None
 
-    muted("Asking the model for a recommendation...")
-    recommended = _llm_pick(candidates, config.agents)
+    llm_agent = next((agent for agent in config.agents if agent in {"claude", "opencode"}), None)
+    if llm_agent is not None:
+        muted(f"Asking {describe_agent(llm_agent, config.models)} for a recommendation...")
+    else:
+        muted("No configured recommendation model available; showing issues without a model recommendation.")
+    recommended = _llm_pick(candidates, config.agents, config.models)
 
     total = len(candidates)
     page = 0
@@ -577,7 +595,6 @@ def run_cycle() -> None:
         raise typer.Exit(1)
 
     config = KammikaConfig.from_dict(json.loads(cfg_path.read_text()))
-    agents = config.agents
     completed_count = 0
 
     try:
@@ -617,6 +634,7 @@ def run_cycle() -> None:
                 success(f"Staying on {_current_branch(repo_root)}")
                 console.print()
 
+            selected_agent = _choose_agent(config.agents)
             initial_instruction = _build_initial_instruction(number, title, body)
 
             console.print()
@@ -629,7 +647,12 @@ def run_cycle() -> None:
             console.print()
 
             show_banner(AGENT_BANNER)
-            exit_code = _launch_agent(initial_instruction, agents, repo_root)
+            exit_code = _launch_agent(
+                initial_instruction,
+                selected_agent,
+                repo_root,
+                models=config.models,
+            )
 
             if exit_code == 0:
                 completed_count += 1
@@ -637,8 +660,6 @@ def run_cycle() -> None:
                 show_banner(DONE_BANNER)
                 continue
 
-            console.print()
-            error(f"Agent exited with code {exit_code}. Queue preserved for retry.")
             _print_session_summary(completed_count, config)
             raise typer.Exit(exit_code)
     except KeyboardInterrupt:

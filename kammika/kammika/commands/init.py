@@ -4,6 +4,7 @@ import subprocess
 import typer
 from rich.table import Table
 
+from kammika.agents import detect_available_agents, get_agent_spec, subprocess_probe
 from kammika.config import KammikaConfig
 from kammika.paths import config_path, kamma_dir, target_repo_root
 from kammika.ui import (
@@ -32,6 +33,10 @@ def _run(args: list[str]) -> subprocess.CompletedProcess:
     return subprocess.run(args, capture_output=True, text=True)
 
 
+def _detect_local_agents() -> list[str]:
+    return detect_available_agents(subprocess_probe)
+
+
 def _detect_repo_slug() -> str | None:
     result = _run(["gh", "repo", "view", "--json", "nameWithOwner"])
     if result.returncode == 0:
@@ -50,10 +55,11 @@ def _detect_projects(owner: str) -> list[dict] | None:
     if result.returncode != 0:
         if "unknown owner type" in result.stderr:
             warning(
-                "Could not list GitHub projects — token is missing the 'read:project' scope.\n"
-                "If GITHUB_TOKEN is set in your environment, update that token's scopes at "
+                "Could not list GitHub projects — token is missing the 'read:org' scope.\n"
+                "(gh surfaces this as the opaque error 'unknown owner type'.)\n"
+                "If GITHUB_TOKEN is set in your environment, add 'read:org' to that token at "
                 "https://github.com/settings/tokens\n"
-                "Otherwise run: gh auth refresh -s read:project"
+                "Otherwise run: gh auth refresh -s read:org"
             )
         return None
     try:
@@ -194,9 +200,16 @@ def run_init(show_next: bool = True) -> None:
         )
         raise typer.Exit(1)
 
-    config = KammikaConfig(repo=repo_slug, project=project_ref)
+    info("Detecting installed CLI agents...")
+    agents = _detect_local_agents()
+    if not agents:
+        error("No supported local agents detected. Install one of the supported CLIs and run `kammika init` again.")
+        raise typer.Exit(1)
+
+    config = KammikaConfig(repo=repo_slug, project=project_ref, agents=agents)
     cfg_path.write_text(json.dumps(config.to_dict(), indent=2) + "\n")
     success(f"Config written to {cfg_path}")
+    info("Detected agents: " + ", ".join(get_agent_spec(agent).label for agent in agents if get_agent_spec(agent)))
     success("kammika init complete.")
     if show_next:
-        info("Next: Run `kammika run`.")
+        info("Next: Run `kammika`.")

@@ -35,6 +35,9 @@ Then sync:
 # With just
 just sync
 
+# Reinstall the local kammika CLI after changes
+just kammika-rebuild
+
 # With bash
 ./sync.sh
 ```
