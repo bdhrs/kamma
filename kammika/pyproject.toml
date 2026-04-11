@@ -1,0 +1,19 @@
+[project]
+name = "kammika"
+version = "0.1.0"
+description = "Autonomous kamma orchestrator — picks the next issue and launches an agent session"
+requires-python = ">=3.13"
+dependencies = [
+    "typer>=0.12",
+    "rich>=13",
+]
+
+[project.scripts]
+kammika = "kammika.__main__:app"
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
