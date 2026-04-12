@@ -152,9 +152,17 @@ At the end of every section in this file, tick off completed to-do items before 
     ```
     Do not add headers, preamble, or "no lessons" entries. Just append the lines.
 
-4.  **Propose Improvements:** Read the full `kamma/lessons.md`. For any lesson — even a single occurrence — that suggests a concrete, lasting improvement to the project's `CLAUDE.md` or `AGENTS.md`, apply the change directly and tell the user what you added and why. Keep additions minimal: one or two sentences per rule.
+4.  **Propose Improvements:** Read the full `kamma/lessons.md`. For each lesson that suggests a concrete, lasting improvement to agent instructions, classify it before editing any instruction file:
+    -   `local`: specific to this repository, its workflow, its codebase, or its maintainers' conventions
+    -   `global`: useful across projects and not tied to this repository
 
-5.  **If No Improvements Apply:** Say nothing and move on.
+5.  **Write to the Correct Instruction File:**
+    -   For `local` lessons, update the repository instruction file at the repo root. Prefer an existing `AGENTS.md`, then `AGENT.md`, then `CLAUDE.md`. If none exist, create `AGENTS.md` at the repo root.
+    -   For `global` lessons, update the global instruction file at `~/.agents/AGENTS.md`. Create it if it does not exist.
+    -   Keep additions minimal: one or two sentences per rule.
+    -   Tell the user which target you updated for each new rule and why you classified it as local or global.
+
+6.  **If No Improvements Apply:** Say nothing and move on.
 
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
