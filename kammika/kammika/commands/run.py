@@ -257,8 +257,14 @@ If no issue is referenced, skip this section entirely.
 2. If there is nothing notable, skip the rest of this section.
 3. Append each observation as a one-liner to `kamma/lessons.md` (create the file if it does not exist). Format:
    - YYYY-MM-DD [TAG] Short description of what happened
-4. Read the full `kamma/lessons.md`. For any lesson — even a single occurrence — that suggests a concrete, lasting improvement to the project's `CLAUDE.md` or `AGENTS.md`, apply the change directly and tell the user what you added and why. Keep additions minimal: one or two sentences per rule.
-5. If no improvements apply, say nothing and move on.
+4. Read the full `kamma/lessons.md`. For each lesson that suggests a concrete, lasting improvement to agent instructions, classify it before editing any instruction file:
+   - `local`: specific to this repository, its workflow, its codebase, or its maintainers' conventions
+   - `global`: useful across projects and not tied to this repository
+5. Write the instruction to the matching target:
+   - For `local` lessons, update the repository instruction file at the repo root. Prefer an existing `AGENTS.md`, then `AGENT.md`, then `CLAUDE.md`. If none exist, create `AGENTS.md` at the repo root.
+   - For `global` lessons, update the global instruction file at `~/.agents/AGENTS.md`. Create it if it does not exist.
+6. Keep additions minimal: one or two sentences per rule. Tell the user which target you updated for each new rule and why you classified it as local or global.
+7. If no improvements apply, say nothing and move on.
 
 **To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
 """
@@ -471,6 +477,19 @@ def _build_initial_instruction(number: int, title: str, body: str) -> str:
 PAGE_SIZE = 4
 
 
+def _queue_issue(candidate, source: str, rationale: str) -> dict:
+    queue = {
+        "number": candidate.number,
+        "title": candidate.title,
+        "body": candidate.body,
+        "rationale": rationale,
+        "source": source,
+        "picked_at": datetime.now(timezone.utc).isoformat(),
+    }
+    queue_path().write_text(json.dumps(queue, indent=2) + "\n")
+    return queue
+
+
 def _show_issue_table(
     candidates: list, recommended_number: int | None, page: int, total: int
 ) -> None:
@@ -526,6 +545,15 @@ def _pick_issue(config: KammikaConfig) -> dict | None:
         warning("No actionable issues found.")
         return None
 
+    if len(candidates) == 1:
+        chosen = candidates[0]
+        success(f"Auto-selected issue #{chosen.number} because it is the only actionable issue.")
+        return _queue_issue(
+            chosen,
+            source="automatic",
+            rationale="Auto-selected because it is the only actionable issue",
+        )
+
     llm_agent = next((agent for agent in config.agents if agent in {"claude", "opencode"}), None)
     if llm_agent is not None:
         muted(f"Asking {describe_agent(llm_agent, config.models)} for a recommendation...")
@@ -556,16 +584,7 @@ def _pick_issue(config: KammikaConfig) -> dict | None:
                 idx = -1
             if 0 <= idx < n:
                 chosen = page_candidates[idx]
-                queue = {
-                    "number": chosen.number,
-                    "title": chosen.title,
-                    "body": chosen.body,
-                    "rationale": "Selected by user",
-                    "source": "user",
-                    "picked_at": datetime.now(timezone.utc).isoformat(),
-                }
-                queue_path().write_text(json.dumps(queue, indent=2) + "\n")
-                return queue
+                return _queue_issue(chosen, source="user", rationale="Selected by user")
             warning(f"Enter a number between 1 and {n}, 'n' for next, or 'q' to quit.")
 
         num_pages = (total + PAGE_SIZE - 1) // PAGE_SIZE
