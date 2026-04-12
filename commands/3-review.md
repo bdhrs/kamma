@@ -3,205 +3,131 @@ description: Reviews a thread and gets it ready to finish
 ---
 
 ## 1.0 PURPOSE
-You are an AI agent assistant for the Kamma spec-driven development framework. Your current task is to review a thread that has already been implemented and is ready for a fresh check. You MUST follow this process precisely.
+You are an AI agent assistant for the Kamma spec-driven work framework. Your job is to review a thread that has been implemented and is ready for a fresh check. Follow this process precisely.
 
-CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
+CRITICAL: Check the result of every tool call. If a tool call fails, don't stop. Try another way to make progress, reassess, and keep going. Tell the user about important failures, but keep working unless the task truly cannot move forward.
 
-TO-DO LIST: Keep a to-do list for this entire command. Add the current section's work before you start it, update the list as you go, and use it to track progress until the command is complete.
-At the end of every section in this file, tick off completed to-do items before you move on.
+TO-DO LIST: Keep a running to-do list for this command. Add work before you start it, tick items off as you finish them. You don't need a reminder every section — just keep the list current.
 
----
-
-## 1.1 SETUP CHECK
-**Verify that the Kamma environment is properly set up.**
-
-1.  **Check for Required Files:** You MUST verify the existence of the following files in the `kamma` directory:
-    -   `kamma/tech.md`
-    -   `kamma/workflow.md`
-    -   `kamma/project.md`
-
-2.  **Handle Missing Files:**
-    -   If any of these files are missing, say what is missing, look for another sensible way to continue, and keep going if you still can.
-    -   Announce: "Kamma is not set up. Please run `/kamma:0-setup` to set up the environment."
-    -   Continue if there is still a reasonable path forward.
+Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If any are missing, say what's missing, announce that Kamma is not set up (`/kamma:0-setup`), and continue if there's still a reasonable path.
 
 ---
-
-
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-
 
 ## 2.0 CHOOSE A THREAD
-**Identify and select the thread to review.**
 
-1.  **Check for User Input:** First, check if the user provided a thread name as an argument (for example, `/kamma:3-review <thread_description>`).
+1. Check if the user provided a thread name as an argument.
 
-2.  **Scan Thread Directories:** List all directories in `kamma/threads/`. For each directory, read `spec.md` for the thread description, `plan.md` to determine progress, and `review.md` if it exists to see whether review has already passed.
-    -   **CRITICAL:** If no thread directories are found, announce: "No active threads found in `kamma/threads/`. No threads are available to review." Then move on.
+2. List all directories in `kamma/threads/`. For each, read `spec.md` for the description, `plan.md` for progress, and `review.md` if it exists to check whether review already passed.
+   - If no threads exist: "No active threads found. Nothing to review." Then stop.
 
-3.  **Select Thread:**
-    -   **If a thread name was provided:**
-        1.  Perform a case-insensitive match against thread directory names and spec descriptions.
-        2.  If a unique match is found, confirm with the user.
-        3.  If no match or ambiguous, inform the user and list available threads.
-    -   **If no thread name was provided:**
-        1.  Prefer the first thread with in-progress `[~]` tasks in its `plan.md`. If none exist, select the first active thread that does not already have a `PASSED` review.
-        2.  Announce which fallback was used, for example: "Automatically selecting the in-progress thread for review: '<thread_description>'." or "Automatically selecting the active thread awaiting review: '<thread_description>'."
-        3.  If every active thread already has a `PASSED` review, say that there is no active thread ready for review, suggest the next sensible action, and continue as far as you reasonably can.
+3. **Select:**
+   - **If a name was provided:** Case-insensitive match against directory names and spec descriptions. Confirm if unique. If ambiguous, list the options.
+   - **If no name:** Prefer the first thread with `[~]` tasks. If none, pick the first active thread without a `PASSED` review. Announce which fallback you used. If every thread already passed, say so and suggest the next step.
 
 ---
-
-
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-
 
 ## 3.0 START THE REVIEW
-**Begin the review immediately.**
 
-1.  **State the Goal:** Announce that this command is meant to give the selected thread a fresh review and then continue straight into the review.
-
-2.  **Independence Note:** If the current reviewer appears to be the same agent or tool that did the implementation, note briefly that the review is less independent, but continue without stopping for approval.
-
-3.  **No Reviewer-Selection Stop:** Do not add any reviewer-selection gate before the review starts.
+1. Announce that you're reviewing the selected thread and continue straight into it.
+2. If you appear to be the same agent that did the implementation, note briefly that the review is less independent, but don't stop.
+3. No reviewer-selection gate — just start.
 
 ---
-
-
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-
 
 ## 4.0 LOAD THREAD CONTEXT
-**Build enough context before writing findings.**
 
-1.  **Identify Thread Folder:** Use the `<thread_id>` from the selected thread directory.
+1. Read:
+   - `kamma/threads/<thread_id>/spec.md`
+   - `kamma/threads/<thread_id>/plan.md`
+   - `kamma/workflow.md`
+   - `kamma/project.md`
+   - `kamma/tech.md`
+   - Verify any GitHub issue reference is visible and consistent.
 
-2.  **Read Required Files:**
-    -   `kamma/threads/<thread_id>/spec.md`
-    -   `kamma/threads/<thread_id>/plan.md`
-    -   `kamma/workflow.md`
-    -   `kamma/project.md`
-    -   `kamma/tech.md`
-    -   Verify that any GitHub issue reference stays visible and consistent in the thread description, `spec.md`, and `plan.md`.
+2. Inspect the implementation:
+   - Review the git diff and recent commits relevant to the thread.
+   - Review changed files.
+   - Review test or lint outputs if available.
 
-3.  **Inspect Implementation Evidence:**
-    -   Review the current git diff and recent commits relevant to the thread.
-    -   Review changed files related to the thread.
-    -   Review recent test or lint outputs if available.
-
-4.  **Summarize What Changed:** Summarize the thread in a compact structure covering:
-    -   Thread objective
-    -   Planned scope
-    -   Implemented scope
-    -   Files changed
-    -   Tests run
-    -   Known risks or assumptions
+3. Summarize what changed:
+   - Thread objective
+   - Planned vs. implemented scope
+   - Files changed
+   - Tests run
+   - Known risks or assumptions
 
 ---
 
+## 5.0 HOW TO REVIEW
 
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+**Go deeper than a quick diff scan.**
 
+1. **Required methods** — perform and report on each:
+   - Spec review against `spec.md`
+   - Plan review against `plan.md`
+   - Diff review of changed files
+   - Test and verification review
+   - Regression and edge-case review
 
-## 5.0 HOW TO REVIEW IT
-**Use more than a quick diff scan.**
+2. **After the agent review is done**, run CodeRabbit review if available (`coderabbit review --agent`). Include any repo-native AI review flow that applies.
 
-1.  **Required Review Methods:** Perform and report on each of the following:
-    -   Specification review against `spec.md`
-    -   Plan review against `plan.md`
-    -   Diff review of changed files
-    -   Test and verification review
-    -   Regression and edge-case review
+3. **Consider whether these also apply** — state your reasoning:
+   - Static analysis or lint
+   - Security
+   - Performance
+   - Architecture
+   - UX or user behavior
+   - Manual scenario testing
+   - Documentation
 
-2.  **External or AI Review Methods:** Include these when available and relevant:
-    -   CodeRabbit review
-    -   CodeRabbit AI review
-    -   Any repo-native AI review flow available in the user's environment
-
-3.  **Ask What Else Applies:** Explicitly consider and state whether any of the following review modes should also be applied:
-    -   Static analysis or lint review
-    -   Security review
-    -   Performance review
-    -   Architecture review
-    -   UX or user-behavior review
-    -   Manual scenario testing
-    -   Documentation review
-
-4.  **Scope Rule:** Only apply additional review modes that are relevant to the actual thread.
+4. Only apply additional modes that are actually relevant to this thread.
 
 ---
 
+## 6.0 WRITE FINDINGS
 
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+**Findings first, then summary.**
 
+1. For each finding:
+   - Severity: `blocking`, `major`, `minor`, `nit`
+   - File reference(s)
+   - What's wrong
+   - Why it matters
+   - Recommended fix
 
-## 6.0 HOW TO WRITE FINDINGS
-**Findings come before summary comments.**
+2. If no findings: say so explicitly. Note any residual risk, testing gaps, or areas not fully verified.
 
-1.  **Primary Focus:** Findings must come before summary commentary.
-
-2.  **For Each Finding, Include:**
-    -   Severity (`blocking`, `major`, `minor`, `nit`)
-    -   File reference(s)
-    -   What is wrong
-    -   Why it matters
-    -   Recommended change
-
-3.  **If No Findings Exist:** State that explicitly, then note any residual risk, testing gaps, or areas not fully verified.
-
-4.  **Review Summary:** After findings, include a concise review summary covering:
-    -   Review methods used
-    -   Overall readiness
-    -   Whether the thread is ready for `/kamma:4-finalize`
+3. After findings, write a concise summary:
+   - Review methods used
+   - Overall readiness
+   - Whether the thread is ready for `/kamma:4-finalize`
 
 ---
-
-
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-
 
 ## 7.0 FIX WHAT NEEDS FIXING
-**Review is not done until valid findings are addressed.**
 
-1.  **Implementation Requirement:** If blocking or major findings are identified, they MUST be implemented before the thread can be considered complete.
-
-2.  **Minor Findings:** Minor issues should also be addressed unless the user explicitly defers them.
-
-3.  **Re-Verification:** After changes are implemented, rerun the relevant verification steps and update the review conclusion.
-
-4.  **Completion Rule:** Do NOT declare the thread review-complete while unresolved blocking findings remain.
+1. Blocking and major findings must be fixed before the thread can be considered complete.
+2. Minor issues should also be fixed unless the user explicitly defers them.
+3. After fixes, rerun the relevant verification and update the review conclusion.
+4. Don't declare review-complete while unresolved blocking findings remain.
 
 ---
-
-
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-
 
 ## 8.0 WRITE `review.md`
-**Save the review result as a file.**
 
-1.  **Write `review.md`:** Once the review is complete (all blocking/major findings resolved or no findings), write a summary file to `kamma/threads/<thread_id>/review.md` containing:
-    -   Review date
-    -   Reviewer identity (agent/tool name)
-    -   Review methods used
-    -   Findings summary (count by severity, or "No findings")
-    -   Verdict: `PASSED` or `BLOCKED`
+Once the review is complete (all blocking/major resolved, or no findings), write `kamma/threads/<thread_id>/review.md`:
+- Review date
+- Reviewer identity
+- Review methods used
+- Findings summary (count by severity, or "No findings")
+- Verdict: `PASSED` or `BLOCKED`
 
-2.  **Do NOT write `review.md` if blocking findings remain unresolved.** The absence of this file signals that the thread has not cleared review.
+Don't write `review.md` if blocking findings remain. The absence of the file signals review hasn't cleared.
 
 ---
 
-
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-
-
 ## 9.0 NEXT STEP
-**Only move to the finish step after review is clear.**
 
-1.  **If Findings Were Resolved Successfully:** Instruct the user to run `/kamma:4-finalize` to complete the thread.
-
-2.  **If Review Is Clear:** State that the thread is review-complete and ready for `/kamma:4-finalize`.
-
-3.  **If Review Is Blocked:** Clearly state what must happen before review can continue.
-
-
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+- **Findings resolved:** Tell the user to run `/kamma:4-finalize`.
+- **Review clear:** State the thread is ready for `/kamma:4-finalize`.
+- **Review blocked:** State clearly what must happen first.

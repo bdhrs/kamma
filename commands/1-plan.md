@@ -3,123 +3,108 @@ description: Plans a thread and generates thread-specific spec documents
 ---
 
 ## 1.0 PURPOSE
-You are an AI agent assistant for the Kamma spec-driven work framework. Your job is to help the user create a new thread, generate the thread's `spec.md` and `plan.md`, and place them in the right folder.
+You are an AI agent assistant for the Kamma spec-driven work framework. Your job is to create a new thread — generate its spec and plan, and place them in the right folder.
 
-CRITICAL: Check the result of every tool call. If a tool call fails, do not stop. Try another sensible way to make progress, reassess, and keep going. Tell the user about important failures, but continue working unless the task truly cannot move forward by any reasonable path.
+CRITICAL: Check the result of every tool call. If a tool call fails, don't stop. Try another way to make progress, reassess, and keep going. Tell the user about important failures, but keep working unless the task truly cannot move forward.
 
-TO-DO LIST: Keep a to-do list for this entire command. Add the current section's work before you start it, update the list as you go, and use it to track progress until the command is complete.
-At the end of every section in this file, tick off completed to-do items before you move on.
+TO-DO LIST: Keep a running to-do list for this command. Add work before you start it, tick items off as you finish them. You don't need a reminder every section — just keep the list current.
 
 ## 1.1 SETUP CHECK
-**Verify that the Kamma environment is set up correctly.**
+**Verify that the Kamma environment is set up.**
 
-1.  **Check for Required Files:** You MUST verify the existence of the following files in the `kamma` directory:
-    -   `kamma/tech.md`
-    -   `kamma/workflow.md`
-    -   `kamma/project.md`
+1. Check for these files:
+   - `kamma/tech.md`
+   - `kamma/workflow.md`
+   - `kamma/project.md`
 
-2.  **Handle Missing Files:**
-    -   If any of these files are missing, say what is missing, look for another sensible way to continue, and keep going if you still can.
-    -   Announce: "Kamma is not set up. Please run `/kamma:0-setup` to set up the environment."
-    -   Continue if there is still a reasonable path forward.
+2. If any are missing, say what's missing and try to continue. Announce: "Kamma is not set up. Please run `/kamma:0-setup` to set up the environment." Keep going if there's still a reasonable path.
 
 ---
 
-
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-
-
 ## 2.0 CREATE A NEW THREAD
-**Follow this sequence.**
 
-### 2.1 Get the Thread Description and Work Out the Type
+### 2.1 Get the Thread Description
 
-1.  **Load Project Files:** Read and understand the content of the `kamma` directory files.
-2.  **Get Thread Description:**
-    *   **If `{{args}}` contains a description:** Use the content of `{{args}}`.
-    *   **If `{{args}}` is empty:** Ask the user using the environment's native question or input tool when available; otherwise ask in a normal message:
-        > "Please provide a brief description of the thread (feature, bug fix, chore, etc.) you want to start."
-        Wait for the user's response and use it as the thread description.
-3.  **Capture GitHub Issue Reference:** If the work is tied to a GitHub issue, ask for or preserve the issue number and include it directly in the thread description so it stays visible throughout the thread lifecycle.
-4.  **Infer Thread Type:** Analyze the description to determine if it is a feature or something else (for example, a bug, chore, or refactor). Do NOT ask the user to classify it.
-
-
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-
+1. Read and understand the `kamma/` directory files.
+2. **Get the description:**
+   - **If `{{args}}` has one:** Use it.
+   - **If `{{args}}` is empty:** Ask: "Please provide a brief description of the thread (feature, bug fix, chore, etc.) you want to start." Wait for the response.
+3. If the work is tied to a GitHub issue, ask for or preserve the issue number and include it in the thread description.
+4. Infer the thread type from the description. Don't ask.
 
 ### 2.2 Write `spec.md`
 
-1.  **Ask Only What You Need To:** Use `project.md`, `tech.md`, and the codebase to answer as much as you can before asking anything. Treat loss of chat context and handoff to a different agent as the normal case. Only ask questions when the answer genuinely cannot be inferred. If a critical planning detail is missing and the repo does not answer it, ask instead of guessing. Batch all remaining unknowns into a single round and wait for the response. Use the environment's native question or input tools when available; otherwise send one normal message containing the full batch.
-    *   **General Guidelines:**
-        *   Whenever possible, present 2-3 plausible options (A, B, C) for the user to choose from for each question in the batch.
-        *   The last option for every multiple-choice question MUST be "Type your own answer".
+1. **Ask only what you need to.** Use `project.md`, `tech.md`, and the codebase to answer as much as you can. Treat handoff to a different agent as the normal case. Only ask when the answer genuinely can't be inferred. If a critical detail is missing and the repo doesn't answer it, ask instead of guessing. Batch all unknowns into a single round and wait.
+   - Present 2–3 plausible options (A, B, C) per question. Last option must be "Type your own answer".
+   - **Features:** Focus on intent and edge cases — how it should behave, who it's for, what success looks like.
+   - **Bugs, chores, etc.:** Focus on reproduction, scope, or how you'll know it's fixed.
 
-    *   **If FEATURE:** Focus questions on intent and edge cases the codebase cannot answer — how it should behave, who it is for, what success looks like.
+2. **Push back if warranted.** If a simpler approach exists, say so. If the request would create unnecessary complexity or conflict with existing architecture, raise it before writing the spec.
 
-    *   **If SOMETHING ELSE (Bug, Chore, etc.):** Focus on what you need to reproduce or scope the work — reproduction steps, specific scope, or how you'll know it's fixed.
+3. Draft `spec.md` with these sections:
+   - Overview
+   - What it should do
+   - Assumptions & uncertainties (what you're assuming, what you couldn't verify, what might be wrong)
+   - Constraints (if any)
+   - How we'll know it's done
+   - What's not included
 
-3.  **Draft `spec.md`:** Once you have enough information, draft the thread's `spec.md`, including sections like Overview, What it should do, Constraints (if any), How we'll know it's done, and What's not included.
-    -   The spec must be self-contained and understandable by a different agent in a later session.
-    -   Preserve the important repo context in writing instead of relying on conversational memory: current behavior, affected files or systems, discovered constraints, assumptions, relevant workflow details, and any project-specific terminology that matters to execution.
-    -   When file paths, commands, or affected areas are already known from the repo, include them in the spec so the next agent does not need to rediscover them.
-    -   If the thread is tied to a GitHub issue, include a dedicated issue reference near the top of `spec.md` and repeat the exact issue number used in the thread description.
+   The spec must be self-contained — a different agent in a later session should understand it fully. Write down current behavior, affected files, constraints, assumptions, and project-specific terminology that matters. Don't rely on conversational memory.
 
-4.  **Check the Draft:** Present the drafted `spec.md` content to the user for review and approval.
-    > "I've drafted the specification for this thread. Please review the following:"
-    >
-    > ```markdown
-    > [Drafted spec.md content here]
-    > ```
-    >
-    > "Does this look right? Let me know if anything needs changing."
-    Wait for user feedback and revise the `spec.md` content until confirmed.
+   If tied to a GitHub issue, include a dedicated reference near the top.
 
+4. Present the draft for review:
+   > "I've drafted the spec. Please review:"
+   >
+   > ```markdown
+   > [spec.md content]
+   > ```
+   >
+   > "Does this look right? Let me know if anything needs changing."
 
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
-
+   Revise until confirmed.
 
 ### 2.3 Write `plan.md`
 
-1.  **State Your Goal:** Once `spec.md` is approved, announce:
-    > "Now I will create `plan.md` based on the specification."
+1. Announce: "Now I'll create `plan.md` based on the spec."
 
-2.  **Generate Plan:**
-     *   Read the confirmed `spec.md` content for this thread.
-     *   Read `kamma/workflow.md`.
-     *   Generate a `plan.md` with a hierarchical list of Phases, Tasks, and Sub-tasks.
-     *   Assume the plan will be executed by a different agent with zero prior context from the planning session.
-     *   Make the plan handoff-safe by including the concrete execution context the next agent will need: exact files to inspect or edit when known, relevant docs to read, concrete task sequencing, verification steps, expected outcomes, and assumptions or constraints that must be preserved.
-     *   Do not leave important context implicit. If the executor would need to know it, write it into `plan.md`.
-     *   If the thread is tied to a GitHub issue, include the same issue reference near the top of `plan.md` so later commands can recover it reliably.
-     *   **CRITICAL:** The plan structure MUST follow the workflow file.
-     *   Include status markers `[ ]` for each task/sub-task.
-     *   **CRITICAL: Inject Phase Completion Tasks.** If a "Phase Completion" protocol exists in `kamma/workflow.md`, append a final automatic verification task to each Phase. Do not require user manual testing or approval at the end of each phase.
+2. Read the confirmed spec and `kamma/workflow.md`. Generate `plan.md` with Phases → Tasks → Sub-tasks using `[ ]` markers.
 
-3.  **Check the Draft:** Present the drafted `plan.md` to the user for review and approval.
-    > "I've drafted the implementation plan. Please review the following:"
-    >
-    > ```markdown
-    > [Drafted plan.md content here]
-    > ```
-    >
-    > "Does this plan look right? Let me know if anything needs changing."
-    Wait for user feedback and revise until confirmed.
+   Assume a different agent with zero context will execute this. Include: exact files to inspect or edit, relevant docs, task ordering, expected outcomes, and constraints to preserve. Don't leave important context implicit.
 
+   **Every task must include a `→ verify:` line** with the specific check — the test to run, the behavior to observe, the expected output. Vague checks don't count.
 
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+   Example:
+   ```
+   - [ ] Add input validation to search field
+     → verify: run `flutter test test/search_test.dart`, expect all pass
+   - [ ] Update grammar table to show new column
+     → verify: open entry #123, confirm new column appears with correct data
+   ```
 
+   The plan structure must follow `kamma/workflow.md`. Add an automatic verification task at the end of each phase — no manual user approval gates mid-plan.
+
+   If tied to a GitHub issue, include the same reference near the top.
+
+3. **Simplicity check.** Before presenting, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Would a senior engineer say this is overcomplicated? If yes, simplify.
+
+4. Present the draft:
+   > "Here's the plan. Please review:"
+   >
+   > ```markdown
+   > [plan.md content]
+   > ```
+   >
+   > "Does this look right? Let me know if anything needs changing."
+
+   Revise until confirmed.
 
 ### 2.4 Create the Thread Files
 
-1.  **Check for Existing Thread Name:** Before generating a new thread ID, list all existing thread directories in `kamma/threads/`. If the proposed short name matches an existing one, suggest a different name and keep going with the revised name.
-2.  **Generate Thread ID:** Create a unique thread ID (for example, `YYYYMMDD_shortname`).
-3.  **Create Directory:** Create a new directory: `kamma/threads/<thread_id>/`
-4.  **Write Files:**
-    *   Write the confirmed specification to `kamma/threads/<thread_id>/spec.md`.
-    *   Write the confirmed plan to `kamma/threads/<thread_id>/plan.md`.
-5.  **Clean Up Legacy File:** If `kamma/threads.md` exists, delete it — it is a legacy file that is no longer used.
-6.  **Announce Completion:**
-    > "New thread '<thread_id>' has been created. You can now start work by running `/kamma:2-do`."
-
-
-**To-Do List Reminder:** Before you leave this section, tick off completed items on your to-do list and update anything still in progress.
+1. Check existing thread directories in `kamma/threads/`. If the proposed name collides, pick a different one.
+2. Generate thread ID: `YYYYMMDD_shortname`.
+3. Create `kamma/threads/<thread_id>/`.
+4. Write the confirmed `spec.md` and `plan.md` to the directory.
+5. If `kamma/threads.md` exists, delete it — legacy file.
+6. Announce:
+   > "New thread '<thread_id>' created. Start work with `/kamma:2-do`."
