@@ -42,6 +42,8 @@ just kammika-rebuild
 ./sync.sh
 ```
 
+`just kammika-rebuild` reinstalls the local `kammika` package while allowing `uv` to reuse cached dependencies.
+
 The sync tool detects which AI CLIs are installed on your machine and copies the prompts to each one. Unsupported or missing tools are skipped.
 
 ## Commands
