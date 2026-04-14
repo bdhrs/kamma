@@ -35,6 +35,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 2. **Load thread files:**
    - `kamma/threads/<thread_id>/plan.md`
    - `kamma/threads/<thread_id>/spec.md`
+   - `kamma/threads/<thread_id>/handoff.md` (if it exists — context from a previous session)
    - `kamma/workflow.md`
    - If the thread references a GitHub issue, keep that number visible and unchanged throughout.
    - If any read fails, say what failed, try to recover, and keep going if you can.

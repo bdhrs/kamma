@@ -119,7 +119,7 @@ Apply any changes and re-present until the user confirms. Then continue immediat
 
 **Scope rule:** Touch only what the current task requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to a task in `plan.md`. If you notice unrelated issues, note them — don't fix them.
 
-1. Read `kamma/threads/<thread_id>/spec.md` and `plan.md`.
+1. Read `kamma/threads/<thread_id>/spec.md`, `plan.md`, and `handoff.md` (if it exists — context from a previous session).
 2. Work through every unchecked task and sub-task in sequential order.
 3. For each task or sub-task:
    - Change `[ ]` to `[~]` before you begin.
