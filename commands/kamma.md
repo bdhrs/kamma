@@ -163,11 +163,38 @@ Wait for the response.
 6. After the agent review is done, run CodeRabbit review if available (`coderabbit review --agent`). Incorporate any findings.
 7. Fix any blocking or major findings immediately. Re-run verification after each fix. Repeat until none remain.
 8. Make sure `plan.md` reflects the actual state of the work.
-9. Then write `kamma/threads/<thread_id>/review.md` with:
-   - Review date
-   - Reviewer: `kamma (inline)`
-   - Findings summary (count by severity, or `No findings`)
-   - Verdict: `PASSED`
+9. Then write `kamma/threads/<thread_id>/review.md` with the following sections:
+
+   ```
+   ## Thread
+   - **ID:** <thread_id>
+   - **Objective:** <one-line from spec.md>
+
+   ## Files Changed
+   - `path/to/file` — one-line purpose of the change
+   - ...
+
+   ## Findings
+   | # | Severity | Location | What | Why | Fix |
+   |---|----------|----------|------|-----|-----|
+   | 1 | major | `file:line` | ... | ... | ... |
+
+   Or: "No findings."
+
+   ## Fixes Applied
+   - What was fixed during review (or "None")
+
+   ## Test Evidence
+   - `<command>` → pass/fail
+   - ...
+
+   ## Verdict
+   PASSED | BLOCKED
+   - Review date: YYYY-MM-DD
+   - Reviewer: kamma (inline)
+   ```
+
+   Target ~30-50 lines. Concise but complete enough for a future agent to understand what happened without re-running checks.
 
 ### 5.2 Finalize
 

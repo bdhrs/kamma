@@ -30,9 +30,11 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 
 1. Verify that `kamma/threads/<thread_id>/review.md` exists and has a `PASSED` verdict. If not, explain that review hasn't cleared, point to `/kamma:3-review`, and continue only with non-blocking cleanup.
 
-2. Announce that the thread is complete.
+2. Read the detailed content from `review.md` — specifically the Files Changed, Findings, Fixes Applied, and Test Evidence sections. Use this context (along with `spec.md`) to build the wrap-up summary instead of re-running checks or relying only on the spec.
 
-3. Summarize the implementation, review outcome, and verification evidence.
+3. Announce that the thread is complete.
+
+4. Summarize: thread objective, files changed, findings and fixes (from review.md), test evidence, and final verdict.
 
 ---
 

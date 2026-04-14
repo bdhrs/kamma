@@ -115,12 +115,38 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 
 ## 8.0 WRITE `review.md`
 
-Once the review is complete (all blocking/major resolved, or no findings), write `kamma/threads/<thread_id>/review.md`:
-- Review date
-- Reviewer identity
-- Review methods used
-- Findings summary (count by severity, or "No findings")
-- Verdict: `PASSED` or `BLOCKED`
+Once the review is complete (all blocking/major resolved, or no findings), write `kamma/threads/<thread_id>/review.md` with the following sections:
+
+```
+## Thread
+- **ID:** <thread_id>
+- **Objective:** <one-line from spec.md>
+
+## Files Changed
+- `path/to/file` — one-line purpose of the change
+- ...
+
+## Findings
+| # | Severity | Location | What | Why | Fix |
+|---|----------|----------|------|-----|-----|
+| 1 | major | `file:line` | ... | ... | ... |
+
+Or: "No findings."
+
+## Fixes Applied
+- What was fixed during review (or "None")
+
+## Test Evidence
+- `<command>` → pass/fail
+- ...
+
+## Verdict
+PASSED | BLOCKED
+- Review date: YYYY-MM-DD
+- Reviewer: <identity>
+```
+
+Target ~30-50 lines. Keep it concise but complete enough for a future agent to understand what happened without re-running checks.
 
 Don't write `review.md` if blocking findings remain. The absence of the file signals review hasn't cleared.
 
