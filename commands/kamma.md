@@ -35,10 +35,19 @@ If any Kamma files are missing, don't stop and don't run setup. Continue with wh
 
 ## 3.0 PLAN THE THREAD
 
+### 3.0.1 Question Tool Rule
+
+- If the environment exposes a native question/input tool, you must use it instead of asking in plain markdown or plain chat.
+- Prefer these native tools in this order when available:
+  - `AskUserQuestion`
+  - `request_user_input`
+- Only fall back to a normal conversational message if no native question/input tool exists in the environment, or the tool call fails.
+- When using a native question/input tool, keep the question text and answer options aligned with the instructions below. Do not convert a tool-eligible question into plain prose just because it is short.
+
 ### 3.1 Get the Thread Description
 
 - **If `{{args}}` is provided:** Use it as the thread description.
-- **If `{{args}}` is empty:** Ask "What would you like to work on?" and wait for the response. This is a pre-flight question, not one of the two stops.
+- **If `{{args}}` is empty:** Use the native question/input tool to ask "What would you like to work on?" and wait for the response. Fall back to a normal message only if no such tool is available. This is a pre-flight question, not one of the two stops.
 
 If the work is tied to a GitHub issue, ask for or preserve the issue number and include it in the thread description so it stays visible throughout.
 
@@ -46,7 +55,7 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Don'
 
 ### 3.2 Generate Spec and Plan
 
-1. Read `kamma/project.md` and `kamma/tech.md` if they exist. Fill gaps from the repo. Treat handoff to a different agent as the normal case. Only ask the user if absolutely necessary — and if you must, batch all questions into a single round and wait.
+1. Read `kamma/project.md` and `kamma/tech.md` if they exist. Fill gaps from the repo. Treat handoff to a different agent as the normal case. Only ask the user if absolutely necessary — and if you must, batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available.
 
 2. **Push back if warranted.** If a simpler approach exists than what was described, say so. If the request would create unnecessary complexity or conflict with existing architecture, raise it before planning.
 

@@ -23,18 +23,27 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
 
 ## 2.0 CREATE A NEW THREAD
 
+### 2.0.1 Question Tool Rule
+
+1. If the environment exposes a native question/input tool, you must use it instead of asking in plain markdown or plain chat.
+2. Prefer these native tools in this order when available:
+   - `AskUserQuestion`
+   - `request_user_input`
+3. Only fall back to a normal conversational message if no native question/input tool exists in the environment, or the tool call fails.
+4. Keep the wording and answer options required below, but deliver them through the tool whenever possible.
+
 ### 2.1 Get the Thread Description
 
 1. Read and understand the `kamma/` directory files.
 2. **Get the description:**
    - **If `{{args}}` has one:** Use it.
-   - **If `{{args}}` is empty:** Ask: "Please provide a brief description of the thread (feature, bug fix, chore, etc.) you want to start." Wait for the response.
+   - **If `{{args}}` is empty:** Use the native question/input tool to ask: "Please provide a brief description of the thread (feature, bug fix, chore, etc.) you want to start." Wait for the response. Fall back to a normal message only if no such tool is available.
 3. If the work is tied to a GitHub issue, ask for or preserve the issue number and include it in the thread description.
 4. Infer the thread type from the description. Don't ask.
 
 ### 2.2 Write `spec.md`
 
-1. **Ask only what you need to.** Use `project.md`, `tech.md`, and the codebase to answer as much as you can. Treat handoff to a different agent as the normal case. Only ask when the answer genuinely can't be inferred. If a critical detail is missing and the repo doesn't answer it, ask instead of guessing. Batch all unknowns into a single round and wait.
+1. **Ask only what you need to.** Use `project.md`, `tech.md`, and the codebase to answer as much as you can. Treat handoff to a different agent as the normal case. Only ask when the answer genuinely can't be inferred. If a critical detail is missing and the repo doesn't answer it, ask instead of guessing. Batch all unknowns into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available.
    - Present 2–3 plausible options (A, B, C) per question. Last option must be "Type your own answer".
    - **Features:** Focus on intent and edge cases — how it should behave, who it's for, what success looks like.
    - **Bugs, chores, etc.:** Focus on reproduction, scope, or how you'll know it's fixed.
