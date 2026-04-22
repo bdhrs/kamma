@@ -25,12 +25,13 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
 
 ### 2.0.1 Question Tool Rule
 
-1. If the environment exposes a native question/input tool, you must use it instead of asking in plain markdown or plain chat.
-2. Prefer these native tools in this order when available:
+**CRITICAL: Never ask questions in plain markdown or plain chat.** Every question to the user must go through a native question/input tool.
+
+1. Always attempt the native tool first, in this order:
    - `AskUserQuestion`
    - `request_user_input`
-3. Only fall back to a normal conversational message if no native question/input tool exists in the environment, or the tool call fails.
-4. Keep the wording and answer options required below, but deliver them through the tool whenever possible.
+2. Only fall back to a plain message if the tool call actually fails or throws an error. Do not assume the tool is unavailable — try it first.
+3. Asking in markdown when a native tool is available is a violation of this rule.
 
 ### 2.1 Get the Thread Description
 
@@ -43,7 +44,7 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
 
 ### 2.2 Write `spec.md`
 
-1. **Ask only what you need to.** Use `project.md`, `tech.md`, and the codebase to answer as much as you can. Treat handoff to a different agent as the normal case. Only ask when the answer genuinely can't be inferred. If a critical detail is missing and the repo doesn't answer it, ask instead of guessing. Batch all unknowns into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available.
+1. **Surface assumptions before drafting.** Use `project.md`, `tech.md`, and the codebase to infer as much as you can. Then, before writing anything, identify your key assumptions — about scope, tech stack, affected files, and approach. If any assumption is uncertain and getting it wrong would change the spec significantly, surface it as a question. Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred, skip the question round and proceed.
    - Present 2–3 plausible options (A, B, C) per question. Last option must be "Type your own answer".
    - **Features:** Focus on intent and edge cases — how it should behave, who it's for, what success looks like.
    - **Bugs, chores, etc.:** Focus on reproduction, scope, or how you'll know it's fixed.
@@ -77,7 +78,13 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
 
 1. Announce: "Now I'll create `plan.md` based on the spec."
 
-2. Read the confirmed spec and `kamma/workflow.md`. Generate `plan.md` with Phases → Tasks → Sub-tasks using `[ ]` markers.
+2. Before writing tasks, identify the dependency order: what must exist before what else can be built. Let this order determine the phase sequence.
+
+3. Read the confirmed spec and `kamma/workflow.md`. Generate `plan.md` with Phases → Tasks → Sub-tasks using `[ ]` markers.
+
+   Slice tasks vertically — each task should deliver a testable piece of working functionality end-to-end, not a horizontal layer (all DB, then all API, then all UI).
+
+   Include an **Architecture Decisions** section near the top (after any GitHub issue reference) listing key choices made during planning and their rationale — which pattern to follow, where to place new code, what was deliberately not abstracted, and why.
 
    Assume a different agent with zero context will execute this. Include: exact files to inspect or edit, relevant docs, task ordering, expected outcomes, and constraints to preserve. Don't leave important context implicit.
 
@@ -95,9 +102,9 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
 
    If tied to a GitHub issue, include the same reference near the top.
 
-3. **Simplicity check.** Before presenting, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Would a senior engineer say this is overcomplicated? If yes, simplify.
+4. **Simplicity check.** Before presenting, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Would a senior engineer say this is overcomplicated? If yes, simplify. If a task touches more than ~5 files or has more than 3 acceptance criteria, split it.
 
-4. Present the draft:
+5. Present the draft:
    > "Here's the plan. Please review:"
    >
    > ```markdown

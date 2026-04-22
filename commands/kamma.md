@@ -37,12 +37,13 @@ If any Kamma files are missing, don't stop and don't run setup. Continue with wh
 
 ### 3.0.1 Question Tool Rule
 
-- If the environment exposes a native question/input tool, you must use it instead of asking in plain markdown or plain chat.
-- Prefer these native tools in this order when available:
-  - `AskUserQuestion`
-  - `request_user_input`
-- Only fall back to a normal conversational message if no native question/input tool exists in the environment, or the tool call fails.
-- When using a native question/input tool, keep the question text and answer options aligned with the instructions below. Do not convert a tool-eligible question into plain prose just because it is short.
+**CRITICAL: Never ask questions in plain markdown or plain chat.** Every question to the user must go through a native question/input tool.
+
+- Always attempt the native tool first, in this order:
+  1. `AskUserQuestion`
+  2. `request_user_input`
+- Only fall back to a plain message if the tool call actually fails or throws an error. Do not assume the tool is unavailable — try it first.
+- Asking in markdown when a native tool is available is a violation of this rule.
 
 ### 3.1 Get the Thread Description
 
@@ -55,7 +56,7 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Don'
 
 ### 3.2 Generate Spec and Plan
 
-1. Read `kamma/project.md` and `kamma/tech.md` if they exist. Fill gaps from the repo. Treat handoff to a different agent as the normal case. Only ask the user if absolutely necessary — and if you must, batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available.
+1. Read `kamma/project.md` and `kamma/tech.md` if they exist. Fill gaps from the repo. Then, before drafting anything, identify your key assumptions — about scope, tech stack, affected files, and approach. If any assumption is uncertain and getting it wrong would change the spec significantly, surface it as a question. Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred, skip the question round and proceed.
 
 2. **Push back if warranted.** If a simpler approach exists than what was described, say so. If the request would create unnecessary complexity or conflict with existing architecture, raise it before planning.
 
@@ -71,7 +72,13 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Don'
 
    If tied to a GitHub issue, include a dedicated reference near the top.
 
-4. Generate `plan.md` with Phases → Tasks → Sub-tasks using `[ ]` markers.
+4. Before writing tasks, identify the dependency order: what must exist before what else can be built. Let this order determine the phase sequence.
+
+5. Generate `plan.md` with Phases → Tasks → Sub-tasks using `[ ]` markers.
+
+   Slice tasks vertically — each task should deliver a testable piece of working functionality end-to-end, not a horizontal layer (all DB, then all API, then all UI).
+
+   Include an **Architecture Decisions** section near the top (after any GitHub issue reference) listing key choices made during planning and their rationale — which pattern to follow, where to place new code, what was deliberately not abstracted, and why.
 
    Assume a different agent with zero memory will execute this plan. Include: exact file paths when known, relevant code areas or docs to check, task ordering, expected outcomes, and constraints the executor must preserve. A fresh agent should be able to execute directly from `plan.md`.
 
@@ -89,7 +96,7 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Don'
 
    If tied to a GitHub issue, include the same reference near the top of `plan.md`.
 
-5. **Simplicity check.** Before presenting, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Ask yourself: would a senior engineer say this is overcomplicated? If yes, simplify.
+6. **Simplicity check.** Before presenting, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Ask yourself: would a senior engineer say this is overcomplicated? If yes, simplify. If a task touches more than ~5 files or has more than 3 acceptance criteria, split it.
 
 ### 3.3 STOP 1: Present the Plan
 
@@ -126,13 +133,14 @@ Apply any changes and re-present until the user confirms. Then continue immediat
 ## 4.0 IMPLEMENT THE THREAD
 **Run autonomously. Don't stop for phase checkpoints or mid-task confirmations.**
 
-**Scope rule:** Touch only what the current task requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to a task in `plan.md`. If you notice unrelated issues, note them — don't fix them.
+**Scope rule:** Touch only what the current task requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to a task in `plan.md`. If you notice unrelated issues, log them as `NOTICED — NOT TOUCHING: <file> — <issue>` in your output, then move on. Do not fix them.
 
 1. Read `kamma/threads/<thread_id>/spec.md`, `plan.md`, and `handoff.md` (if it exists — context from a previous session).
 2. Work through every unchecked task and sub-task in sequential order.
 3. For each task or sub-task:
    - Change `[ ]` to `[~]` before you begin.
    - Implement only the work required for that item.
+   - If implementation reveals that an assumption in `spec.md` is wrong or the approach must change, update `spec.md` before continuing — don't let it drift from reality.
    - Run the verification specified in the task's `→ verify:` line.
    - If verification fails, try to fix it up to 2 times. If still failing, note the issue clearly in `plan.md` and continue if there's still a reasonable path.
    - Change `[~]` to `[x]` only after the item passes verification, or after the remaining issue has been recorded.
@@ -160,19 +168,30 @@ Wait for the response.
 **CRITICAL: Actually perform the review before writing the file. Don't write `review.md` first and call it done.**
 
 1. Re-read `spec.md` and `plan.md`.
-2. Run `git diff` and read every changed file relevant to the thread.
+2. Run `git diff` and read every changed file relevant to the thread — evaluate each across five axes:
+   1. **Correctness** — does it match the spec, handle edge cases, cover error paths?
+   2. **Readability** — clear names, no unnecessary complexity, logic easy to follow?
+   3. **Architecture** — fits existing patterns, no circular deps, right abstraction level?
+   4. **Security** — input validated at boundaries, no secrets in code, auth checked?
+   5. **Performance** — N+1 queries, unbounded loops, missing pagination?
 3. Run the relevant test suite or verification commands and read the output.
-4. For each of the following, read the relevant code and report what you found — don't skip any:
+4. Check for dead code introduced or orphaned by this thread — unused functions, replaced components, unreferenced constants. List them explicitly as findings; do not delete without noting them.
+5. For each of the following, read the relevant code and report what you found — don't skip any:
    - **Spec coverage:** Does every requirement in `spec.md` have a corresponding implementation?
    - **Plan completion:** Is every task in `plan.md` marked done and actually implemented?
    - **Code correctness:** Are there logic errors, missing cases, or broken assumptions?
+   - **Architecture decisions:** Were the decisions recorded in `plan.md` actually followed? If any were deviated from, is the deviation noted?
    - **Test coverage:** Do the tests verify the key behaviors in the spec?
    - **Regressions:** Could any change break existing behavior?
-5. For each finding: state severity (`blocking`, `major`, `minor`, `nit`), file and line, what's wrong, why it matters, and the recommended fix.
-6. After the agent review is done, run CodeRabbit review if available (`coderabbit review --agent`). Incorporate any findings.
-7. Fix any blocking or major findings immediately. Re-run verification after each fix. Repeat until none remain.
-8. Make sure `plan.md` reflects the actual state of the work.
-9. Then write `kamma/threads/<thread_id>/review.md` with the following sections:
+6. For each finding, state severity, file and line, what's wrong, why it matters, and the recommended fix. Severity definitions:
+   - `blocking` — broken functionality, data loss, security hole. Must fix before finalizing.
+   - `major` — significant correctness or architecture issue. Must fix before finalizing.
+   - `minor` — worth fixing but not critical. Fix unless explicitly deferred.
+   - `nit` — style or preference. May be skipped.
+7. After the agent review is done, run CodeRabbit review if available (`coderabbit review --agent`). Incorporate any findings.
+8. Fix any blocking or major findings immediately. Re-run verification after each fix. Repeat until none remain.
+9. Make sure `plan.md` reflects the actual state of the work.
+10. Then write `kamma/threads/<thread_id>/review.md` with the following sections:
 
    ```
    ## Thread

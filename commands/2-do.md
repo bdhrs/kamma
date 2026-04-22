@@ -28,7 +28,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 
 ## 3.0 DO THE WORK
 
-**Scope rule:** Touch only what the current task requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to a task in `plan.md`. If you notice unrelated issues, note them — don't fix them.
+**Scope rule:** Touch only what the current task requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to a task in `plan.md`. If you notice unrelated issues, log them as `NOTICED — NOT TOUCHING: <file> — <issue>` in your output, then move on. Do not fix them.
 
 1. Announce which thread you're starting.
 
@@ -43,6 +43,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 3. **Execute tasks** through `plan.md` one by one, following `workflow.md`:
    - Change `[ ]` to `[~]` before starting a task.
    - Implement only what that task requires.
+   - If implementation reveals that an assumption in `spec.md` is wrong or the approach must change, update `spec.md` before continuing — don't let it drift from reality.
    - Run the verification in the task's `→ verify:` line.
    - If verification fails, try to fix it up to 2 times. If still failing, note the issue in `plan.md` and continue.
    - Change `[~]` to `[x]` only after passing verification or recording the issue.
@@ -52,5 +53,5 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 5. **Hand off for review:**
    - After all tasks are done and locally verified, don't mark the thread fully complete yet.
    - Ask the user to test and wait for confirmation.
-   - Once confirmed, suggest running `/kamma:3-review` in a fresh session using a different model (e.g., if on Sonnet, suggest Opus) for an independent review.
+   - Once confirmed: "Testing confirmed. Run `/kamma:3-review` to review this thread. For best results, run it in a fresh session."
    - The thread should only move to completion after review findings are addressed.

@@ -46,8 +46,14 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 
 2. Inspect the implementation:
    - Review the git diff and recent commits relevant to the thread.
-   - Review changed files.
+   - Review changed files — evaluate each across five axes:
+     1. **Correctness** — does it match the spec, handle edge cases, cover error paths?
+     2. **Readability** — clear names, no unnecessary complexity, logic easy to follow?
+     3. **Architecture** — fits existing patterns, no circular deps, right abstraction level?
+     4. **Security** — input validated at boundaries, no secrets in code, auth checked?
+     5. **Performance** — N+1 queries, unbounded loops, missing pagination?
    - Review test or lint outputs if available.
+   - Check for dead code introduced or orphaned by this thread — unused functions, replaced components, unreferenced constants. List them explicitly as findings; do not delete without noting them.
 
 3. Summarize what changed:
    - Thread objective
@@ -64,7 +70,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 
 1. **Required methods** — perform and report on each:
    - Spec review against `spec.md`
-   - Plan review against `plan.md`
+   - Plan review against `plan.md` — including whether architecture decisions were followed. If any were deviated from, is the deviation noted?
    - Diff review of changed files
    - Test and verification review
    - Regression and edge-case review
@@ -87,6 +93,12 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 ## 6.0 WRITE FINDINGS
 
 **Findings first, then summary.**
+
+Severity definitions:
+- `blocking` — broken functionality, data loss, security hole. Must fix before finalizing.
+- `major` — significant correctness or architecture issue. Must fix before finalizing.
+- `minor` — worth fixing but not critical. Fix unless explicitly deferred.
+- `nit` — style or preference. May be skipped.
 
 1. For each finding:
    - Severity: `blocking`, `major`, `minor`, `nit`

@@ -41,11 +41,7 @@ Work through tasks in this order:
    - Mark the thread complete, sync project docs, and archive the completed thread there.
    - If the thread references a GitHub issue, use the preserved issue number to post a summary comment and close the issue during finalize.
 
-7. **Document Deviations:** If implementation differs from the notes in `tech.md`:
-   - **STOP** implementation
-   - Update `tech.md` with the change
-   - Add dated note explaining the change
-   - Resume implementation
+7. **Document Deviations:** If implementation differs from the notes in `tech.md`, update `tech.md` inline with a dated note explaining the change — then continue without stopping.
 
 8. **Update Plan:**
    - Update `plan.md`: change the task from `[~]` to `[x]`.
@@ -57,7 +53,7 @@ Work through tasks in this order:
 1.  **Announce:** Inform the user that the phase is complete.
 
 2.  **Run Tests:** Execute the most relevant local verification for the affected area.
-    -   If verification fails, inform the user and attempt to fix (max 2 attempts). If still failing, stop and ask for guidance.
+    -   If verification fails, attempt to fix (max 2 attempts). If still failing, note the issue clearly in `plan.md` and continue — don't stop.
 
 3.  **Record Remaining Gaps:** If the phase cannot be fully validated yet because the broader feature is still incomplete, note what was checked and what must wait until end-to-end verification.
 
