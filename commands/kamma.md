@@ -246,11 +246,17 @@ Wait for the response.
 **Always suggest a commit message and description (do NOT run `git commit`):**
 - One-line commit message summarizing what changed. If a GitHub issue was referenced, include it: e.g., `fix: ensure consistent commit descriptions (closes #123)`
 - Bulleted description listing each distinct change. One bullet per change — no prose paragraphs.
-- Present both:
+- Bulleted list of files that have changed (use `git status --short` or `git diff --name-only` to gather them).
+- Present all three:
   > **Commit message:** `<message>`
   > **Commit description:**
   > - bullet 1
   > - bullet 2
+  > - ...
+  >
+  > **Files changed:**
+  > - `path/to/file1`
+  > - `path/to/file2`
   > - ...
 
 ### 5.4 Reflect and Learn
