@@ -56,7 +56,7 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Don'
 
 ### 3.2 Generate Spec and Plan
 
-1. Read `kamma/project.md` and `kamma/tech.md` if they exist. Fill gaps from the repo. Then, before drafting anything, identify your key assumptions — about scope, tech stack, affected files, and approach. If any assumption is uncertain and getting it wrong would change the spec significantly, surface it as a question. Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred, skip the question round and proceed.
+1. Read `kamma/project.md` and `kamma/tech.md` if they exist. Fill gaps from the repo. Then, before drafting anything, identify your key assumptions — about scope, tech stack, affected files, and approach. If any assumption is uncertain and getting it wrong would change the spec significantly, surface it as a question. Also assess complexity: if at least one phase needs pro-model reasoning (novel architecture, no existing pattern, 3+ interconnected systems, security-critical logic), add one question to the batch: "This looks complex — use model splitting across Fast/Pro tiers?" Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred and the thread is simple, skip the question round and proceed. Pro means analysis/checking/planning only; execution belongs to Fast.
 
 2. **Push back if warranted.** If a simpler approach exists than what was described, say so. If the request would create unnecessary complexity or conflict with existing architecture, raise it before planning.
 
@@ -96,7 +96,9 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Don'
 
    If tied to a GitHub issue, include the same reference near the top of `plan.md`.
 
-6. **Simplicity check.** Before presenting, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Ask yourself: would a senior engineer say this is overcomplicated? If yes, simplify. If a task touches more than ~5 files or has more than 3 acceptance criteria, split it.
+6. **Model Strategy** — If the user opted in to model splitting (question round): insert a `## Model Strategy` table before Phase 1 with each phase, its tier (Fast/Pro), and a one-line reason. Always mixed — never all-pro. Pro phases are only for analysis/checking/planning outputs; Fast phases are for implementation, commands, verification, generation, installs, servers, and mechanical edits. Add `⚠️ MODEL SWITCH REQUIRED (Pro tier): <analysis/checking reason>` or `⚠️ MODEL SWITCH REQUIRED (Fast tier): mechanical execution resumes` at tier-change phase headers. Otherwise skip.
+
+7. **Simplicity check.** Before presenting, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Ask yourself: would a senior engineer say this is overcomplicated? If yes, simplify. If a task touches more than ~5 files or has more than 3 acceptance criteria, split it.
 
 ### 3.3 STOP 1: Present the Plan
 
@@ -131,19 +133,22 @@ Apply any changes and re-present until the user confirms. Then continue immediat
 ---
 
 ## 4.0 IMPLEMENT THE THREAD
-**Run autonomously. Don't stop for phase checkpoints or mid-task confirmations.**
+**Run autonomously. Don't stop for phase checkpoints or mid-task confirmations — except at model-switch markers (see below).**
 
 **Scope rule:** Touch only what the current task requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to a task in `plan.md`. If you notice unrelated issues, log them as `NOTICED — NOT TOUCHING: <file> — <issue>` in your output, then move on. Do not fix them.
 
 1. Read `kamma/threads/<thread_id>/spec.md`, `plan.md`, and `handoff.md` (if it exists — context from a previous session).
 2. Work through every unchecked task and sub-task in sequential order.
 3. For each task or sub-task:
+   - **Before starting each phase:** If the header has `⚠️ MODEL SWITCH REQUIRED`, write `kamma/threads/<thread_id>/handoff.md` covering all phases completed and their outcomes, non-obvious codebase discoveries, any failed approaches and why, exact next phase and first task to start, current `plan.md` task marker state, and any constraints the next session must respect (overwrite existing but preserve still-relevant context). Display: "⚠️ Model switch required before [Phase Name]. I've written a handoff to preserve context. Please start a **fresh session** with the [Fast / Pro] model and run `/kamma:2-do <thread_id>` to continue." Then stop.
+   - **Model boundary:** In a split plan, Fast only executes mechanical work; Pro only analyzes/checks/plans. If the current tier discovers work owned by the other tier, update `plan.md` with the exact task and switch marker, write `handoff.md`, tell the user which model to use next, and stop. Do not do the other tier's work.
    - Change `[ ]` to `[~]` before you begin.
    - Implement only the work required for that item.
    - If implementation reveals that an assumption in `spec.md` is wrong or the approach must change, update `spec.md` before continuing — don't let it drift from reality.
    - Run the verification specified in the task's `→ verify:` line.
    - If verification fails, try to fix it up to 2 times. If still failing, note the issue clearly in `plan.md` and continue if there's still a reasonable path.
    - Change `[~]` to `[x]` only after the item passes verification, or after the remaining issue has been recorded.
+   - **Context judgment (same model):** If the session context has grown heavy — many files touched, long tool chains, sense of degradation — write a handoff and suggest starting a fresh session with the same model. Do not interrupt a fast, light session.
 4. At the end of each phase, run the phase's verification task.
 5. Don't defer to any external process document.
 
