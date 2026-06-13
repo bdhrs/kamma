@@ -1,3 +1,10 @@
 /scripts/__pycache__
 /kamma
 /.codex
+
+AGENTS.md
+GEMINI.md
+CLAUDE.md
+
+.claude
+.DS_Store

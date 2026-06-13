@@ -44,7 +44,7 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
 
 ### 2.2 Write `spec.md`
 
-1. **Surface assumptions before drafting.** Use `project.md`, `tech.md`, and the codebase to infer as much as you can. Then, before writing anything, identify your key assumptions — about scope, tech stack, affected files, and approach. If any assumption is uncertain and getting it wrong would change the spec significantly, surface it as a question. Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred, skip the question round and proceed.
+1. **Surface assumptions before drafting.** Use `project.md`, `tech.md`, and the codebase to infer as much as you can. Then, before writing anything, identify your key assumptions — about scope, tech stack, affected files, and approach. If any assumption is uncertain and getting it wrong would change the spec significantly, surface it as a question. Also assess complexity: if at least one phase needs pro-model reasoning (novel architecture, no existing pattern, 3+ interconnected systems, security-critical logic), add one question to the batch: "This looks complex — use model splitting across Fast/Pro tiers?" Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred and the thread is simple, skip the question round and proceed. Pro means analysis/checking/planning only; execution belongs to Fast.
    - Present 2–3 plausible options (A, B, C) per question. Last option must be "Type your own answer".
    - **Features:** Focus on intent and edge cases — how it should behave, who it's for, what success looks like.
    - **Bugs, chores, etc.:** Focus on reproduction, scope, or how you'll know it's fixed.
@@ -102,9 +102,11 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
 
    If tied to a GitHub issue, include the same reference near the top.
 
-4. **Simplicity check.** Before presenting, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Would a senior engineer say this is overcomplicated? If yes, simplify. If a task touches more than ~5 files or has more than 3 acceptance criteria, split it.
+4. **Model Strategy** — If the user opted in to model splitting (question round): insert a `## Model Strategy` table before Phase 1 with each phase, its tier (Fast/Pro), and a one-line reason. Always mixed — never all-pro. Pro phases are only for analysis/checking/planning outputs; Fast phases are for implementation, commands, verification, generation, installs, servers, and mechanical edits. Add `⚠️ MODEL SWITCH REQUIRED (Pro tier): <analysis/checking reason>` or `⚠️ MODEL SWITCH REQUIRED (Fast tier): mechanical execution resumes` at tier-change phase headers. Otherwise skip.
 
-5. Present the draft:
+5. **Simplicity check.** Before presenting, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Would a senior engineer say this is overcomplicated? If yes, simplify. If a task touches more than ~5 files or has more than 3 acceptance criteria, split it.
+
+6. Present the draft:
    > "Here's the plan. Please review:"
    >
    > ```markdown
