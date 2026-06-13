@@ -2,9 +2,9 @@
 /kamma
 /.codex
 
-AGENTS.md
-GEMINI.md
-CLAUDE.md
+/CLAUDE.md
+/GEMINI.md
+/QWEN.md
 
-.claude
+/.claude
 .DS_Store

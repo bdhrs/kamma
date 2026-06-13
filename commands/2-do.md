@@ -41,7 +41,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
    - If any read fails, say what failed, try to recover, and keep going if you can.
 
 3. **Execute tasks** through `plan.md` one by one, following `workflow.md`:
-   - **Before starting each phase:** If the header has `⚠️ MODEL SWITCH REQUIRED`, write `kamma/threads/<thread_id>/handoff.md` covering all phases completed and their outcomes, non-obvious codebase discoveries, any failed approaches and why, exact next phase and first task to start, current `plan.md` task marker state, and any constraints the next session must respect (overwrite existing but preserve still-relevant context). Display: "⚠️ Model switch required before [Phase Name]. I've written a handoff to preserve context. Please start a **fresh session** with the [Fast / Pro] model and run `/kamma:2-do <thread_id>` to continue." Then stop.
+   - **Before starting each phase:** If the header has `⚠️ MODEL SWITCH REQUIRED`, write `kamma/threads/<thread_id>/handoff.md` capturing whatever the next session needs to resume — at minimum the exact next phase and first task to start and the current `plan.md` task marker state (overwrite existing but preserve still-relevant context). Display: "⚠️ Model switch required before [Phase Name]. I've written a handoff to preserve context. Please start a **fresh session** with the [Fast / Pro] model and run `/kamma:2-do <thread_id>` to continue." Then stop.
    - **Model boundary:** In a split plan, Fast only executes mechanical work; Pro only analyzes/checks/plans. If the current tier discovers work owned by the other tier, update `plan.md` with the exact task and switch marker, write `handoff.md`, tell the user which model to use next, and stop. Do not do the other tier's work.
    - Change `[ ]` to `[~]` before starting a task.
    - Implement only what that task requires.
@@ -50,7 +50,6 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
    - If verification fails, try to fix it up to 2 times. If still failing, note the issue in `plan.md` and continue.
    - Change `[~]` to `[x]` only after passing verification or recording the issue.
    - **Context judgment (same model):** If the session context has grown heavy — many files touched, long tool chains, sense of degradation — write a handoff and suggest starting a fresh session with the same model. Do not interrupt a fast, light session.
-
 
 4. At the end of each phase, run the phase's verification task.
 
