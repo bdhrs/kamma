@@ -48,6 +48,7 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
    - Present 2–3 plausible options (A, B, C) per question. Last option must be "Type your own answer".
    - **Features:** Focus on intent and edge cases — how it should behave, who it's for, what success looks like.
    - **Bugs, chores, etc.:** Focus on reproduction, scope, or how you'll know it's fixed.
+   - **Loops:** If the user mentioned a "loop" thread (for repeated issue processing), refer to `loop-design.md` alongside the Kamma skill. Tailor questions to define the scope of the standing thread, the analysis standards, and execution constraints, rather than finite feature behavior.
 
 2. **Push back if warranted.** If a simpler approach exists, say so. If the request would create unnecessary complexity or conflict with existing architecture, raise it before writing the spec.
 
@@ -98,7 +99,7 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
      → verify: open entry #123, confirm new column appears with correct data
    ```
 
-   The plan structure must follow `kamma/workflow.md`. Add an automatic verification task at the end of each phase — no manual user approval gates mid-plan.
+   The plan structure must follow `kamma/workflow.md`. Add an automatic verification task at the end of each phase — no manual user approval gates mid-plan (unless it is a standing Loop thread, which requires a hard stop before execution).
 
    If tied to a GitHub issue, include the same reference near the top.
 

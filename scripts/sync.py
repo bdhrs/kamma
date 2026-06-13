@@ -122,6 +122,13 @@ def write_text(path: Path, content: str) -> None:
     path.write_text(content)
 
 
+def copy_skill_md_files(dest: Path, prefix: str = "") -> None:
+    """Copy all .md files from skills/kamma/ to dest, optionally with a prefix."""
+    ensure_dir(dest)
+    for md_file in sorted((SKILLS_DIR / "kamma").glob("*.md")):
+        shutil.copy2(md_file, dest / f"{prefix}{md_file.name}")
+
+
 def remove_if_exists(path: Path) -> None:
     if path.is_symlink() or path.is_file():
         path.unlink()
@@ -189,6 +196,7 @@ def sync_claude(root: Path, commands: list[Command]) -> None:
         target / "one-shot.md",
     ])
     ensure_dir(target)
+    copy_skill_md_files(target)
     for command in commands:
         if command.base == "kamma":
             shutil.copy2(command.source, root / "commands" / "kamma.md")
@@ -208,6 +216,7 @@ def sync_gemini(root: Path, commands: list[Command]) -> None:
     ensure_dir(target / "commands" / "kamma")
     shutil.copy2(REGISTRATION_DIR / "gemini-extension.json", target / "gemini-extension.json")
     shutil.copy2(REGISTRATION_DIR / "GEMINI.md", target / "GEMINI.md")
+    copy_skill_md_files(target)
     for command in commands:
         write_text(target / "commands" / "kamma" / f"{command.base}.toml", render_toml(command))
     copy_tree_contents(TEMPLATES_DIR, target / "templates")
@@ -223,6 +232,7 @@ def sync_antigravity(root: Path, commands: list[Command]) -> None:
     ensure_dir(target)
     for old in target.glob("kamma-*.md"):
         old.unlink()
+    copy_skill_md_files(target, "kamma-")
     for command in commands:
         write_text(target / f"kamma-{command.base}.md", render_markdown_frontmatter(command))
 
@@ -236,6 +246,7 @@ def sync_opencode(root: Path, commands: list[Command]) -> None:
         command_target / "kamma-one-shot.md",
         command_target / "kamma-kamma.md",
     ])
+    copy_skill_md_files(command_target, "kamma-")
     for command in commands:
         if command.base == "kamma":
             shutil.copy2(command.source, command_target / "kamma.md")
@@ -267,8 +278,7 @@ def sync_codex(root: Path, commands: list[Command]) -> None:
         write_text(prompt_target / f"kamma-{command.base}.md", command.body)
 
     skill_target = skills_root / "kamma"
-    ensure_dir(skill_target)
-    shutil.copy2(SKILLS_DIR / "kamma" / "SKILL.md", skill_target / "SKILL.md")
+    copy_skill_md_files(skill_target)
     for command in commands:
         if command.base == "kamma":
             continue
@@ -289,6 +299,7 @@ def sync_qwen(root: Path, commands: list[Command]) -> None:
     ensure_dir(target / "commands" / "kamma")
     shutil.copy2(REGISTRATION_DIR / "qwen-extension.json", target / "qwen-extension.json")
     shutil.copy2(REGISTRATION_DIR / "QWEN.md", target / "QWEN.md")
+    copy_skill_md_files(target)
     for command in commands:
         write_text(target / "commands" / "kamma" / f"{command.base}.toml", render_toml(command))
     copy_tree_contents(TEMPLATES_DIR, target / "templates")
@@ -303,6 +314,7 @@ def sync_kilo(root: Path, commands: list[Command]) -> None:
         skills_root / "kamma-kamma",
     ])
     ensure_dir(skills_root / "kamma")
+    copy_skill_md_files(skills_root / "kamma")
     for command in commands:
         if command.base == "kamma":
             write_text(
@@ -323,7 +335,7 @@ def sync_kilo(root: Path, commands: list[Command]) -> None:
 TARGETS = [
     Target("Claude Code", existing([home / ".claude" for home in HOME_DIRS])),
     Target("Gemini CLI", existing([home / ".gemini" for home in HOME_DIRS])),
-    Target("Antigravity", existing([home / ".gemini" / "antigravity" for home in HOME_DIRS])),
+    Target("Antigravity", existing([home / ".gemini" / "antigravity-cli" for home in HOME_DIRS])),
     Target(
         "OpenCode",
         existing(

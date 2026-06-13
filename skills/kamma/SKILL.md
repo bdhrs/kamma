@@ -52,6 +52,10 @@ Read and follow `kamma/workflow.md` for the full task flow. It is the single sou
 - `/kamma:5-status` - Show project progress
 - `/kamma` - Plan, implement, review, and finalize a thread in a single run (no prior setup required)
 
+## Loop Threads
+
+If the user mentions creating or working on a "loop" (a standing thread for repeated feedback loops or issue processing), refer to `loop-design.md` (located alongside this skill file) for the specialized workflow.
+
 ## Context Loading
 
 Before starting any implementation work, always load:

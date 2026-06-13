@@ -43,6 +43,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 3. **Execute tasks** through `plan.md` one by one, following `workflow.md`:
    - **Before starting each phase:** If the header has `⚠️ MODEL SWITCH REQUIRED`, write `kamma/threads/<thread_id>/handoff.md` capturing whatever the next session needs to resume — at minimum the exact next phase and first task to start and the current `plan.md` task marker state (overwrite existing but preserve still-relevant context). Display: "⚠️ Model switch required before [Phase Name]. I've written a handoff to preserve context. Please start a **fresh session** with the [Fast / Pro] model and run `/kamma:2-do <thread_id>` to continue." Then stop.
    - **Model boundary:** In a split plan, Fast only executes mechanical work; Pro only analyzes/checks/plans. If the current tier discovers work owned by the other tier, update `plan.md` with the exact task and switch marker, write `handoff.md`, tell the user which model to use next, and stop. Do not do the other tier's work.
+   - **Loop Threads:** If the thread is a standing loop (refer to `loop-design.md` alongside the Kamma skill), execute only the approved active cycle. Ensure the hard stop for user approval is respected before any implementation, and after execution, prepare a handoff for the next session's analysis phase.
    - Change `[ ]` to `[~]` before starting a task.
    - Implement only what that task requires.
    - If implementation reveals that an assumption in `spec.md` is wrong or the approach must change, update `spec.md` before continuing — don't let it drift from reality.
@@ -54,7 +55,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 4. At the end of each phase, run the phase's verification task.
 
 5. **Hand off for review:**
-   - After all tasks are done and locally verified, don't mark the thread fully complete yet.
+   - After all tasks are done and locally verified, don't mark the thread fully complete yet. (Note: Loop threads remain open and just return to the reporting stage).
    - Ask the user to test and wait for confirmation.
    - Once confirmed: "Testing confirmed. Run `/kamma:3-review` to review this thread. For best results, run it in a fresh session."
    - The thread should only move to completion after review findings are addressed.
