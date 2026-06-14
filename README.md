@@ -4,7 +4,13 @@ A lightweight plan-do-review-finalize process for your CLI agents.
 
 ## Supported Tools
 
-Claude Code, Gemini CLI, Antigravity, OpenCode, Kilo Code, Codex CLI, Qwen Code
+Claude Code, Antigravity (IDE + `agy` CLI), OpenCode, Kilo Code, Codex CLI, Qwen Code
+
+> **Gemini CLI** was removed — Google is sunsetting it for consumer tiers (free,
+> Google AI Pro/Ultra) on 18 June 2026 in favour of Antigravity; Standard and
+> Enterprise subscriptions continue past that date. Install
+> [Antigravity](https://antigravity.google) (or the `agy` CLI) and Kamma syncs to it
+> automatically.
 
 ## Quick Install
 
@@ -72,6 +78,20 @@ The sync tool detects which AI CLIs are installed on your machine and copies the
 ### /kamma
 
 `/kamma` runs the full cycle in a single session. It stops twice: to confirm the plan, and to ask you to test. If testing passes, it reviews and finalizes automatically.
+
+### Antigravity
+
+Antigravity is served two ways, and a single `just sync` installs both (detected when
+`~/.gemini/antigravity` or `~/.gemini/antigravity-cli` exists):
+
+- **Skills** → `~/.gemini/skills/`. Read by both the Antigravity IDE and the `agy` CLI
+  (whose `/` menu lists skills). `kamma/` is the full single-run cycle; each step is its
+  own skill (`kamma-1-plan/`, `kamma-2-do/`, …), so they show up as `/kamma`,
+  `/kamma-1-plan`, `/kamma-3-review`, … and auto-activate semantically.
+- **Workflows** → `~/.gemini/antigravity/global_workflows/`. The same `/kamma-*` slash
+  commands for the IDE (the `agy` CLI uses skills, not workflows).
+
+All paths live under `~/.gemini` on macOS, Linux, and Windows (`%USERPROFILE%\.gemini`).
 
 ---
 

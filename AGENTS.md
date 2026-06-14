@@ -2,7 +2,7 @@
 
 Kamma is a lightweight plan-do-review-finalize process for CLI coding agents. This
 repo *is* the framework: it ships the command prompts and a sync tool that installs
-them into whichever AI CLIs are present (Claude Code, Gemini CLI, Codex, Qwen, etc.).
+them into whichever AI CLIs are present (Claude Code, Antigravity, Codex, Qwen, etc.).
 
 ## Repo layout
 
@@ -11,7 +11,7 @@ them into whichever AI CLIs are present (Claude Code, Gemini CLI, Codex, Qwen, e
   `handoff` are the individual steps.
 - `scripts/sync.py` — detects installed CLIs and copies `commands/` + `registration/`
   into each tool's config dir. It copies (never symlinks) and skips missing tools.
-- `registration/` — per-tool registration files (`GEMINI.md`, `QWEN.md`, the
+- `registration/` — per-tool registration files (`QWEN.md`, the
   `*-extension.json` / `*-plugin.json` manifests). These are tracked sources consumed
   by `sync.py` — don't confuse them with the root-level agent files.
 - `skills/kamma/SKILL.md` — the skill packaging of the same workflow.

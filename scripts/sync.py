@@ -61,6 +61,15 @@ def existing(paths: list[Path]) -> list[Path]:
     return [path for path in unique_paths(paths) if path.is_dir()]
 
 
+def antigravity_roots() -> list[Path]:
+    roots: list[Path] = []
+    for home in HOME_DIRS:
+        gemini = home / ".gemini"
+        if (gemini / "antigravity").is_dir() or (gemini / "antigravity-cli").is_dir():
+            roots.append(gemini)
+    return unique_paths(roots)
+
+
 def read_commands() -> list[Command]:
     commands: list[Command] = []
     for path in sorted(COMMANDS_DIR.glob("*.md")):
@@ -169,6 +178,15 @@ def render_markdown_frontmatter(command: Command) -> str:
     )
 
 
+def render_antigravity_workflow(command: Command) -> str:
+    return (
+        "---\n"
+        f"description: {command.description}\n"
+        "---\n\n"
+        f"{command.body}"
+    )
+
+
 def resolve_opencode_command_dir(root: Path) -> Path:
     commands_dir = root / "commands"
     command_dir = root / "command"
@@ -196,35 +214,45 @@ def sync_claude(root: Path, commands: list[Command]) -> None:
             shutil.copy2(command.source, target / f"{command.base}.md")
 
 
-def sync_gemini(root: Path, commands: list[Command]) -> None:
-    target = root / "extensions" / "kamma"
-    remove_stale([
-        target / "commands" / "kamma" / "status.toml",
-        target / "commands" / "kamma" / "kamma-status.toml",
-        root / "commands" / "kamma" / "status.toml",
-        root / "commands" / "kamma" / "kamma-status.toml",
-        target / "commands" / "kamma" / "one-shot.toml",
-    ])
-    ensure_dir(target / "commands" / "kamma")
-    shutil.copy2(REGISTRATION_DIR / "gemini-extension.json", target / "gemini-extension.json")
-    shutil.copy2(REGISTRATION_DIR / "GEMINI.md", target / "GEMINI.md")
-    for command in commands:
-        write_text(target / "commands" / "kamma" / f"{command.base}.toml", render_toml(command))
-    copy_tree_contents(TEMPLATES_DIR, target / "templates")
-
-
 def sync_antigravity(root: Path, commands: list[Command]) -> None:
-    target = root / "global_workflows"
-    remove_if_exists(root / "skills" / "kamma")
+    """Install Kamma into Antigravity from the ``~/.gemini`` root.
+
+    Skills are the primary integration and are read by both the Antigravity IDE
+    and the ``agy`` CLI (whose ``/`` menu lists skills, not workflows):
+    ``~/.gemini/skills/kamma`` is the single-run orchestrator and
+    ``~/.gemini/skills/kamma-<step>`` exposes each step as its own ``/kamma-*``
+    entry. Global workflows under ``~/.gemini/antigravity/global_workflows`` add
+    the same ``/kamma-*`` slash commands in the IDE.
+    """
+    skills_root = root / "skills"
+    skill_target = skills_root / "kamma"
+    workflows_target = root / "antigravity" / "global_workflows"
+
+    remove_if_exists(root / "antigravity" / "skills" / "kamma")
+    remove_if_exists(skill_target / "templates")
     remove_stale([
-        target / "kamma-status.md",
-        target / "status.md",
+        workflows_target / "kamma-status.md",
+        workflows_target / "status.md",
     ])
-    ensure_dir(target)
-    for old in target.glob("kamma-*.md"):
+    for old in skills_root.glob("kamma-*"):
+        remove_if_exists(old)
+
+    ensure_dir(skill_target)
+    shutil.copy2(SKILLS_DIR / "kamma" / "SKILL.md", skill_target / "SKILL.md")
+    for command in commands:
+        if command.base == "kamma":
+            continue
+        step_dir = skills_root / f"kamma-{command.base}"
+        write_text(step_dir / "SKILL.md", render_markdown_frontmatter(command))
+        if command.base == "0-setup":
+            copy_tree_contents(TEMPLATES_DIR, step_dir / "templates")
+
+    ensure_dir(workflows_target)
+    for old in workflows_target.glob("kamma-*.md"):
         old.unlink()
     for command in commands:
-        write_text(target / f"kamma-{command.base}.md", render_markdown_frontmatter(command))
+        name = "kamma" if command.base == "kamma" else f"kamma-{command.base}"
+        write_text(workflows_target / f"{name}.md", render_antigravity_workflow(command))
 
 
 def sync_opencode(root: Path, commands: list[Command]) -> None:
@@ -322,8 +350,7 @@ def sync_kilo(root: Path, commands: list[Command]) -> None:
 
 TARGETS = [
     Target("Claude Code", existing([home / ".claude" for home in HOME_DIRS])),
-    Target("Gemini CLI", existing([home / ".gemini" for home in HOME_DIRS])),
-    Target("Antigravity", existing([home / ".gemini" / "antigravity" for home in HOME_DIRS])),
+    Target("Antigravity", antigravity_roots()),
     Target(
         "OpenCode",
         existing(
@@ -340,7 +367,6 @@ TARGETS = [
 ]
 SYNCERS = {
     "Claude Code": sync_claude,
-    "Gemini CLI": sync_gemini,
     "Antigravity": sync_antigravity,
     "OpenCode": sync_opencode,
     "Codex CLI": sync_codex,
@@ -351,6 +377,7 @@ SYNCERS = {
 
 COMMAND_PREFIX: dict[str, str] = {
     "Codex CLI": "$kamma",
+    "Antigravity": "/kamma (or describe your work — the kamma skill auto-activates)",
 }
 
 
