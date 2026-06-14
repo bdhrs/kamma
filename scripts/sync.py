@@ -46,12 +46,20 @@ def unique_paths(paths: list[Path]) -> list[Path]:
 HOME_DIRS = unique_paths(
     [
         Path.home(),
-        *(Path(os.environ[name]) for name in ("HOME", "USERPROFILE") if os.environ.get(name)),
+        *(
+            Path(os.environ[name])
+            for name in ("HOME", "USERPROFILE")
+            if os.environ.get(name)
+        ),
     ]
 )
 APPDATA_DIRS = unique_paths(
     [
-        *(Path(os.environ[name]) for name in ("APPDATA", "LOCALAPPDATA") if os.environ.get(name)),
+        *(
+            Path(os.environ[name])
+            for name in ("APPDATA", "LOCALAPPDATA")
+            if os.environ.get(name)
+        ),
     ]
 )
 AGENTS_DIRS = unique_paths([home / ".agents" for home in HOME_DIRS])
@@ -158,12 +166,7 @@ def remove_marketplace_kamma() -> None:
 
 
 def render_toml(command: Command) -> str:
-    return (
-        f'description = "{command.description}"\n'
-        'prompt = """\n'
-        f"{command.body}"
-        '"""\n'
-    )
+    return f'description = "{command.description}"\nprompt = """\n{command.body}"""\n'
 
 
 def render_markdown_frontmatter(command: Command) -> str:
@@ -190,13 +193,16 @@ def resolve_opencode_command_dir(root: Path) -> Path:
 
 def sync_claude(root: Path, commands: list[Command]) -> None:
     target = root / "commands" / "kamma"
-    remove_stale([
-        target / "status.md",
-        target / "kamma-status.md",
-        target / "one-shot.md",
-    ])
+    remove_stale(
+        [
+            target / "status.md",
+            target / "kamma-status.md",
+            target / "one-shot.md",
+            target / "SKILL.md",
+            target / "loop-design.md",
+        ]
+    )
     ensure_dir(target)
-    copy_skill_md_files(target)
     for command in commands:
         if command.base == "kamma":
             shutil.copy2(command.source, root / "commands" / "kamma.md")
@@ -206,46 +212,58 @@ def sync_claude(root: Path, commands: list[Command]) -> None:
 
 def sync_gemini(root: Path, commands: list[Command]) -> None:
     target = root / "extensions" / "kamma"
-    remove_stale([
-        target / "commands" / "kamma" / "status.toml",
-        target / "commands" / "kamma" / "kamma-status.toml",
-        root / "commands" / "kamma" / "status.toml",
-        root / "commands" / "kamma" / "kamma-status.toml",
-        target / "commands" / "kamma" / "one-shot.toml",
-    ])
+    remove_stale(
+        [
+            target / "commands" / "kamma" / "status.toml",
+            target / "commands" / "kamma" / "kamma-status.toml",
+            root / "commands" / "kamma" / "status.toml",
+            root / "commands" / "kamma" / "kamma-status.toml",
+            target / "commands" / "kamma" / "one-shot.toml",
+        ]
+    )
     ensure_dir(target / "commands" / "kamma")
-    shutil.copy2(REGISTRATION_DIR / "gemini-extension.json", target / "gemini-extension.json")
+    shutil.copy2(
+        REGISTRATION_DIR / "gemini-extension.json", target / "gemini-extension.json"
+    )
     shutil.copy2(REGISTRATION_DIR / "GEMINI.md", target / "GEMINI.md")
     copy_skill_md_files(target)
     for command in commands:
-        write_text(target / "commands" / "kamma" / f"{command.base}.toml", render_toml(command))
+        write_text(
+            target / "commands" / "kamma" / f"{command.base}.toml", render_toml(command)
+        )
     copy_tree_contents(TEMPLATES_DIR, target / "templates")
 
 
 def sync_antigravity(root: Path, commands: list[Command]) -> None:
     target = root / "global_workflows"
     remove_if_exists(root / "skills" / "kamma")
-    remove_stale([
-        target / "kamma-status.md",
-        target / "status.md",
-    ])
+    remove_stale(
+        [
+            target / "kamma-status.md",
+            target / "status.md",
+        ]
+    )
     ensure_dir(target)
     for old in target.glob("kamma-*.md"):
         old.unlink()
     copy_skill_md_files(target, "kamma-")
     for command in commands:
-        write_text(target / f"kamma-{command.base}.md", render_markdown_frontmatter(command))
+        write_text(
+            target / f"kamma-{command.base}.md", render_markdown_frontmatter(command)
+        )
 
 
 def sync_opencode(root: Path, commands: list[Command]) -> None:
     command_target = resolve_opencode_command_dir(root)
     ensure_dir(command_target)
-    remove_stale([
-        command_target / "kamma-status.md",
-        command_target / "status.md",
-        command_target / "kamma-one-shot.md",
-        command_target / "kamma-kamma.md",
-    ])
+    remove_stale(
+        [
+            command_target / "kamma-status.md",
+            command_target / "status.md",
+            command_target / "kamma-one-shot.md",
+            command_target / "kamma-kamma.md",
+        ]
+    )
     copy_skill_md_files(command_target, "kamma-")
     for command in commands:
         if command.base == "kamma":
@@ -262,11 +280,13 @@ def sync_codex(root: Path, commands: list[Command]) -> None:
     prompt_target = root / "prompts"
     skills_root = root / "skills"
     ensure_dir(prompt_target)
-    remove_stale([
-        prompt_target / "kamma-status.md",
-        prompt_target / "status.md",
-        prompt_target / "kamma-one-shot.md",
-    ])
+    remove_stale(
+        [
+            prompt_target / "kamma-status.md",
+            prompt_target / "status.md",
+            prompt_target / "kamma-one-shot.md",
+        ]
+    )
     remove_if_exists(skills_root / "kamma")
     for old in skills_root.glob("kamma-*"):
         remove_if_exists(old)
@@ -292,27 +312,35 @@ def sync_codex(root: Path, commands: list[Command]) -> None:
 
 def sync_qwen(root: Path, commands: list[Command]) -> None:
     target = root / "extensions" / "kamma"
-    remove_stale([
-        target / "commands" / "kamma" / "status.toml",
-        target / "commands" / "kamma" / "kamma-status.toml",
-    ])
+    remove_stale(
+        [
+            target / "commands" / "kamma" / "status.toml",
+            target / "commands" / "kamma" / "kamma-status.toml",
+        ]
+    )
     ensure_dir(target / "commands" / "kamma")
-    shutil.copy2(REGISTRATION_DIR / "qwen-extension.json", target / "qwen-extension.json")
+    shutil.copy2(
+        REGISTRATION_DIR / "qwen-extension.json", target / "qwen-extension.json"
+    )
     shutil.copy2(REGISTRATION_DIR / "QWEN.md", target / "QWEN.md")
     copy_skill_md_files(target)
     for command in commands:
-        write_text(target / "commands" / "kamma" / f"{command.base}.toml", render_toml(command))
+        write_text(
+            target / "commands" / "kamma" / f"{command.base}.toml", render_toml(command)
+        )
     copy_tree_contents(TEMPLATES_DIR, target / "templates")
 
 
 def sync_kilo(root: Path, commands: list[Command]) -> None:
     skills_root = root / "skills"
-    remove_stale([
-        skills_root / "kamma-status",
-        skills_root / "status",
-        skills_root / "kamma-one-shot",
-        skills_root / "kamma-kamma",
-    ])
+    remove_stale(
+        [
+            skills_root / "kamma-status",
+            skills_root / "status",
+            skills_root / "kamma-one-shot",
+            skills_root / "kamma-kamma",
+        ]
+    )
     ensure_dir(skills_root / "kamma")
     copy_skill_md_files(skills_root / "kamma")
     for command in commands:
@@ -335,7 +363,10 @@ def sync_kilo(root: Path, commands: list[Command]) -> None:
 TARGETS = [
     Target("Claude Code", existing([home / ".claude" for home in HOME_DIRS])),
     Target("Gemini CLI", existing([home / ".gemini" for home in HOME_DIRS])),
-    Target("Antigravity", existing([home / ".gemini" / "antigravity-cli" for home in HOME_DIRS])),
+    Target(
+        "Antigravity",
+        existing([home / ".gemini" / "antigravity-cli" for home in HOME_DIRS]),
+    ),
     Target(
         "OpenCode",
         existing(
