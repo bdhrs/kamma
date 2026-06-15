@@ -393,7 +393,7 @@ SYNCERS = {
 
 COMMAND_PREFIX: dict[str, str] = {
     "Codex CLI": "$kamma",
-    "Antigravity": "/kamma (or describe your work — the kamma skill auto-activates)",
+    "Antigravity": "/kamma",
 }
 
 
