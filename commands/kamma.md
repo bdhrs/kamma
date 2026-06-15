@@ -231,6 +231,8 @@ Wait for the response.
 
 ### 5.2 Finalize
 
+**COMPLETION GATE — once review passes, finalize runs to the end.** Sections 5.2 through 5.4 are all mandatory, not a menu: stopping after the project-docs update and skipping the archive, GitHub, or reflect/lessons steps is an *incomplete* finalize. Ticking the `plan.md` "Finalize" checkbox — or writing a summary that calls the thread done — is **not** executing these steps; finish 5.2 through 5.4 first. If a step doesn't apply (e.g. no GitHub issue is referenced), say so explicitly rather than skipping it silently.
+
 1. If `kamma/project.md` exists and the thread changed something significant about the project, update it. If the file doesn't exist, don't create it.
 2. If `kamma/tech.md` exists and the thread changed tools, constraints, or working assumptions, update it. If the file doesn't exist, don't create it.
 3. Ensure `kamma/archive/` exists.
