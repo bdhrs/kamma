@@ -28,9 +28,9 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 
 ## 3.0 START THE REVIEW
 
-1. Announce that you're reviewing the selected thread and continue straight into it.
-2. If you appear to be the same agent that did the implementation, note briefly that the review is less independent, but don't stop.
-3. No reviewer-selection gate — just start.
+1. Announce that you're reviewing the selected thread.
+2. **Independence escalation:** if you are the same agent/session that did the implementation AND your CLI has a way to spawn an independent subagent with its own context (e.g. Claude Code's Agent/Task tool), use it now — spawn one with a zero-memory prompt covering Sections 4.0–6.0 (load thread context, review, write findings) for this thread, and have it report its findings back to you instead of writing `review.md` itself. Continue at Section 7.0 using those findings.
+3. Otherwise (no subagent capability, or you're already a fresh session): note briefly if independence is reduced, and continue straight into Section 4.0 yourself.
 
 ---
 

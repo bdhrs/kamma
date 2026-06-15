@@ -172,6 +172,16 @@ Wait for the response.
 
 **CRITICAL: Actually perform the review before writing the file. Don't write `review.md` first and call it done.**
 
+**Independence escalation:** in this single-run flow the reviewer is *always* the
+implementer — if your CLI has a way to spawn an independent subagent with its own
+context (e.g. Claude Code's Agent/Task tool), use it now even more than in
+standalone `/kamma:3-review`. Spawn one with a zero-memory prompt covering steps
+1-6 below (re-read spec/plan, inspect the diff and tests, check for dead code,
+report spec/plan/regression coverage, list findings with severity) for this
+thread, and have it report findings back to you instead of writing `review.md`.
+Continue at step 7 using those findings. If no subagent capability is available,
+do steps 1-6 yourself.
+
 1. Re-read `spec.md` and `plan.md`.
 2. Run `git diff` and read every changed file relevant to the thread — evaluate each across five axes:
    1. **Correctness** — does it match the spec, handle edge cases, cover error paths?
@@ -224,7 +234,7 @@ Wait for the response.
    ## Verdict
    PASSED | BLOCKED
    - Review date: YYYY-MM-DD
-   - Reviewer: kamma (inline)
+   - Reviewer: kamma (inline), or independent subagent if spawned
    ```
 
    Target ~30-50 lines. Concise but complete enough for a future agent to understand what happened without re-running checks.
