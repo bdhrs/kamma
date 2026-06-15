@@ -22,30 +22,13 @@ Automatically apply this skill when:
 3. **Thread Progress:** Update task status markers (`[ ]` → `[~]` → `[x]`)
 4. **Review the Work Before Calling It Done:** Threads are not done when implementation ends
 
-**Spec gate — files on disk before any code.** `spec.md` and `plan.md` must already
-exist on disk for the thread before you edit a single line of code. If either is
-missing, run `/kamma:1-plan` to create them first (or, for a tiny change, ask the
-user whether to skip the ceremony — never decide silently). Implementing first and
-backfilling the thread files afterwards is dishonest and is not allowed, even for a
-3-line change.
+**Spec gate — files on disk before any code.** `spec.md` and `plan.md` must already exist on disk for the thread before you edit a single line of code. If either is missing, run `/kamma:1-plan` to create them first (or, for a tiny change, ask the user whether to skip the ceremony — never decide silently). Implementing first and backfilling the thread files afterwards is dishonest and is not allowed, even for a 3-line change.
 
-**Minimal-first gate — draft the smallest change first.** When writing `spec.md`,
-draft the smallest change that satisfies the request — no extra helpers, refactors,
-generalization, or "while we're at it" machinery. If a simpler approach exists, say
-so before writing the spec and propose the minimal version. Defer extras to a
-follow-up unless the user asks for them now.
+**Minimal-first gate — draft the smallest change first.** When writing `spec.md`, draft the smallest change that satisfies the request — no extra helpers, refactors, generalization, or "while we're at it" machinery. If a simpler approach exists, say so before writing the spec and propose the minimal version. Defer extras to a follow-up unless the user asks for them now.
 
-**Smoke gate — run the full suite before handoff.** Before asking the user to test,
-run the project's full test suite (or a broad smoke check covering the affected
-areas) once — not just each task's `→ verify:` line. Per-task checks miss
-pre-existing or cross-task bugs. If it fails, fix and re-run before handoff.
+**Smoke gate — run the full suite before handoff.** Before asking the user to test, run the project's full test suite (or a broad smoke check covering the affected areas) once — not just each task's `→ verify:` line. Per-task checks miss pre-existing or cross-task bugs. If it fails, fix and re-run before handoff.
 
-**Drift gate — keep `spec.md` and `plan.md` in sync with reality, always.** The
-instant implementation diverges from `spec.md` or `plan.md` — a wrong assumption, a
-different approach, a different set of files, reordered or dropped tasks — update
-the relevant file immediately, before continuing. The same applies to any follow-up
-change the user requests mid-thread: record it right away, not at wrap-up. Never
-leave `plan.md` with `[x]` tasks that no longer match what was built.
+**Drift gate — keep `spec.md` and `plan.md` in sync with reality, always.** The instant implementation diverges from `spec.md` or `plan.md` — a wrong assumption, a different approach, a different set of files, reordered or dropped tasks — update the relevant file immediately, before continuing. The same applies to any follow-up change the user requests mid-thread: record it right away, not at wrap-up. Never leave `plan.md` with `[x]` tasks that no longer match what was built.
 
 ## Project Structure Understanding
 

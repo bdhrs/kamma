@@ -28,12 +28,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 
 ## 3.0 DO THE WORK
 
-**SPEC GATE — files on disk before any code.** Before you edit a single line of
-code, `spec.md` and `plan.md` must already exist on disk for this thread. If either
-is missing, STOP: run `/kamma:1-plan` to create them first, or — for a genuinely
-tiny change — ask the user whether to skip the ceremony; never decide that
-silently. Implementing first and reconstructing the thread files at wrap-up is
-dishonest and is not allowed, even for a 3-line change.
+**SPEC GATE — files on disk before any code.** Before you edit a single line of code, `spec.md` and `plan.md` must already exist on disk for this thread. If either is missing, STOP: run `/kamma:1-plan` to create them first, or — for a genuinely tiny change — ask the user whether to skip the ceremony; never decide that silently. Implementing first and reconstructing the thread files at wrap-up is dishonest and is not allowed, even for a 3-line change.
 
 **Scope rule:** Touch only what the current task requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to a task in `plan.md`. If you notice unrelated issues, log them as `NOTICED — NOT TOUCHING: <file> — <issue>` in your output, then move on. Do not fix them.
 
@@ -52,15 +47,7 @@ dishonest and is not allowed, even for a 3-line change.
    - **Model boundary:** In a split plan, Fast only executes mechanical work; Pro only analyzes/checks/plans. If the current tier discovers work owned by the other tier, update `plan.md` with the exact task and switch marker, write `handoff.md`, tell the user which model to use next, and stop. Do not do the other tier's work.
    - Change `[ ]` to `[~]` before starting a task.
    - Implement only what that task requires.
-   - **DRIFT GATE — keep `spec.md` and `plan.md` in sync with reality, always.** The
-     instant implementation diverges from `spec.md` or `plan.md` — a wrong
-     assumption, a different approach, a different set of files, reordered or
-     dropped tasks — update the relevant file immediately, before continuing. The
-     same applies to any follow-up change the user requests mid-thread (a new
-     requirement, a tweak, a scope addition): record it in `spec.md`/`plan.md`
-     right away, not at wrap-up. Never leave `plan.md` with `[x]` tasks that no
-     longer match what was built. Don't wait for review, or for the user to ask
-     twice.
+   - **DRIFT GATE — keep `spec.md` and `plan.md` in sync with reality, always.** The instant implementation diverges from `spec.md` or `plan.md` — a wrong assumption, a different approach, a different set of files, reordered or dropped tasks — update the relevant file immediately, before continuing. The same applies to any follow-up change the user requests mid-thread (a new requirement, a tweak, a scope addition): record it in `spec.md`/`plan.md` right away, not at wrap-up. Never leave `plan.md` with `[x]` tasks that no longer match what was built. Don't wait for review, or for the user to ask twice.
    - Run the verification in the task's `→ verify:` line.
    - If verification fails, try to fix it up to 2 times. If still failing, note the issue in `plan.md` and continue.
    - Change `[~]` to `[x]` only after passing verification or recording the issue.

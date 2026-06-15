@@ -17,8 +17,7 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
    - If it doesn't exist, this is a new setup. Go to Step 1.2.
    - If it exists, read its content.
 
-2. **Resume Based on State:**
-   Let `STEP` = the value of `last_successful_step`.
+2. **Resume Based on State:** Let `STEP` = the value of `last_successful_step`.
 
    - `"2.1_project_guide"` → "Resuming: `project.md` is done. Next: `tech.md`." Go to **Section 2.2**.
    - `"2.2_tech"` → "Resuming: `project.md` and `tech.md` are done. Next: `kamma/workflow.md`." Go to **Section 2.3**.
@@ -80,11 +79,9 @@ Give a quick overview:
    - Announce that a new project will be initialized.
    - Continue to the next step.
 
-3. **Initialize Git (new projects only):**
-   If no `.git` directory exists, run `git init` and tell the user.
+3. **Initialize Git (new projects only):** If no `.git` directory exists, run `git init` and tell the user.
 
-4. **Ask about the project goal (new projects only):**
-   Ask: "What is the goal of this project?" Wait for the response.
+4. **Ask about the project goal (new projects only):** Ask: "What is the goal of this project?" Wait for the response.
    - Run `mkdir -p kamma`.
    - Create `kamma/setup_state.json` with `{"last_successful_step": ""}`.
    - Write the response into `kamma/project.md` under `# Initial Concept`.
