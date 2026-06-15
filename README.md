@@ -102,8 +102,9 @@ uv tool install pre-commit
 pre-commit install
 ```
 
-The hooks run Ruff (lint + format) and Pyright on staged Python files via `uv run`,
-so no extra dev dependencies need to be added to the project.
+The hooks run Ruff (lint + format) and Pyright on staged Python files. Both tools
+are pinned in `kammika`'s dev dependencies and run via `uv run --project kammika`,
+so the same versions are used everywhere.
 
 ---
 
