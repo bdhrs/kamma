@@ -9,7 +9,7 @@ import typer
 
 from kammika.agents import describe_agent, get_agent_model
 from kammika.config import KammikaConfig
-from kammika.paths import config_path, kamma_dir, queue_path, target_repo_root
+from kammika.paths import config_path, kamma_dir, queue_path
 from kammika.ui import console, error, muted, show_banner, success, warning, warm_panel
 
 CLAUDE_MODEL = "opus"
@@ -49,10 +49,16 @@ class Candidate:
 
     @property
     def is_bug(self) -> bool:
-        return any(l.lower() == "bug" for l in self.labels)
+        return any(label.lower() == "bug" for label in self.labels)
 
 
-_NETWORK_ERRORS = ("TLS handshake timeout", "connection refused", "no such host", "i/o timeout", "dial tcp")
+_NETWORK_ERRORS = (
+    "TLS handshake timeout",
+    "connection refused",
+    "no such host",
+    "i/o timeout",
+    "dial tcp",
+)
 _RETRY_ATTEMPTS = 3
 _RETRY_DELAY = 4  # seconds
 
@@ -61,7 +67,9 @@ def _run(args: list[str], cwd: Path | None = None) -> subprocess.CompletedProces
     return subprocess.run(args, capture_output=True, text=True, cwd=cwd)
 
 
-def _run_with_retry(args: list[str], cwd: Path | None = None) -> subprocess.CompletedProcess:
+def _run_with_retry(
+    args: list[str], cwd: Path | None = None
+) -> subprocess.CompletedProcess:
     """Run a command, retrying up to _RETRY_ATTEMPTS times on transient network errors."""
     import time
 
@@ -273,7 +281,9 @@ def _extract_chosen(text: str) -> dict | None:
     return None
 
 
-def _llm_pick(candidates: list[Candidate], agents: list[str], models: dict[str, str] | None = None) -> int | None:
+def _llm_pick(
+    candidates: list[Candidate], agents: list[str], models: dict[str, str] | None = None
+) -> int | None:
     top = candidates[:20]
     payload = [
         {
@@ -407,19 +417,29 @@ def run_triage() -> None:
         warning("I could not find a good next issue to queue.")
         raise typer.Exit(0)
 
-    llm_agent = next((agent for agent in config.agents if agent in {"claude", "opencode"}), None)
+    llm_agent = next(
+        (agent for agent in config.agents if agent in {"claude", "opencode"}), None
+    )
     if llm_agent is not None:
-        muted(f"Asking {describe_agent(llm_agent, config.models)} to choose the best next issue.")
+        muted(
+            f"Asking {describe_agent(llm_agent, config.models)} to choose the best next issue."
+        )
     else:
-        muted("No configured recommendation model available; built-in ranking will be used if needed.")
+        muted(
+            "No configured recommendation model available; built-in ranking will be used if needed."
+        )
     chosen_number = _llm_pick(candidates, config.agents, config.models)
 
     if chosen_number is not None:
         chosen = next(c for c in candidates if c.number == chosen_number)
         source = "llm"
-        success(f"{describe_agent(llm_agent, config.models) if llm_agent else 'The configured model'} chose issue #{chosen.number}.")
+        success(
+            f"{describe_agent(llm_agent, config.models) if llm_agent else 'The configured model'} chose issue #{chosen.number}."
+        )
     else:
-        warning("The configured recommendation model could not choose, so I picked the top issue using the built-in rules.")
+        warning(
+            "The configured recommendation model could not choose, so I picked the top issue using the built-in rules."
+        )
         chosen = candidates[0]
         source = "rule-based"
 

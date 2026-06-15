@@ -12,6 +12,8 @@ app = typer.Typer(
     help="Autonomous kamma orchestrator — picks the next issue and launches an agent session.",
     no_args_is_help=False,
 )
+
+
 def version_callback(value: bool) -> None:
     if value:
         console.print(f"[info]kammika {__version__}[/info]")

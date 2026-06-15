@@ -67,10 +67,14 @@ def prompt_text(message: str, default: str | None = None) -> str:
 
 def prompt_confirm(message: str, default: bool = True) -> bool:
     console.print(f"[question]{message}[/question]")
-    value = Confirm.ask("[input]›[/input]", default=default, console=console, show_choices=True)
+    value = Confirm.ask(
+        "[input]›[/input]", default=default, console=console, show_choices=True
+    )
     gap()
     return value
 
 
 def warm_panel(body: str, title: str) -> Panel:
-    return Panel(body, title=title, border_style="panel.border", title_align="left", expand=False)
+    return Panel(
+        body, title=title, border_style="panel.border", title_align="left", expand=False
+    )

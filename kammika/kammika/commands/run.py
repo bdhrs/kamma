@@ -7,9 +7,14 @@ from pathlib import Path
 
 import typer
 
-from kammika.agents import build_launch_command, describe_agent, get_agent_spec, supported_agent_keys
+from kammika.agents import (
+    build_launch_command,
+    describe_agent,
+    get_agent_spec,
+    supported_agent_keys,
+)
 from kammika.config import KammikaConfig
-from kammika.paths import config_path, kamma_dir, queue_path, target_repo_root
+from kammika.paths import config_path, queue_path, target_repo_root
 from kammika.ui import (
     console,
     error,
@@ -346,18 +351,24 @@ def _launch_agent(
     try:
         result = subprocess.run(cmd, cwd=str(repo_root))
     except FileNotFoundError:
-        error(f"{spec.label} is not available on PATH. Run `kammika init` again to refresh detected agents.")
+        error(
+            f"{spec.label} is not available on PATH. Run `kammika init` again to refresh detected agents."
+        )
         return 1
 
     if result.returncode != 0:
-        error(f"{spec.label} exited with code {result.returncode}. Queue preserved for retry.")
+        error(
+            f"{spec.label} exited with code {result.returncode}. Queue preserved for retry."
+        )
     return result.returncode
 
 
 def _choose_agent(agents: list[str]) -> str:
     available = supported_agent_keys(agents)
     if not available:
-        error("No supported agents are configured. Run `kammika init` to detect local agents.")
+        error(
+            "No supported agents are configured. Run `kammika init` to detect local agents."
+        )
         raise typer.Exit(1)
 
     console.print()
@@ -408,7 +419,9 @@ def _load_pending_queue() -> dict | None:
     return None
 
 
-def _remaining_issue_count(config: KammikaConfig, pending_number: int | None = None) -> int | None:
+def _remaining_issue_count(
+    config: KammikaConfig, pending_number: int | None = None
+) -> int | None:
     try:
         from kammika.commands import triage as triage_command
 
@@ -428,15 +441,23 @@ def _remaining_issue_count(config: KammikaConfig, pending_number: int | None = N
             if candidate.status.lower() not in triage_command._BLOCKED_STATUSES
         ]
         claimed = triage_command._claimed_issue_numbers()
-        remaining = [candidate for candidate in filtered if candidate.number not in claimed]
+        remaining = [
+            candidate for candidate in filtered if candidate.number not in claimed
+        ]
         if pending_number is not None:
-            remaining = [candidate for candidate in remaining if candidate.number != pending_number]
+            remaining = [
+                candidate
+                for candidate in remaining
+                if candidate.number != pending_number
+            ]
         return len(remaining)
     except Exception:
         return None
 
 
-def _print_session_summary(completed_count: int, config: KammikaConfig | None = None) -> None:
+def _print_session_summary(
+    completed_count: int, config: KammikaConfig | None = None
+) -> None:
     pending = _load_pending_queue()
     pending_number = pending.get("number") if pending else None
     remaining_count = _remaining_issue_count(config, pending_number) if config else None
@@ -547,18 +568,26 @@ def _pick_issue(config: KammikaConfig) -> dict | None:
 
     if len(candidates) == 1:
         chosen = candidates[0]
-        success(f"Auto-selected issue #{chosen.number} because it is the only actionable issue.")
+        success(
+            f"Auto-selected issue #{chosen.number} because it is the only actionable issue."
+        )
         return _queue_issue(
             chosen,
             source="automatic",
             rationale="Auto-selected because it is the only actionable issue",
         )
 
-    llm_agent = next((agent for agent in config.agents if agent in {"claude", "opencode"}), None)
+    llm_agent = next(
+        (agent for agent in config.agents if agent in {"claude", "opencode"}), None
+    )
     if llm_agent is not None:
-        muted(f"Asking {describe_agent(llm_agent, config.models)} for a recommendation...")
+        muted(
+            f"Asking {describe_agent(llm_agent, config.models)} for a recommendation..."
+        )
     else:
-        muted("No configured recommendation model available; showing issues without a model recommendation.")
+        muted(
+            "No configured recommendation model available; showing issues without a model recommendation."
+        )
     recommended = _llm_pick(candidates, config.agents, config.models)
 
     total = len(candidates)
@@ -593,7 +622,9 @@ def _pick_issue(config: KammikaConfig) -> dict | None:
 
 def _sleep_until_next_check() -> None:
     show_banner(SLEEP_BANNER)
-    info("No issue is ready right now. I will check again in 1 hour. Press Ctrl-C to stop.")
+    info(
+        "No issue is ready right now. I will check again in 1 hour. Press Ctrl-C to stop."
+    )
     console.print()
     time.sleep(IDLE_SLEEP_SECONDS)
     console.print()

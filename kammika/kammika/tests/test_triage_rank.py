@@ -2,7 +2,13 @@ from kammika.commands.triage import Candidate, rank
 
 
 def make(number: int, labels: list[str], age_days: int = 0) -> Candidate:
-    return Candidate(number=number, title=f"Issue {number}", body="", labels=labels, age_days=age_days)
+    return Candidate(
+        number=number,
+        title=f"Issue {number}",
+        body="",
+        labels=labels,
+        age_days=age_days,
+    )
 
 
 def test_p0_beats_p1():

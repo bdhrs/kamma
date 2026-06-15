@@ -12,7 +12,9 @@ from kammika.config import KammikaConfig
 def test_choose_agent_retries_until_valid(monkeypatch):
     answers = iter(["9", "2"])
 
-    monkeypatch.setattr(run_command, "prompt_text", lambda *_args, **_kwargs: next(answers))
+    monkeypatch.setattr(
+        run_command, "prompt_text", lambda *_args, **_kwargs: next(answers)
+    )
     monkeypatch.setattr(run_command, "muted", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(run_command.console, "print", lambda *_args, **_kwargs: None)
 
@@ -32,7 +34,9 @@ def test_launch_agent_uses_selected_agent_command(monkeypatch):
     def fake_run(args, cwd=None):
         recorded["args"] = args
         recorded["cwd"] = cwd
-        return subprocess.CompletedProcess(args=args, returncode=0, stdout="", stderr="")
+        return subprocess.CompletedProcess(
+            args=args, returncode=0, stdout="", stderr=""
+        )
 
     monkeypatch.setattr(run_command.subprocess, "run", fake_run)
     monkeypatch.setattr(run_command, "info", lambda *_args, **_kwargs: None)
@@ -57,8 +61,12 @@ def test_launch_agent_returns_error_for_unknown_agent():
 
 def test_pick_issue_auto_selects_single_candidate_without_llm(tmp_path, monkeypatch):
     queue_file = tmp_path / "kammika.queue.json"
-    config = KammikaConfig(repo="owner/repo", project="owner/1", agents=["claude", "opencode"])
-    candidate = Candidate(number=7, title="Only issue", body="Fix it", labels=["P1"], age_days=3)
+    config = KammikaConfig(
+        repo="owner/repo", project="owner/1", agents=["claude", "opencode"]
+    )
+    candidate = Candidate(
+        number=7, title="Only issue", body="Fix it", labels=["P1"], age_days=3
+    )
 
     monkeypatch.setattr(run_command, "_load_pending_queue", lambda: None)
     monkeypatch.setattr(run_command, "queue_path", lambda: queue_file)
@@ -77,6 +85,7 @@ def test_pick_issue_auto_selects_single_candidate_without_llm(tmp_path, monkeypa
 
     queue = run_command._pick_issue(config)
 
+    assert queue is not None
     assert queue == {
         "number": 7,
         "title": "Only issue",
@@ -88,4 +97,7 @@ def test_pick_issue_auto_selects_single_candidate_without_llm(tmp_path, monkeypa
     assert queue_file.exists()
     assert '"number": 7' in queue_file.read_text()
     assert '"source": "automatic"' in queue_file.read_text()
-    assert '"rationale": "Auto-selected because it is the only actionable issue"' in queue_file.read_text()
+    assert (
+        '"rationale": "Auto-selected because it is the only actionable issue"'
+        in queue_file.read_text()
+    )
