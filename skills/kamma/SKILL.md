@@ -22,6 +22,13 @@ Automatically apply this skill when:
 3. **Thread Progress:** Update task status markers (`[ ]` → `[~]` → `[x]`)
 4. **Review the Work Before Calling It Done:** Threads are not done when implementation ends
 
+**Spec gate — files on disk before any code.** `spec.md` and `plan.md` must already
+exist on disk for the thread before you edit a single line of code. If either is
+missing, run `/kamma:1-plan` to create them first (or, for a tiny change, ask the
+user whether to skip the ceremony — never decide silently). Implementing first and
+backfilling the thread files afterwards is dishonest and is not allowed, even for a
+3-line change.
+
 ## Project Structure Understanding
 
 When working on a Kamma project, familiarize yourself with:

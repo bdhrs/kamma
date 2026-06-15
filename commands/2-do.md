@@ -28,6 +28,13 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 
 ## 3.0 DO THE WORK
 
+**SPEC GATE — files on disk before any code.** Before you edit a single line of
+code, `spec.md` and `plan.md` must already exist on disk for this thread. If either
+is missing, STOP: run `/kamma:1-plan` to create them first, or — for a genuinely
+tiny change — ask the user whether to skip the ceremony; never decide that
+silently. Implementing first and reconstructing the thread files at wrap-up is
+dishonest and is not allowed, even for a 3-line change.
+
 **Scope rule:** Touch only what the current task requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to a task in `plan.md`. If you notice unrelated issues, log them as `NOTICED — NOT TOUCHING: <file> — <issue>` in your output, then move on. Do not fix them.
 
 1. Announce which thread you're starting.
@@ -38,7 +45,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
    - `kamma/threads/<thread_id>/handoff.md` (if it exists — context from a previous session)
    - `kamma/workflow.md`
    - If the thread references a GitHub issue, keep that number visible and unchanged throughout.
-   - If any read fails, say what failed, try to recover, and keep going if you can.
+   - If `workflow.md` or `handoff.md` can't be read, say what failed, try to recover, and keep going. If `spec.md` or `plan.md` is missing, the SPEC GATE applies — do not implement; create them first.
 
 3. **Execute tasks** through `plan.md` one by one, following `workflow.md`:
    - **Before starting each phase:** If the header has `⚠️ MODEL SWITCH REQUIRED`, write `kamma/threads/<thread_id>/handoff.md` capturing whatever the next session needs to resume — at minimum the exact next phase and first task to start and the current `plan.md` task marker state (overwrite existing but preserve still-relevant context). Display: "⚠️ Model switch required before [Phase Name]. I've written a handoff to preserve context. Please start a **fresh session** with the [Fast / Pro] model and run `/kamma:2-do <thread_id>` to continue." Then stop.
