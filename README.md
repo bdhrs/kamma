@@ -63,6 +63,7 @@ The sync tool detects which AI CLIs are installed on your machine and copies the
 | `/kamma:3-review` | Review finished work, ideally in a fresh tool or session |
 | `/kamma:4-finalize` | Finish a reviewed thread, update docs, and clean up |
 | `/kamma:5-status` | Show where things stand across all threads |
+| `/kamma:improve` | Consolidate recurring lessons across repos into kamma framework improvements |
 
 
 ## Workflow

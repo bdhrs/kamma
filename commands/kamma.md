@@ -300,3 +300,4 @@ Wait for the response.
      3. If neither exists, create `~/.agents/AGENTS.md`.
 6. Keep additions minimal: one or two sentences per rule. Tell the user which file you updated and why.
 7. If no improvements apply, say nothing and move on.
+8. Recurring or cross-repo patterns (the same lesson repeating across threads or projects) are consolidated into the kamma framework itself by `/kamma:improve`, not here. Leave them in `lessons.md` for that pass.

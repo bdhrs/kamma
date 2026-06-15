@@ -7,8 +7,10 @@ them into whichever AI CLIs are present (Claude Code, Antigravity, Codex, Qwen, 
 ## Repo layout
 
 - `commands/` — the source of truth for the prompts. `kamma.md` is the full single-run
-  cycle; `0-setup`, `1-plan`, `2-do`, `3-review`, `4-finalize`, `5-status`, and
-  `handoff` are the individual steps.
+  cycle; `0-setup`, `1-plan`, `2-do`, `3-review`, `4-finalize`, `5-status`,
+  `handoff`, and `improve` are the individual steps. `improve` is the cross-repo
+  self-improvement loop: it reads every repo's `kamma/lessons.md` and consolidates
+  recurring mistakes into the framework prompts.
 - `scripts/sync.py` — detects installed CLIs and copies `commands/` + `registration/`
   into each tool's config dir. It copies (never symlinks) and skips missing tools.
 - `registration/` — per-tool registration files (`QWEN.md`, the

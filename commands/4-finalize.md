@@ -129,3 +129,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 6. Keep additions minimal. Tell the user which file and why.
 
 7. If no improvements apply, say nothing.
+
+8. Recurring or cross-repo patterns (the same lesson piling up across threads or
+   projects) are not for this step — they are consolidated into the kamma
+   framework itself by `/kamma:improve`. Leave them in `lessons.md` for that pass.
