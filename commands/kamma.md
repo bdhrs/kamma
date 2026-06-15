@@ -144,7 +144,15 @@ Apply any changes and re-present until the user confirms. Then continue immediat
    - **Model boundary:** In a split plan, Fast only executes mechanical work; Pro only analyzes/checks/plans. If the current tier discovers work owned by the other tier, update `plan.md` with the exact task and switch marker, write `handoff.md`, tell the user which model to use next, and stop. Do not do the other tier's work.
    - Change `[ ]` to `[~]` before you begin.
    - Implement only the work required for that item.
-   - If implementation reveals that an assumption in `spec.md` is wrong or the approach must change, update `spec.md` before continuing — don't let it drift from reality.
+   - **DRIFT GATE — keep `spec.md` and `plan.md` in sync with reality, always.** The
+     instant implementation diverges from `spec.md` or `plan.md` — a wrong
+     assumption, a different approach, a different set of files, reordered or
+     dropped tasks — update the relevant file immediately, before continuing. The
+     same applies to any follow-up change the user requests mid-thread (a new
+     requirement, a tweak, a scope addition): record it in `spec.md`/`plan.md`
+     right away, not at wrap-up. Never leave `plan.md` with `[x]` tasks that no
+     longer match what was built. Don't wait for review, or for the user to ask
+     twice.
    - Run the verification specified in the task's `→ verify:` line.
    - If verification fails, try to fix it up to 2 times. If still failing, note the issue clearly in `plan.md` and continue if there's still a reasonable path.
    - Change `[~]` to `[x]` only after the item passes verification, or after the remaining issue has been recorded.

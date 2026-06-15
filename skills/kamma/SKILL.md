@@ -40,6 +40,13 @@ run the project's full test suite (or a broad smoke check covering the affected
 areas) once — not just each task's `→ verify:` line. Per-task checks miss
 pre-existing or cross-task bugs. If it fails, fix and re-run before handoff.
 
+**Drift gate — keep `spec.md` and `plan.md` in sync with reality, always.** The
+instant implementation diverges from `spec.md` or `plan.md` — a wrong assumption, a
+different approach, a different set of files, reordered or dropped tasks — update
+the relevant file immediately, before continuing. The same applies to any follow-up
+change the user requests mid-thread: record it right away, not at wrap-up. Never
+leave `plan.md` with `[x]` tasks that no longer match what was built.
+
 ## Project Structure Understanding
 
 When working on a Kamma project, familiarize yourself with:
