@@ -46,12 +46,20 @@ def unique_paths(paths: list[Path]) -> list[Path]:
 HOME_DIRS = unique_paths(
     [
         Path.home(),
-        *(Path(os.environ[name]) for name in ("HOME", "USERPROFILE") if os.environ.get(name)),
+        *(
+            Path(os.environ[name])
+            for name in ("HOME", "USERPROFILE")
+            if os.environ.get(name)
+        ),
     ]
 )
 APPDATA_DIRS = unique_paths(
     [
-        *(Path(os.environ[name]) for name in ("APPDATA", "LOCALAPPDATA") if os.environ.get(name)),
+        *(
+            Path(os.environ[name])
+            for name in ("APPDATA", "LOCALAPPDATA")
+            if os.environ.get(name)
+        ),
     ]
 )
 AGENTS_DIRS = unique_paths([home / ".agents" for home in HOME_DIRS])
@@ -160,12 +168,7 @@ def remove_marketplace_kamma() -> None:
 
 
 def render_toml(command: Command) -> str:
-    return (
-        f'description = "{command.description}"\n'
-        'prompt = """\n'
-        f"{command.body}"
-        '"""\n'
-    )
+    return f'description = "{command.description}"\nprompt = """\n{command.body}"""\n'
 
 
 def render_markdown_frontmatter(command: Command) -> str:
@@ -179,12 +182,7 @@ def render_markdown_frontmatter(command: Command) -> str:
 
 
 def render_antigravity_workflow(command: Command) -> str:
-    return (
-        "---\n"
-        f"description: {command.description}\n"
-        "---\n\n"
-        f"{command.body}"
-    )
+    return f"---\ndescription: {command.description}\n---\n\n{command.body}"
 
 
 def resolve_opencode_command_dir(root: Path) -> Path:
@@ -201,11 +199,13 @@ def resolve_opencode_command_dir(root: Path) -> Path:
 
 def sync_claude(root: Path, commands: list[Command]) -> None:
     target = root / "commands" / "kamma"
-    remove_stale([
-        target / "status.md",
-        target / "kamma-status.md",
-        target / "one-shot.md",
-    ])
+    remove_stale(
+        [
+            target / "status.md",
+            target / "kamma-status.md",
+            target / "one-shot.md",
+        ]
+    )
     ensure_dir(target)
     for command in commands:
         if command.base == "kamma":
@@ -230,10 +230,12 @@ def sync_antigravity(root: Path, commands: list[Command]) -> None:
 
     remove_if_exists(root / "antigravity" / "skills" / "kamma")
     remove_if_exists(skill_target / "templates")
-    remove_stale([
-        workflows_target / "kamma-status.md",
-        workflows_target / "status.md",
-    ])
+    remove_stale(
+        [
+            workflows_target / "kamma-status.md",
+            workflows_target / "status.md",
+        ]
+    )
     for old in skills_root.glob("kamma-*"):
         remove_if_exists(old)
 
@@ -252,18 +254,22 @@ def sync_antigravity(root: Path, commands: list[Command]) -> None:
         old.unlink()
     for command in commands:
         name = "kamma" if command.base == "kamma" else f"kamma-{command.base}"
-        write_text(workflows_target / f"{name}.md", render_antigravity_workflow(command))
+        write_text(
+            workflows_target / f"{name}.md", render_antigravity_workflow(command)
+        )
 
 
 def sync_opencode(root: Path, commands: list[Command]) -> None:
     command_target = resolve_opencode_command_dir(root)
     ensure_dir(command_target)
-    remove_stale([
-        command_target / "kamma-status.md",
-        command_target / "status.md",
-        command_target / "kamma-one-shot.md",
-        command_target / "kamma-kamma.md",
-    ])
+    remove_stale(
+        [
+            command_target / "kamma-status.md",
+            command_target / "status.md",
+            command_target / "kamma-one-shot.md",
+            command_target / "kamma-kamma.md",
+        ]
+    )
     for command in commands:
         if command.base == "kamma":
             shutil.copy2(command.source, command_target / "kamma.md")
@@ -279,11 +285,13 @@ def sync_codex(root: Path, commands: list[Command]) -> None:
     prompt_target = root / "prompts"
     skills_root = root / "skills"
     ensure_dir(prompt_target)
-    remove_stale([
-        prompt_target / "kamma-status.md",
-        prompt_target / "status.md",
-        prompt_target / "kamma-one-shot.md",
-    ])
+    remove_stale(
+        [
+            prompt_target / "kamma-status.md",
+            prompt_target / "status.md",
+            prompt_target / "kamma-one-shot.md",
+        ]
+    )
     remove_if_exists(skills_root / "kamma")
     for old in skills_root.glob("kamma-*"):
         remove_if_exists(old)
@@ -310,26 +318,34 @@ def sync_codex(root: Path, commands: list[Command]) -> None:
 
 def sync_qwen(root: Path, commands: list[Command]) -> None:
     target = root / "extensions" / "kamma"
-    remove_stale([
-        target / "commands" / "kamma" / "status.toml",
-        target / "commands" / "kamma" / "kamma-status.toml",
-    ])
+    remove_stale(
+        [
+            target / "commands" / "kamma" / "status.toml",
+            target / "commands" / "kamma" / "kamma-status.toml",
+        ]
+    )
     ensure_dir(target / "commands" / "kamma")
-    shutil.copy2(REGISTRATION_DIR / "qwen-extension.json", target / "qwen-extension.json")
+    shutil.copy2(
+        REGISTRATION_DIR / "qwen-extension.json", target / "qwen-extension.json"
+    )
     shutil.copy2(REGISTRATION_DIR / "QWEN.md", target / "QWEN.md")
     for command in commands:
-        write_text(target / "commands" / "kamma" / f"{command.base}.toml", render_toml(command))
+        write_text(
+            target / "commands" / "kamma" / f"{command.base}.toml", render_toml(command)
+        )
     copy_tree_contents(TEMPLATES_DIR, target / "templates")
 
 
 def sync_kilo(root: Path, commands: list[Command]) -> None:
     skills_root = root / "skills"
-    remove_stale([
-        skills_root / "kamma-status",
-        skills_root / "status",
-        skills_root / "kamma-one-shot",
-        skills_root / "kamma-kamma",
-    ])
+    remove_stale(
+        [
+            skills_root / "kamma-status",
+            skills_root / "status",
+            skills_root / "kamma-one-shot",
+            skills_root / "kamma-kamma",
+        ]
+    )
     ensure_dir(skills_root / "kamma")
     for command in commands:
         if command.base == "kamma":

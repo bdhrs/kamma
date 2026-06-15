@@ -98,9 +98,12 @@ All paths live under `~/.gemini` on macOS, Linux, and Windows (`%USERPROFILE%\.g
 If you are contributing to Kamma, please install the pre-commit hooks to ensure code quality:
 
 ```bash
-uv pip install pre-commit
-uv run pre-commit install
+uv tool install pre-commit
+pre-commit install
 ```
+
+The hooks run Ruff (lint + format) and Pyright on staged Python files via `uv run`,
+so no extra dev dependencies need to be added to the project.
 
 ---
 

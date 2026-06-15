@@ -203,13 +203,18 @@ def run_init(show_next: bool = True) -> None:
     info("Detecting installed CLI agents...")
     agents = _detect_local_agents()
     if not agents:
-        error("No supported local agents detected. Install one of the supported CLIs and run `kammika init` again.")
+        error(
+            "No supported local agents detected. Install one of the supported CLIs and run `kammika init` again."
+        )
         raise typer.Exit(1)
 
     config = KammikaConfig(repo=repo_slug, project=project_ref, agents=agents)
     cfg_path.write_text(json.dumps(config.to_dict(), indent=2) + "\n")
     success(f"Config written to {cfg_path}")
-    info("Detected agents: " + ", ".join(get_agent_spec(agent).label for agent in agents if get_agent_spec(agent)))
+    info(
+        "Detected agents: "
+        + ", ".join(spec.label for agent in agents if (spec := get_agent_spec(agent)))
+    )
     success("kammika init complete.")
     if show_next:
         info("Next: Run `kammika`.")

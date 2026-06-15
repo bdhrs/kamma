@@ -32,7 +32,9 @@ def test_detect_available_agents_skips_missing_binaries():
     def fake_run(args: list[str]) -> subprocess.CompletedProcess:
         if args[0] == "gemini":
             raise FileNotFoundError(args[0])
-        return subprocess.CompletedProcess(args=args, returncode=0, stdout="", stderr="")
+        return subprocess.CompletedProcess(
+            args=args, returncode=0, stdout="", stderr=""
+        )
 
     detected = detect_available_agents(fake_run)
 
@@ -73,7 +75,10 @@ def test_build_launch_command_covers_supported_agents():
 
 def test_describe_agent_includes_model_when_known():
     assert describe_agent("claude", {}) == "Claude Code (opus)"
-    assert describe_agent("opencode", {"opencode": "custom/model"}) == "OpenCode (custom/model)"
+    assert (
+        describe_agent("opencode", {"opencode": "custom/model"})
+        == "OpenCode (custom/model)"
+    )
     assert describe_agent("gemini", {}) == "Gemini CLI"
 
 
@@ -89,8 +94,12 @@ def test_run_init_persists_detected_agents(tmp_path, monkeypatch):
     monkeypatch.setattr(init_command, "kamma_dir", lambda: kamma_dir)
     monkeypatch.setattr(init_command, "config_path", lambda: cfg_path)
     monkeypatch.setattr(init_command, "_choose_repo", lambda current=None: "owner/repo")
-    monkeypatch.setattr(init_command, "_choose_project", lambda owner, current=None: "owner/1")
-    monkeypatch.setattr(init_command, "_detect_local_agents", lambda: ["claude", "opencode"])
+    monkeypatch.setattr(
+        init_command, "_choose_project", lambda owner, current=None: "owner/1"
+    )
+    monkeypatch.setattr(
+        init_command, "_detect_local_agents", lambda: ["claude", "opencode"]
+    )
     monkeypatch.setattr(init_command, "show_banner", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(init_command, "muted", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(init_command, "success", lambda *_args, **_kwargs: None)
@@ -116,7 +125,9 @@ def test_run_init_exits_when_no_agents_detected(tmp_path, monkeypatch):
     monkeypatch.setattr(init_command, "kamma_dir", lambda: kamma_dir)
     monkeypatch.setattr(init_command, "config_path", lambda: cfg_path)
     monkeypatch.setattr(init_command, "_choose_repo", lambda current=None: "owner/repo")
-    monkeypatch.setattr(init_command, "_choose_project", lambda owner, current=None: "owner/1")
+    monkeypatch.setattr(
+        init_command, "_choose_project", lambda owner, current=None: "owner/1"
+    )
     monkeypatch.setattr(init_command, "_detect_local_agents", lambda: [])
     monkeypatch.setattr(init_command, "show_banner", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(init_command, "muted", lambda *_args, **_kwargs: None)
