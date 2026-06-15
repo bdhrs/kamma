@@ -62,6 +62,7 @@ dishonest and is not allowed, even for a 3-line change.
 
 5. **Hand off for review:**
    - After all tasks are done and locally verified, don't mark the thread fully complete yet.
+   - **Smoke gate:** run the project's full test suite (or, if none exists, a broad smoke check covering the affected areas) once — not just the per-task `→ verify:` lines. This catches pre-existing or cross-task bugs that no single task's verify line covers. If it fails, fix and re-run before proceeding. Note the command run and result.
    - Ask the user to test and wait for confirmation.
    - Once confirmed: "Testing confirmed. Run `/kamma:3-review` to review this thread. For best results, run it in a fresh session."
    - The thread should only move to completion after review findings are addressed.

@@ -35,6 +35,11 @@ generalization, or "while we're at it" machinery. If a simpler approach exists, 
 so before writing the spec and propose the minimal version. Defer extras to a
 follow-up unless the user asks for them now.
 
+**Smoke gate — run the full suite before handoff.** Before asking the user to test,
+run the project's full test suite (or a broad smoke check covering the affected
+areas) once — not just each task's `→ verify:` line. Per-task checks miss
+pre-existing or cross-task bugs. If it fails, fix and re-run before handoff.
+
 ## Project Structure Understanding
 
 When working on a Kamma project, familiarize yourself with:

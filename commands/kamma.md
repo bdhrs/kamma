@@ -154,6 +154,8 @@ Apply any changes and re-present until the user confirms. Then continue immediat
 
 ### 4.1 STOP 2: Ask the User to Test
 
+**Smoke gate:** before asking the user to test, run the project's full test suite (or, if none exists, a broad smoke check covering the affected areas) once — not just the per-task `→ verify:` lines. This catches pre-existing or cross-task bugs that no single task's verify line covers. If it fails, fix and re-run before proceeding. Note the command run and result.
+
 When all implementation work is done and locally verified, explain specifically how to test — what commands to run, what to click, what to observe, what the expected outcome is. Then ask:
 
 > "Please test it using the steps above and let me know when you're done, or if you found any issues."
