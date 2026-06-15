@@ -49,7 +49,7 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
    - **Features:** Focus on intent and edge cases — how it should behave, who it's for, what success looks like.
    - **Bugs, chores, etc.:** Focus on reproduction, scope, or how you'll know it's fixed.
 
-2. **Push back if warranted.** If a simpler approach exists, say so. If the request would create unnecessary complexity or conflict with existing architecture, raise it before writing the spec.
+2. **MINIMAL-FIRST GATE.** Draft the smallest change that satisfies the request — no extra helpers, refactors, generalization, or "while we're at it" machinery beyond what was asked. If a simpler approach exists, or the request as stated would add complexity beyond the stated need, say so before writing the spec and propose the minimal version instead. Defer extras to a follow-up unless the user asks for them now. If the request would conflict with existing architecture, raise that too.
 
 3. Draft `spec.md` with these sections:
    - Overview

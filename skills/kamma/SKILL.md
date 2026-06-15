@@ -29,6 +29,12 @@ user whether to skip the ceremony — never decide silently). Implementing first
 backfilling the thread files afterwards is dishonest and is not allowed, even for a
 3-line change.
 
+**Minimal-first gate — draft the smallest change first.** When writing `spec.md`,
+draft the smallest change that satisfies the request — no extra helpers, refactors,
+generalization, or "while we're at it" machinery. If a simpler approach exists, say
+so before writing the spec and propose the minimal version. Defer extras to a
+follow-up unless the user asks for them now.
+
 ## Project Structure Understanding
 
 When working on a Kamma project, familiarize yourself with:
