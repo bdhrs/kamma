@@ -255,9 +255,9 @@ Wait for the response.
 4. Close the issue: `gh issue close <number>`
 
 **Always suggest a commit message and description (do NOT run `git commit`):**
-- One-line commit message summarizing what changed. If a GitHub issue was referenced, include it: e.g., `fix: ensure consistent commit descriptions (closes #123)`
-- Bulleted description listing each distinct change. One bullet per change — no prose paragraphs.
-- Bulleted list of files that have changed (use `git status --short` or `git diff --name-only` to gather them).
+- One concise commit message line in imperative mood, lowercase first word, under 72 characters. If a GitHub issue was referenced, include it: e.g., `fix: ensure consistent commit descriptions (closes #123)`
+- Bulleted description explaining what changed and why. One bullet per change, each a single long line — however long, never manually wrapped or split across lines. One clause only — no "and"-chains, no semicolons, no parentheticals. Go down the page, not across it.
+- Bulleted list of only the files changed as part of this thread's work — not every file in the working tree. Cross-check `git status --short` / `git diff --name-only` against the thread's `plan.md` tasks and exclude unrelated changes. Sort alphabetically by full path (folder, then subfolder, then file).
 - Present all three:
   > **Commit message:** `<message>`
   > **Commit description:**
