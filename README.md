@@ -57,6 +57,7 @@ The sync tool detects which AI CLIs are installed on your machine and copies the
 | Command | Description |
 |---------|-------------|
 | `/kamma` | Plan, do, review, and finalize a thread in a single run |
+| `/kamma:quick` | Same single run for a small change — no spec or plan files |
   | `/kamma:0-setup` | Scaffold a project with project.md, tech.md, workflow.md |
 | `/kamma:1-plan` | Create a new thread (feature, bug fix, chore) with spec + plan |
 | `/kamma:2-do` | Work through the selected thread until it is ready to review |
@@ -79,6 +80,10 @@ The sync tool detects which AI CLIs are installed on your machine and copies the
 ### /kamma
 
 `/kamma` runs the full cycle in a single session. It stops twice: to confirm the plan, and to ask you to test. If testing passes, it reviews and finalizes automatically.
+
+### /kamma:quick
+
+`/kamma:quick` is the lightweight sibling for small, self-contained changes. It runs the same single session with the same two stops, review, detailed commit message, and reflect step — but skips the `spec.md`/`plan.md` files and thread directory. Reach for it when the change fits in your head; use `/kamma` when it needs a durable spec or spans multiple phases.
 
 ### Antigravity
 

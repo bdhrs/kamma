@@ -60,6 +60,7 @@ Read and follow `kamma/workflow.md` for the full task flow. It is the single sou
 - `/kamma:5-status` - Show project progress
 - `/kamma:improve` - Sweep lessons across all repos and consolidate recurring mistakes into kamma framework improvements (run from anywhere; writes only to the kamma repo)
 - `/kamma` - Plan, implement, review, and finalize a thread in a single run (no prior setup required)
+- `/kamma:quick` - Same single run for a small change, with full review/commit/reflect rigor but no spec, plan, or thread directory
 
 ## Context Loading
 
