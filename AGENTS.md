@@ -32,7 +32,9 @@ just kammika-rebuild # reinstall the local kammika package
 ```
 
 There is no real test suite; verification is reading the prompts for consistency
-(section numbering, cross-references, no broken instructions).
+(section numbering, cross-references, no broken instructions). **Always verify
+that adding new sections or gated blocks doesn't break list numbering or internal
+heading references.**
 
 ## Conventions
 

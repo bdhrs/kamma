@@ -60,9 +60,10 @@ The sync tool detects which AI CLIs are installed on your machine and copies the
 | `/kamma:quick` | Same single run for a small change — no spec or plan files |
   | `/kamma:0-setup` | Scaffold a project with project.md, tech.md, workflow.md |
 | `/kamma:1-plan` | Create a new thread (feature, bug fix, chore) with spec + plan |
-| `/kamma:2-do` | Work through the selected thread until it is ready to review |
-| `/kamma:3-review` | Review finished work, ideally in a fresh tool or session |
-| `/kamma:4-finalize` | Finish a reviewed thread, update docs, and clean up |
+| `/kamma:loop` | Create a standing loop thread for repeated cycles of work |
+| `/kamma:2-do` | Work through the selected thread, or run one loop cycle |
+| `/kamma:3-review` | Review finished work or a loop cycle, ideally in a fresh tool or session |
+| `/kamma:4-finalize` | Finish a reviewed thread or completed loop, update docs, and clean up |
 | `/kamma:5-status` | Show where things stand across all threads |
 | `/kamma:improve` | Consolidate recurring lessons across repos into kamma framework improvements |
 
@@ -84,6 +85,16 @@ The sync tool detects which AI CLIs are installed on your machine and copies the
 ### /kamma:quick
 
 `/kamma:quick` is the lightweight sibling for small, self-contained changes. It runs the same single session with the same two stops, review, detailed commit message, and reflect step — but skips the `spec.md`/`plan.md` files and thread directory. Reach for it when the change fits in your head; use `/kamma` when it needs a durable spec or spans multiple phases.
+### Loop threads
+
+For ongoing work that runs in repeated cycles (issue triage, exporter analysis, log monitoring) rather than finishing once, use `/kamma:loop`. It plans a *standing* thread whose `spec.md` and `plan.md` stay stable while work advances through cycles:
+
+1. `/kamma:loop` — define the loop's domain, scope, validation standards, and completion condition
+2. `/kamma:2-do` — run one cycle: **Report → Analyze → Approval (HARD STOP) → Implement → Validate**
+3. `/kamma:3-review` — review the latest cycle; the loop stays open
+4. Repeat `2-do`/`3-review` per cycle; `/kamma:4-finalize` only when you declare the loop complete
+
+Each cycle is recorded in the thread's `cycles/` directory, and a curated `learnings.md` carries lessons forward between cycles. Every cycle stops for explicit approval before any source edits.
 
 ### Antigravity
 

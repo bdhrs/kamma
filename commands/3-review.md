@@ -26,6 +26,15 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 
 ---
 
+## 2.5 LOOP THREADS
+If the `spec.md` or `plan.md` contains the marker `> **Thread type:** Loop (standing thread)` OR a `cycles/` directory exists:
+- **Review Cycle:** Review ONLY the most recent cycle's implementation (diff + validation evidence).
+- **Record Verdict:** Record the verdict directly in the corresponding `cycles/NNNN_slug.md`.
+- **Keep Open:** The loop remains open for the next cycle. Do not write a whole-thread `review.md`.
+- **Stop:** Do not proceed to section 3.0.
+
+---
+
 ## 3.0 START THE REVIEW
 
 1. Announce that you're reviewing the selected thread.
