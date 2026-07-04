@@ -81,7 +81,7 @@ def antigravity_roots() -> list[Path]:
 def read_commands() -> list[Command]:
     commands: list[Command] = []
     for path in sorted(COMMANDS_DIR.glob("*.md")):
-        text = path.read_text()
+        text = path.read_text(encoding="utf-8")
         description, body = split_frontmatter(text, path)
         commands.append(
             Command(
@@ -136,7 +136,7 @@ def copy_tree_contents(src: Path, dest: Path) -> None:
 
 def write_text(path: Path, content: str) -> None:
     ensure_dir(path.parent)
-    path.write_text(content)
+    path.write_text(content, encoding="utf-8")
 
 
 def remove_if_exists(path: Path) -> None:
@@ -156,7 +156,7 @@ def remove_marketplace_kamma() -> None:
         marketplace = agents_dir / "plugins" / "marketplace.json"
         if not marketplace.exists():
             continue
-        data = json.loads(marketplace.read_text())
+        data = json.loads(marketplace.read_text(encoding="utf-8"))
         plugins = data.get("plugins")
         if not isinstance(plugins, list):
             continue
@@ -164,7 +164,7 @@ def remove_marketplace_kamma() -> None:
         if filtered == plugins:
             continue
         data["plugins"] = filtered
-        marketplace.write_text(json.dumps(data, indent=2) + "\n")
+        marketplace.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
 def render_toml(command: Command) -> str:
