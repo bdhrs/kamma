@@ -18,7 +18,6 @@ them into whichever AI CLIs are present (Claude Code, Antigravity, Codex, Qwen, 
   by `sync.py` — don't confuse them with the root-level agent files.
 - `skills/kamma/SKILL.md` — the skill packaging of the same workflow.
 - `templates/workflow.md` — the workflow template `0-setup` writes into a project.
-- `kammika/` — local `uv` tool package.
 - `install.sh` / `install.ps1` — bootstrap installers.
 
 ## Working on the prompts
@@ -28,7 +27,6 @@ editing, propagate to installed tools:
 
 ```bash
 just sync            # uv run python scripts/sync.py
-just kammika-rebuild # reinstall the local kammika package
 ```
 
 There is no real test suite; verification is reading the prompts for consistency

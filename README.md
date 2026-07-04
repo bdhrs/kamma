@@ -41,14 +41,9 @@ Then sync:
 # With just
 just sync
 
-# Reinstall the local kammika CLI after changes
-just kammika-rebuild
-
 # With bash
 ./sync.sh
 ```
-
-`just kammika-rebuild` reinstalls the local `kammika` package while allowing `uv` to reuse cached dependencies.
 
 The sync tool detects which AI CLIs are installed on your machine and copies the prompts to each one. Unsupported or missing tools are skipped.
 
@@ -121,8 +116,8 @@ pre-commit install
 ```
 
 The hooks run Ruff (lint + format) and Pyright on staged Python files. Both tools
-are pinned in `kammika`'s dev dependencies and run via `uv run --project kammika`,
-so the same versions are used everywhere.
+are pinned in the project's dev dependencies and run via `uv run`, so the same
+versions are used everywhere.
 
 ---
 

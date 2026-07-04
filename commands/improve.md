@@ -96,7 +96,7 @@ Rank Remaining by severity, then recency-weighted frequency, tie-break toward qu
 Below it, report in one or two lines: sources scanned, new lessons, new issues, regressions. Then ask the user to pick one (native question tool; top 4 as options with "Why now" as the description, the rest reachable via Other).
 
 Work the chosen issue:
-- **FRAMEWORK** → apply the fix to the source file under `<KAMMA>/`. Keep the addition minimal; escalate rather than duplicate. Then remind the user to run `just sync` (and `just kammika-rebuild` if a kammika file changed) to propagate.
+- **FRAMEWORK** → apply the fix to the source file under `<KAMMA>/`. Keep the addition minimal; escalate rather than duplicate. Then remind the user to run `just sync` to propagate.
 - **AGENT-SUGGESTION / NEEDS** → there is nothing to write in the framework; present the recommendation for the user to act on (or to feed to finalize).
 
 ---
