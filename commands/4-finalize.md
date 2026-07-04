@@ -26,6 +26,11 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
    - **If a name was provided:** Case-insensitive match against directory names and spec descriptions. Confirm if unique. If ambiguous, list the options.
    - **If no name:** Pick the first thread with a `PASSED` review. Announce: "Automatically selecting the review-passed thread: '<description>'." If none have passed, say so and suggest `/kamma:3-review`.
 
+4. **Loop Threads:**
+   If the `spec.md` or `plan.md` contains the marker `> **Thread type:** Loop (standing thread)` OR a `cycles/` directory exists:
+   - **Do not archive per cycle:** A loop thread is only finalized when the user explicitly declares it complete according to its `spec.md`.
+   - If the user HAS declared it complete, proceed with finalize, but in the **Reflect and Learn** step (6.0), promote ONLY workflow-general or repo-general lessons from `learnings.md` into `kamma/lessons.md`. Task-specific lessons stay with the archived loop.
+
 ---
 
 ## 3.0 FINISH THE THREAD

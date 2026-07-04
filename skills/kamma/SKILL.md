@@ -54,13 +54,18 @@ Read and follow `kamma/workflow.md` for the full task flow. It is the single sou
 
 - `/kamma:0-setup` - Initialize Kamma in a project
 - `/kamma:1-plan` - Create a new feature/bug thread
-- `/kamma:2-do` - Work through the current thread until it is ready for review
-- `/kamma:3-review` - Review the active thread
-- `/kamma:4-finalize` - Complete a reviewed thread and handle cleanup
+- `/kamma:loop` - Create a new standing loop thread for repeated work
+- `/kamma:2-do` - Work through the current thread or one loop cycle
+- `/kamma:3-review` - Review the active thread or loop cycle
+- `/kamma:4-finalize` - Complete a thread or finished loop and handle cleanup
 - `/kamma:5-status` - Show project progress
 - `/kamma:improve` - Sweep lessons across all repos and consolidate recurring mistakes into kamma framework improvements (run from anywhere; writes only to the kamma repo)
 - `/kamma` - Plan, implement, review, and finalize a thread in a single run (no prior setup required)
 - `/kamma:quick` - Same single run for a small change, with full review/commit/reflect rigor but no spec, plan, or thread directory
+
+## Loop Threads
+
+Standing loop threads (`/kamma:loop`) follow a repeating cycle: **Report → Analyze → Approval (HARD STOP) → Implement → Validate**. Unlike finite threads, loop plans stay stable while work advances through cycles recorded in the `cycles/` directory. Loops also maintain a curated `learnings.md` file to carry knowledge between cycles. Always respect the mandatory approval gate before source edits in a loop.
 
 ## Context Loading
 

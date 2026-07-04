@@ -24,7 +24,9 @@ CRITICAL: Check the result of every tool call. If a tool call fails, don't stop.
 
 ## 3.0 WRITE THE HANDOFF
 
-1. Write `kamma/threads/<thread_id>/handoff.md` with the context the next session needs. Cover whatever is relevant — there is no fixed template. Think about:
+1. **Loop Threads:** If the thread is a loop (marker `> **Thread type:** Loop (standing thread)` or `cycles/` dir), the handoff should capture the current cycle state (active cycle, approval status, next action) and any cycle-specific discoveries.
+
+2. Write `kamma/threads/<thread_id>/handoff.md` with the context the next session needs. Cover whatever is relevant — there is no fixed template. Think about:
    - What you were working on and how far you got
    - Approaches you tried and why they failed
    - Non-obvious discoveries about the codebase
@@ -32,6 +34,6 @@ CRITICAL: Check the result of every tool call. If a tool call fails, don't stop.
    - What should be tried next
    - Anything that would save the next agent from repeating your work
 
-2. If a `handoff.md` already exists, overwrite it — but preserve any still-relevant context from the previous handoff.
+3. If a `handoff.md` already exists, overwrite it — but preserve any still-relevant context from the previous handoff.
 
-3. Announce that the handoff was written and which thread it belongs to.
+4. Announce that the handoff was written and which thread it belongs to.

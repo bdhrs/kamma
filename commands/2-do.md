@@ -42,7 +42,21 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
    - If the thread references a GitHub issue, keep that number visible and unchanged throughout.
    - If `workflow.md` or `handoff.md` can't be read, say what failed, try to recover, and keep going. If `spec.md` or `plan.md` is missing, the SPEC GATE applies — do not implement; create them first.
 
-3. **Execute tasks** through `plan.md` one by one, following `workflow.md`:
+3. **Loop Threads:**
+   If the `spec.md` or `plan.md` contains the marker `> **Thread type:** Loop (standing thread)` OR a `cycles/` directory exists:
+   - **Read bounded context:** Beyond the files loaded in step 2, read only `learnings.md`. Do not read past cycle records in `cycles/` unless a specific one is needed on demand.
+   - **Run one cycle:**
+     1. **Report:** Identify the next issue/task.
+     2. **Analyze:** Propose a fix and validation.
+     3. **Approval (HARD STOP):** Present analysis and WAIT for explicit user approval before ANY source/test edits.
+     4. **Implement:** Apply ONLY the approved scope.
+     5. **Validate:** Run the defined validation.
+     6. **Record:** Write cycle record to `cycles/NNNN_slug.md` (lean: report, analysis, approval, implementation, validation, outcome).
+     7. **Handoff:** Update `handoff.md` with current state/next action.
+     8. **Curate `learnings.md`:** Add distilled cross-cycle lessons and prune stale ones.
+   - **Stop:** The loop remains open. Do not continue into the finite task-execution flow (step 4 onward).
+
+4. **Execute tasks** through `plan.md` one by one, following `workflow.md`:
    - **Before starting each phase:** If the header has `⚠️ MODEL SWITCH REQUIRED`, write `kamma/threads/<thread_id>/handoff.md` capturing whatever the next session needs to resume — at minimum the exact next phase and first task to start and the current `plan.md` task marker state (overwrite existing but preserve still-relevant context). Display: "⚠️ Model switch required before [Phase Name]. I've written a handoff to preserve context. Please start a **fresh session** with the [Fast / Pro] model and run `/kamma:2-do <thread_id>` to continue." Then stop.
    - **Model boundary:** In a split plan, Fast only executes mechanical work; Pro only analyzes/checks/plans. If the current tier discovers work owned by the other tier, update `plan.md` with the exact task and switch marker, write `handoff.md`, tell the user which model to use next, and stop. Do not do the other tier's work.
    - Change `[ ]` to `[~]` before starting a task.
@@ -53,9 +67,9 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
    - Change `[~]` to `[x]` only after passing verification or recording the issue.
    - **Context judgment (same model):** If the session context has grown heavy — many files touched, long tool chains, sense of degradation — write a handoff and suggest starting a fresh session with the same model. Do not interrupt a fast, light session.
 
-4. At the end of each phase, run the phase's verification task.
+5. At the end of each phase, run the phase's verification task.
 
-5. **Hand off for review:**
+6. **Hand off for review:**
    - After all tasks are done and locally verified, don't mark the thread fully complete yet.
    - **Smoke gate:** run the project's full test suite (or, if none exists, a broad smoke check covering the affected areas) once — not just the per-task `→ verify:` lines. This catches pre-existing or cross-task bugs that no single task's verify line covers. If it fails, fix and re-run before proceeding. Note the command run and result.
    - Ask the user to test and wait for confirmation.
