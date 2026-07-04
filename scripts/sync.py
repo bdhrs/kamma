@@ -336,6 +336,36 @@ def sync_qwen(root: Path, commands: list[Command]) -> None:
     copy_tree_contents(TEMPLATES_DIR, target / "templates")
 
 
+def sync_pi(root: Path, commands: list[Command]) -> None:
+    prompts_target = root / "prompts"
+    skills_root = root / "skills"
+
+    ensure_dir(prompts_target)
+    for old in prompts_target.glob("kamma*.md"):
+        old.unlink()
+    remove_if_exists(skills_root / "kamma")
+    for old in skills_root.glob("kamma-*"):
+        remove_if_exists(old)
+
+    for command in commands:
+        name = "kamma" if command.base == "kamma" else f"kamma-{command.base}"
+        write_text(
+            prompts_target / f"{name}.md",
+            render_antigravity_workflow(command),
+        )
+
+    skill_target = skills_root / "kamma"
+    ensure_dir(skill_target)
+    shutil.copy2(SKILLS_DIR / "kamma" / "SKILL.md", skill_target / "SKILL.md")
+    for command in commands:
+        if command.base == "kamma":
+            continue
+        step_dir = skills_root / f"kamma-{command.base}"
+        write_text(step_dir / "SKILL.md", render_markdown_frontmatter(command))
+        if command.base == "0-setup":
+            copy_tree_contents(TEMPLATES_DIR, step_dir / "templates")
+
+
 def sync_kilo(root: Path, commands: list[Command]) -> None:
     skills_root = root / "skills"
     remove_stale(
@@ -379,6 +409,7 @@ TARGETS = [
     ),
     Target("Codex CLI", existing([home / ".codex" for home in HOME_DIRS])),
     Target("Kilo CLI", existing([home / ".kilocode" for home in HOME_DIRS])),
+    Target("Pi", existing([home / ".pi" / "agent" for home in HOME_DIRS])),
     Target("Qwen Code", existing([home / ".qwen" for home in HOME_DIRS])),
 ]
 SYNCERS = {
@@ -387,6 +418,7 @@ SYNCERS = {
     "OpenCode": sync_opencode,
     "Codex CLI": sync_codex,
     "Kilo CLI": sync_kilo,
+    "Pi": sync_pi,
     "Qwen Code": sync_qwen,
 }
 
