@@ -14,6 +14,7 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
 Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If any are missing, say what's missing, announce that Kamma is not set up (`/kamma:0-setup`), and continue if there's still a reasonable path.
 
 ---
+
 ## 2.0 CHOOSE A THREAD
 
 1. Check if the user provided a thread name as an argument.

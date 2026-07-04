@@ -85,6 +85,7 @@ The sync tool detects which AI CLIs are installed on your machine and copies the
 ### /kamma:quick
 
 `/kamma:quick` is the lightweight sibling for small, self-contained changes. It runs the same single session with the same two stops, review, detailed commit message, and reflect step — but skips the `spec.md`/`plan.md` files and thread directory. Reach for it when the change fits in your head; use `/kamma` when it needs a durable spec or spans multiple phases.
+
 ### Loop threads
 
 For ongoing work that runs in repeated cycles (issue triage, exporter analysis, log monitoring) rather than finishing once, use `/kamma:loop`. It plans a *standing* thread whose `spec.md` and `plan.md` stay stable while work advances through cycles:

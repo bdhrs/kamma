@@ -44,7 +44,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 
 3. **Loop Threads:**
    If the `spec.md` or `plan.md` contains the marker `> **Thread type:** Loop (standing thread)` OR a `cycles/` directory exists:
-   - **Read bounded context:** Read ONLY `spec.md`, `plan.md`, `handoff.md`, and `learnings.md`.
+   - **Read bounded context:** Beyond the files loaded in step 2, read only `learnings.md`. Do not read past cycle records in `cycles/` unless a specific one is needed on demand.
    - **Run one cycle:**
      1. **Report:** Identify the next issue/task.
      2. **Analyze:** Propose a fix and validation.

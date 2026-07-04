@@ -34,6 +34,6 @@ CRITICAL: Check the result of every tool call. If a tool call fails, don't stop.
    - What should be tried next
    - Anything that would save the next agent from repeating your work
 
-2. If a `handoff.md` already exists, overwrite it — but preserve any still-relevant context from the previous handoff.
+3. If a `handoff.md` already exists, overwrite it — but preserve any still-relevant context from the previous handoff.
 
-3. Announce that the handoff was written and which thread it belongs to.
+4. Announce that the handoff was written and which thread it belongs to.

@@ -22,7 +22,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 
 3. **Select:**
    - **If a name was provided:** Case-insensitive match against directory names and spec descriptions. Confirm if unique. If ambiguous, list the options.
-   - **If no name:** Prefer the first thread with `[~]` tasks. If none, pick the first active thread without a `PASSED` review. Announce which fallback you used. If every thread already passed, say so and suggest the next step.
+   - **If no name:** Prefer the first thread with `[~]` tasks. If none, pick the first active thread without a `PASSED` review. Skip loop threads (marker `> **Thread type:** Loop (standing thread)` or a `cycles/` directory) during auto-selection — a loop never has a `PASSED` review and would otherwise always win; review a loop only when its name is given. Announce which fallback you used. If every thread already passed, say so and suggest the next step.
 
 ---
 
