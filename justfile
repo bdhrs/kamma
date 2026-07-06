@@ -1,5 +1,5 @@
 default:
     @just --list
 
-sync:
-    uv run scripts/sync.py
+sync *args:
+    uv run scripts/sync.py {{args}}

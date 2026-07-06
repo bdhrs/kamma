@@ -9,4 +9,4 @@ if ! command -v uv &>/dev/null; then
     exit 1
 fi
 
-exec uv run --project "$SCRIPT_DIR" python "$SCRIPT_DIR/scripts/sync.py"
+exec uv run --project "$SCRIPT_DIR" python "$SCRIPT_DIR/scripts/sync.py" "$@"

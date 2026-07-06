@@ -26,26 +26,28 @@ irm https://raw.githubusercontent.com/bdhrs/kamma/main/install.ps1 | iex
 
 Downloads the latest version to `~/kamma` and syncs to all installed AI tools. Re-run any time to update.
 
-Requires [uv](https://docs.astral.sh/uv/). The script will offer to install it if missing.
+Requires [uv](https://docs.astral.sh/uv/). If missing, the script will prompt to install it, or install it automatically if run in a non-interactive (e.g. agent) environment.
 
-## Manual Install
+## Manual & Agent Install
 
-```bash
-git clone https://github.com/bdhrs/kamma.git
-cd kamma
-```
-
-Then sync:
+If you have cloned this repository or want to run setup automatically via an AI agent, use the commands below.
 
 ```bash
-# With just
-just sync
+# Optional: Ensure uv is installed (runs non-interactively)
+command -v uv &>/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
+export PATH="$HOME/.local/bin:$PATH"
 
-# With bash
-./sync.sh
+# Sync prompt configs to all supported tools.
+# Use --create to force-create the tool folders if they don't exist yet.
+./sync.sh --create
 ```
 
-The sync tool detects which AI CLIs are installed on your machine and copies the prompts to each one. Unsupported or missing tools are skipped.
+Alternatively with `just`:
+```bash
+just sync --create
+```
+
+The sync tool copies the prompts to each supported AI tool's config directory. If `--create` is omitted, unsupported or missing/unstarted tools are skipped.
 
 ## Commands
 
