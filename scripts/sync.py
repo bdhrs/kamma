@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import shutil
@@ -394,24 +395,53 @@ def sync_kilo(root: Path, commands: list[Command]) -> None:
     copy_tree_contents(TEMPLATES_DIR, root / "templates" / "kamma")
 
 
-TARGETS = [
-    Target("Claude Code", existing([home / ".claude" for home in HOME_DIRS])),
-    Target("Antigravity", antigravity_roots()),
-    Target(
-        "OpenCode",
-        existing(
-            [
-                *(home / ".opencode" for home in HOME_DIRS),
-                *(home / ".config" / "opencode" for home in HOME_DIRS),
-                *(app_dir / "opencode" for app_dir in APPDATA_DIRS),
-            ]
-        ),
-    ),
-    Target("Codex CLI", existing([home / ".codex" for home in HOME_DIRS])),
-    Target("Kilo CLI", existing([home / ".kilocode" for home in HOME_DIRS])),
-    Target("Pi", existing([home / ".pi" / "agent" for home in HOME_DIRS])),
-    Target("Qwen Code", existing([home / ".qwen" for home in HOME_DIRS])),
-]
+def get_targets(create: bool) -> list[Target]:
+    if create:
+        return [
+            Target(
+                "Claude Code", unique_paths([home / ".claude" for home in HOME_DIRS])
+            ),
+            Target(
+                "Antigravity", unique_paths([home / ".gemini" for home in HOME_DIRS])
+            ),
+            Target(
+                "OpenCode",
+                unique_paths(
+                    [
+                        *(home / ".opencode" for home in HOME_DIRS),
+                        *(home / ".config" / "opencode" for home in HOME_DIRS),
+                        *(app_dir / "opencode" for app_dir in APPDATA_DIRS),
+                    ]
+                ),
+            ),
+            Target("Codex CLI", unique_paths([home / ".codex" for home in HOME_DIRS])),
+            Target(
+                "Kilo CLI", unique_paths([home / ".kilocode" for home in HOME_DIRS])
+            ),
+            Target("Pi", unique_paths([home / ".pi" / "agent" for home in HOME_DIRS])),
+            Target("Qwen Code", unique_paths([home / ".qwen" for home in HOME_DIRS])),
+        ]
+    else:
+        return [
+            Target("Claude Code", existing([home / ".claude" for home in HOME_DIRS])),
+            Target("Antigravity", antigravity_roots()),
+            Target(
+                "OpenCode",
+                existing(
+                    [
+                        *(home / ".opencode" for home in HOME_DIRS),
+                        *(home / ".config" / "opencode" for home in HOME_DIRS),
+                        *(app_dir / "opencode" for app_dir in APPDATA_DIRS),
+                    ]
+                ),
+            ),
+            Target("Codex CLI", existing([home / ".codex" for home in HOME_DIRS])),
+            Target("Kilo CLI", existing([home / ".kilocode" for home in HOME_DIRS])),
+            Target("Pi", existing([home / ".pi" / "agent" for home in HOME_DIRS])),
+            Target("Qwen Code", existing([home / ".qwen" for home in HOME_DIRS])),
+        ]
+
+
 SYNCERS = {
     "Claude Code": sync_claude,
     "Antigravity": sync_antigravity,
@@ -430,25 +460,39 @@ COMMAND_PREFIX: dict[str, str] = {
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Sync kamma commands to local AI tool directories."
+    )
+    parser.add_argument(
+        "--create",
+        action="store_true",
+        help="Create target directories even if they do not exist.",
+    )
+    args = parser.parse_args()
+
     commands = read_commands()
     errors: list[str] = []
     synced_labels: list[str] = []
+    targets = get_targets(args.create)
+
     print(f"\n[bold]Syncing kamma[/bold] [dim]from {ROOT}[/dim]\n")
-    for target in TARGETS:
+    for target in targets:
         if not target.roots:
             print(f"  [dim]\\[-] {target.label} skipped[/dim]")
             continue
         syncer = SYNCERS[target.label]
         try:
             for root in target.roots:
+                if args.create:
+                    ensure_dir(root)
                 syncer(root, commands)
             print(f"  [green]\\[+][/green] {target.label}")
             synced_labels.append(target.label)
         except Exception as exc:
             errors.append(f"{target.label}: {exc}")
             print(f"  [red]\\[!] {target.label} {exc}[/red]")
-    copied = len([t for t in TARGETS if t.roots]) - len(errors)
-    skipped = len([t for t in TARGETS if not t.roots])
+    copied = len([t for t in targets if t.roots]) - len(errors)
+    skipped = len([t for t in targets if not t.roots])
     summary = f"\n[bold]{copied} copied[/bold], [dim]{skipped} skipped[/dim]"
     if errors:
         summary += f", [red]{len(errors)} failed[/red]"

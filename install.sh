@@ -4,17 +4,30 @@ set -euo pipefail
 REPO_ZIP="https://github.com/bdhrs/kamma/archive/refs/heads/main.zip"
 INSTALL_DIR="$HOME/kamma"
 
+AUTO_INSTALL=false
+for arg in "$@"; do
+    if [ "$arg" = "-y" ] || [ "$arg" = "--yes" ]; then
+        AUTO_INSTALL=true
+    fi
+done
+
 # Check for uv
 if ! command -v uv &>/dev/null; then
     echo "uv is not installed. uv is required to run kamma."
-    printf "Install it now? [y/N] "
-    read -r answer </dev/tty
-    if [[ "$answer" =~ ^[Yy]$ ]]; then
+    if [ "$AUTO_INSTALL" = true ] || [ ! -t 0 ] || [ -n "${CI:-}" ]; then
+        echo "Installing uv automatically..."
         curl -LsSf https://astral.sh/uv/install.sh | sh
         export PATH="$HOME/.local/bin:$PATH"
     else
-        echo "Aborted."
-        exit 1
+        printf "Install it now? [y/N] "
+        read -r answer </dev/tty
+        if [[ "$answer" =~ ^[Yy]$ ]]; then
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            export PATH="$HOME/.local/bin:$PATH"
+        else
+            echo "Aborted."
+            exit 1
+        fi
     fi
 fi
 
@@ -32,4 +45,4 @@ mv "$TMP_DIR/kamma-main" "$INSTALL_DIR"
 # Run sync
 echo "Syncing..."
 cd "$INSTALL_DIR"
-uv run python scripts/sync.py
+uv run python scripts/sync.py --create

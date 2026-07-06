@@ -1,3 +1,7 @@
+param (
+    [switch]$Force
+)
+
 $ErrorActionPreference = 'Stop'
 
 $RepoZip = "https://github.com/bdhrs/kamma/archive/refs/heads/main.zip"
@@ -6,13 +10,20 @@ $InstallDir = Join-Path $HOME "kamma"
 # Check for uv
 if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
     Write-Host "uv is not installed. uv is required to run kamma."
-    $answer = Read-Host "Install it now? [y/N]"
-    if ($answer -match '^[Yy]$') {
+    $autoInstall = $Force -or (-not [Environment]::UserInteractive)
+    if ($autoInstall) {
+        Write-Host "Installing uv automatically..."
         irm https://astral.sh/uv/install.ps1 | iex
         $env:PATH = "$env:USERPROFILE\.local\bin;$env:PATH"
     } else {
-        Write-Host "Aborted."
-        exit 1
+        $answer = Read-Host "Install it now? [y/N]"
+        if ($answer -match '^[Yy]$') {
+            irm https://astral.sh/uv/install.ps1 | iex
+            $env:PATH = "$env:USERPROFILE\.local\bin;$env:PATH"
+        } else {
+            Write-Host "Aborted."
+            exit 1
+        }
     }
 }
 
@@ -37,4 +48,4 @@ try {
 # Run sync
 Write-Host "Syncing..."
 Set-Location $InstallDir
-uv run python scripts/sync.py
+uv run python scripts/sync.py --create
