@@ -57,13 +57,15 @@ If the work is tied to a GitHub issue, ask for or preserve the issue number and 
 
 ### 3.2 Decide the Approach
 
-1. Read the relevant code and project context. Identify your key assumptions — about scope, affected files, and approach. If any assumption is uncertain and getting it wrong would change what you build, surface it as a question. Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred, skip the question round and proceed.
+1. **VERIFY GATE — establish facts before assumptions.** Any concrete claim you'll rely on (a count, a data format, a file's actual content, which code layer something lives in, which control consumes a value) must come from reading the real source — code, data, or a quick check — not from memory, a name match, or how the request framed it. If the change depends on "every place X happens," run an exhaustive sweep (grep the literal string/pattern, not just the obvious call form, and include hidden paths) before declaring the affected files complete — a partial sweep produces a plan that looks complete and isn't.
 
-2. **Confirm this is genuinely a quick change.** If scoping reveals multiple phases, a need for a written spec, or architectural novelty, say so now and recommend `/kamma` instead of continuing here.
+2. Read the relevant code and project context. Identify your key assumptions — about scope, affected files, and approach. If any assumption is uncertain and getting it wrong would change what you build, surface it as a question. Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred, skip the question round and proceed.
 
-3. **Push back if warranted.** If a simpler approach exists than what was described, say so. If the request would create unnecessary complexity or conflict with existing architecture, raise it before implementing. Climb the laziness ladder and stop at the first rung that meets the need: (1) does it need to exist at all? — if not, drop it; (2) does the standard library or a language built-in do it? — use it; (3) is there a native platform feature? — use it; (4) is there an already-installed dependency? — reuse it; (5) can it be one line? — keep it one line; (6) only then write the minimum that works. Never trade away correctness, error handling, validation, or security to reach a lower rung.
+3. **Confirm this is genuinely a quick change.** If scoping reveals multiple phases, a need for a written spec, or architectural novelty, say so now and recommend `/kamma` instead of continuing here.
 
-4. Break the change into a short ordered to-do list, each item a concrete edit with a `→ verify:` check — the test to run, the behavior to observe, the expected output. Vague checks like "verify it works" don't count.
+4. **Push back if warranted.** If a simpler approach exists than what was described, say so. If the request would create unnecessary complexity or conflict with existing architecture, raise it before implementing. Climb the laziness ladder and stop at the first rung that meets the need: (1) does it need to exist at all? — if not, drop it; (2) does the standard library or a language built-in do it? — use it; (3) is there a native platform feature? — use it; (4) is there an already-installed dependency? — reuse it; (5) can it be one line? — keep it one line; (6) only then write the minimum that works. Never trade away correctness, error handling, validation, or security to reach a lower rung.
+
+5. Break the change into a short ordered to-do list, each item a concrete edit with a `→ verify:` check — the test to run, the behavior to observe, the expected output. Vague checks like "verify it works" don't count.
 
 ### 3.3 STOP 1: Present the Approach
 

@@ -44,14 +44,16 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
 
 ### 2.2 Write `spec.md`
 
-1. **Surface assumptions before drafting.** Use `project.md`, `tech.md`, and the codebase to infer as much as you can. Then, before writing anything, identify your key assumptions — about scope, tech stack, affected files, and approach. If any assumption is uncertain and getting it wrong would change the spec significantly, surface it as a question. Also assess complexity: if the work looks complex enough to need pro-model reasoning somewhere (novel architecture, no existing pattern, 3+ interconnected systems, security-critical logic), add one question to the batch: "This looks complex — use model splitting across Fast/Pro tiers?" Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred and the thread is simple, skip the question round and proceed. Pro means analysis/checking/planning only; execution belongs to Fast.
+1. **VERIFY GATE — establish facts before assumptions.** Any concrete claim the spec will rely on (a count, a data format, a file's actual content, which code layer something lives in, which control consumes a value) must come from reading the real source — code, data, or a quick check — not from memory, a name match, or how the request framed it. If the spec depends on "every place X happens," run an exhaustive sweep (grep the literal string/pattern, not just the obvious call form, and include hidden paths) before writing the affected-files list — a partial sweep produces a spec that looks complete and isn't. State in the spec which facts were verified this way and which remain assumptions.
+
+2. **Surface assumptions before drafting.** Use `project.md`, `tech.md`, and the codebase to infer as much as you can. Then, before writing anything, identify your key assumptions — about scope, tech stack, affected files, and approach. If any assumption is uncertain and getting it wrong would change the spec significantly, surface it as a question. Also assess complexity: if the work looks complex enough to need pro-model reasoning somewhere (novel architecture, no existing pattern, 3+ interconnected systems, security-critical logic), add one question to the batch: "This looks complex — use model splitting across Fast/Pro tiers?" Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred and the thread is simple, skip the question round and proceed. Pro means analysis/checking/planning only; execution belongs to Fast.
    - Present 2–3 plausible options (A, B, C) per question. Last option must be "Type your own answer".
    - **Features:** Focus on intent and edge cases — how it should behave, who it's for, what success looks like.
    - **Bugs, chores, etc.:** Focus on reproduction, scope, or how you'll know it's fixed.
 
-2. **MINIMAL-FIRST GATE.** Draft the smallest change that satisfies the request — no extra helpers, refactors, generalization, or "while we're at it" machinery beyond what was asked. If a simpler approach exists, or the request as stated would add complexity beyond the stated need, say so before writing the spec and propose the minimal version instead. Defer extras to a follow-up unless the user asks for them now. If the request would conflict with existing architecture, raise that too. Climb the laziness ladder and stop at the first rung that meets the need: (1) does it need to exist at all? — if not, drop it; (2) does the standard library or a language built-in do it? — use it; (3) is there a native platform feature? — use it; (4) is there an already-installed dependency? — reuse it; (5) can it be one line? — keep it one line; (6) only then write the minimum that works. Never trade away correctness, error handling, validation, or security to reach a lower rung.
+3. **MINIMAL-FIRST GATE.** Draft the smallest change that satisfies the request — no extra helpers, refactors, generalization, or "while we're at it" machinery beyond what was asked. If a simpler approach exists, or the request as stated would add complexity beyond the stated need, say so before writing the spec and propose the minimal version instead. Defer extras to a follow-up unless the user asks for them now. If the request would conflict with existing architecture, raise that too. Climb the laziness ladder and stop at the first rung that meets the need: (1) does it need to exist at all? — if not, drop it; (2) does the standard library or a language built-in do it? — use it; (3) is there a native platform feature? — use it; (4) is there an already-installed dependency? — reuse it; (5) can it be one line? — keep it one line; (6) only then write the minimum that works. Never trade away correctness, error handling, validation, or security to reach a lower rung.
 
-3. Draft `spec.md` with these sections:
+4. Draft `spec.md` with these sections:
    - Overview
    - What it should do
    - Assumptions & uncertainties (what you're assuming, what you couldn't verify, what might be wrong)
@@ -63,7 +65,7 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
 
    If tied to a GitHub issue, include a dedicated reference near the top.
 
-4. Present the draft for review:
+5. Present the draft for review:
    > "I've drafted the spec. Please review:"
    >
    > ```markdown
