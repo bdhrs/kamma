@@ -28,6 +28,8 @@ Automatically apply this skill when:
 
 **Smoke gate — run the full suite before handoff.** Before asking the user to test, run the project's full test suite (or a broad smoke check covering the affected areas) once — not just each task's `→ verify:` line. Per-task checks miss pre-existing or cross-task bugs. If it fails, fix and re-run before handoff.
 
+**Shared tree gate — assume another agent is editing this repo right now.** Kamma threads and other agent sessions routinely share one working tree. Re-read a file from disk immediately before editing it; an earlier read may already be stale. If a tool reports a file was "modified, either by the user or by a linter" and its content is your *pre-edit* version, treat that as a rollback and audit every file you have touched — such sweeps land unevenly and leave a tree that looks plausible. Never stage, revert, or clean by directory or wildcard; `git stash` on a shared tree has destroyed a parallel session's uncommitted work. Before listing changed files at finalize, verify each change is still present — a concurrent commit or reset can absorb or revert it, and `plan.md` is not proof.
+
 **Drift gate — keep `spec.md` and `plan.md` in sync with reality, always.** The instant implementation diverges from `spec.md` or `plan.md` — a wrong assumption, a different approach, a different set of files, reordered or dropped tasks — update the relevant file immediately, before continuing. The same applies to any follow-up change the user requests mid-thread: record it right away, not at wrap-up. Never leave `plan.md` with `[x]` tasks that no longer match what was built.
 
 ## Project Structure Understanding

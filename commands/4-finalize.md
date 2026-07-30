@@ -79,7 +79,8 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 **Always suggest a commit message and description (do NOT run `git commit`):**
 - One concise commit message line in imperative mood, lowercase first word, under 72 characters. If a GitHub issue was referenced, include it: e.g., `fix: <description> (closes #<number>)`
 - Bulleted description explaining what changed and why. One bullet per change, each a single long line — however long, never manually wrapped or split across lines. One clause only — no "and"-chains, no semicolons, no parentheticals. Go down the page, not across it.
-- Bulleted list of only the files changed as part of this thread's work — not every file in the working tree. Cross-check `git status --short` / `git diff --name-only` against the thread's `plan.md` tasks and exclude unrelated changes. Sort alphabetically by full path (folder, then subfolder, then file).
+- Bulleted list of only the files changed as part of this thread's work — not every file in the working tree. Cross-check `git status --short` / `git diff --name-only` against the thread's `plan.md` tasks and exclude unrelated changes. Sort alphabetically by full path (folder, then subfolder, then file). Never give a directory or wildcard in place of the explicit list.
+- **Verify the work is still there before listing it.** A concurrent session's commit, checkout, or reset can absorb or silently revert your changes, and `plan.md` saying something was changed, deleted, or untracked is not proof it still holds. Confirm each listed change against the tree (`git status --short`, plus `git ls-files` for a tracking change) and re-check that any deletion actually landed (`git show --stat`). If something has been reverted or swept into another commit, say so plainly instead of listing it as done.
 - Present all three:
   > **Commit message:** `<message>`
   > **Commit description:**

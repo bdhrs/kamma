@@ -135,6 +135,8 @@ Apply any changes and re-present until the user confirms. Then continue immediat
 ## 4.0 IMPLEMENT THE THREAD
 **Run autonomously. Don't stop for phase checkpoints or mid-task confirmations — except at model-switch markers (see below).**
 
+**SHARED TREE GATE — assume another agent is editing this repo right now.** Kamma threads and other agent sessions routinely share one working tree. Re-read a file from disk immediately before editing it; an earlier read in this session may already be stale. If a tool reports a file was "modified, either by the user or by a linter" and its content is your *pre-edit* version, treat that as a rollback, not a hiccup: audit every file you have touched, because such sweeps land unevenly and leave a tree that looks plausible. Never stage, revert, or clean by directory or wildcard — no `git add <dir>`, no whole-tree `checkout`/`reset`/`stash`. `git stash` on a shared tree has twice destroyed a parallel session's uncommitted work; use `git worktree` if you need a clean tree. Uncommitted work is not safe to leave sitting while other sessions run, so when a phase's work is finished and verified, tell the user it is ready to commit rather than batching everything to the end — you may not run git yourself.
+
 **Scope rule:** Touch only what the current task requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to a task in `plan.md`. If you notice unrelated issues, log them as `NOTICED — NOT TOUCHING: <file> — <issue>` in your output, then move on. Do not fix them.
 
 1. Read `kamma/threads/<thread_id>/spec.md`, `plan.md`, and `handoff.md` (if it exists — context from a previous session).
@@ -257,7 +259,8 @@ Wait for the response.
 **Always suggest a commit message and description (do NOT run `git commit`):**
 - One concise commit message line in imperative mood, lowercase first word, under 72 characters. If a GitHub issue was referenced, include it: e.g., `fix: ensure consistent commit descriptions (closes #123)`
 - Bulleted description explaining what changed and why. One bullet per change, each a single long line — however long, never manually wrapped or split across lines. One clause only — no "and"-chains, no semicolons, no parentheticals. Go down the page, not across it.
-- Bulleted list of only the files changed as part of this thread's work — not every file in the working tree. Cross-check `git status --short` / `git diff --name-only` against the thread's `plan.md` tasks and exclude unrelated changes. Sort alphabetically by full path (folder, then subfolder, then file).
+- Bulleted list of only the files changed as part of this thread's work — not every file in the working tree. Cross-check `git status --short` / `git diff --name-only` against the thread's `plan.md` tasks and exclude unrelated changes. Sort alphabetically by full path (folder, then subfolder, then file). Never give a directory or wildcard in place of the explicit list.
+- **Verify the work is still there before listing it.** A concurrent session's commit, checkout, or reset can absorb or silently revert your changes, and `plan.md` saying something was changed, deleted, or untracked is not proof it still holds. Confirm each listed change against the tree (`git status --short`, plus `git ls-files` for a tracking change) and re-check that any deletion actually landed (`git show --stat`). If something has been reverted or swept into another commit, say so plainly instead of listing it as done.
 - Present all three:
   > **Commit message:** `<message>`
   > **Commit description:**
