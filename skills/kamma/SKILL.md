@@ -40,6 +40,8 @@ Automatically apply this skill when:
 
 **Drift gate — keep `spec.md` and `plan.md` in sync with reality, always.** The instant implementation diverges from `spec.md` or `plan.md` — a wrong assumption, a different approach, a different set of files, reordered or dropped tasks — update the relevant file immediately, before continuing. The same applies to any follow-up change the user requests mid-thread: record it right away, not at wrap-up. Never leave `plan.md` with `[x]` tasks that no longer match what was built.
 
+**Bound the external reviewer — one attempt, one retry, then move on.** Run CodeRabbit (or any external review tool) in the foreground and wait for it to actually finish; don't end your turn early on a long-running review. If it errors, hangs, times out, or returns empty output, retry at most once, correcting the invocation for a known cause first (no configured remote → add `--base main --type uncommitted`; a commit landed mid-review → rerun with `--type committed`). If the retry also fails, stop trying: report it as unavailable and proceed on the agent review's findings alone. Never let an external tool's failure stall review or finalize.
+
 **Finish means finish.** "Finish/wrap up/done with the thread" means run the full review → finalize → archive sequence, not write a commit message and stop — run `/kamma:4-finalize` if you aren't already in it. Once a finalize sequence has started, run it to completion before starting anything else, including a new thread; a distraction mid-sequence is not a stopping point. The command files already define each procedure — read and follow them rather than asking the user which steps to run.
 
 ## Project Structure Understanding

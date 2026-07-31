@@ -84,7 +84,7 @@ If the `spec.md` or `plan.md` contains the marker `> **Thread type:** Loop (stan
    - Test and verification review
    - Regression and edge-case review
 
-2. **After the agent review is done**, run CodeRabbit review if available (`coderabbit review --agent`). Include any repo-native AI review flow that applies.
+2. **After the agent review is done**, run CodeRabbit review if available (`coderabbit review --agent`). Include any repo-native AI review flow that applies. **Bound it — one attempt, one retry, then move on.** Run it in the foreground and wait for it to actually finish; don't end your turn early on a long-running review. If it errors, hangs, times out, or returns empty output, retry at most once — correcting the invocation for a known cause first if one applies (no configured remote → add `--base main --type uncommitted`; a commit landed mid-review → rerun with `--type committed`). If the retry also fails or a repo has no commits to review at all, stop trying: report CodeRabbit as unavailable for this review and proceed on the independent agent review's findings alone. Never let an external tool's failure stall finalize.
 
 3. **Consider whether these also apply** — state your reasoning:
    - Static analysis or lint

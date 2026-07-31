@@ -205,7 +205,7 @@ Wait for the response.
    - `major` — significant correctness or architecture issue. Must fix before finalizing.
    - `minor` — worth fixing but not critical. Fix unless explicitly deferred.
    - `nit` — style or preference. May be skipped.
-7. After the agent review is done, run CodeRabbit review if available (`coderabbit review --agent`). Incorporate any findings.
+7. After the agent review is done, run CodeRabbit review if available (`coderabbit review --agent`). Incorporate any findings. **Bound it — one attempt, one retry, then move on.** Run it in the foreground and wait for it to actually finish; don't end your turn early on a long-running review. If it errors, hangs, times out, or returns empty output, retry at most once — correcting the invocation for a known cause first if one applies (no configured remote → add `--base main --type uncommitted`; a commit landed mid-review → rerun with `--type committed`). If the retry also fails or a repo has no commits to review at all, stop trying: report CodeRabbit as unavailable and proceed on the agent review's findings alone. Never let an external tool's failure stall this thread.
 8. Fix any blocking or major findings immediately. Re-run verification after each fix. Repeat until none remain.
 9. Make sure `plan.md` reflects the actual state of the work.
 10. Then write `kamma/threads/<thread_id>/review.md` with the following sections:
