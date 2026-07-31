@@ -191,7 +191,7 @@ Wait for the response.
    3. **Architecture** — fits existing patterns, no circular deps, right abstraction level?
    4. **Security** — input validated at boundaries, no secrets in code, auth checked?
    5. **Performance** — N+1 queries, unbounded loops, missing pagination?
-3. Run the relevant test suite or verification commands and read the output.
+3. Run the relevant test suite or verification commands and read the output. **Check the check, not just its result.** A green result is not evidence of full coverage — confirm it ran in the same mode/scope the real pipeline uses (a single-file check is not the project-wide one; a hand-written approximation of a rule is not the rule itself) and against enough of the real data to matter. If a claim is "verified manually", confirm what subset was actually exercised — a manual pass that happens to skip the only affected rows is not a pass.
 4. Check for dead code introduced or orphaned by this thread — unused functions, replaced components, unreferenced constants. List them explicitly as findings; do not delete without noting them.
 5. For each of the following, read the relevant code and report what you found — don't skip any:
    - **Spec coverage:** Does every requirement in `spec.md` have a corresponding implementation?
@@ -230,8 +230,11 @@ Wait for the response.
    - What was fixed during review (or "None")
 
    ## Test Evidence
-   - `<command>` → pass/fail
+   - `<command>` (scope: <what it actually covered — whole project / one file / one subset — never bare pass/fail alone>) → pass/fail
    - ...
+
+   ## Not Verified
+   - <anything skipped, approximated instead of run for real, or only spot-checked — even when there are no findings; or "Nothing outstanding" if genuinely full coverage>
 
    ## Verdict
    PASSED | BLOCKED

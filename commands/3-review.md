@@ -61,7 +61,7 @@ If the `spec.md` or `plan.md` contains the marker `> **Thread type:** Loop (stan
      3. **Architecture** — fits existing patterns, no circular deps, right abstraction level?
      4. **Security** — input validated at boundaries, no secrets in code, auth checked?
      5. **Performance** — N+1 queries, unbounded loops, missing pagination?
-   - Review test or lint outputs if available.
+   - Review test or lint outputs if available. **Check the check, not just its result.** A command that returned green is not evidence of full coverage — confirm it ran in the same mode/scope the real pipeline uses (a single-file check is not the project-wide one; a hand-written approximation of a rule is not the rule itself) and against enough of the real data to matter, not just a hand-picked or first-hit case. If a claim is "verified manually", confirm what subset was actually exercised — a manual pass that happens to skip the only affected rows is not a pass.
    - Check for dead code introduced or orphaned by this thread — unused functions, replaced components, unreferenced constants. List them explicitly as findings; do not delete without noting them.
 
 3. Summarize what changed:
@@ -116,7 +116,9 @@ Severity definitions:
    - Why it matters
    - Recommended fix
 
-2. If no findings: say so explicitly. Note any residual risk, testing gaps, or areas not fully verified.
+2. If no findings: say so explicitly.
+
+3. **Always state coverage, whether or not there are findings.** Note any residual risk, testing gaps, or areas not fully verified — this is not conditional on a clean result. Say what fraction of the affected data/code each verification actually exercised (a passing test over one subset is not proof the other subsets are fine) and name anything skipped entirely.
 
 3. After findings, write a concise summary:
    - Review methods used
@@ -135,6 +137,8 @@ Severity definitions:
 ---
 
 ## 8.0 WRITE `review.md`
+
+**Running the review methods is not the same as finishing a review.** Whatever passes you ran — agent review, CodeRabbit, any other tool — the review isn't done until `review.md` is written; `/kamma:4-finalize`'s PASSED gate has nothing to read otherwise. Don't stop after the analysis and call it reviewed.
 
 Once the review is complete (all blocking/major resolved, or no findings), write `kamma/threads/<thread_id>/review.md` with the following sections:
 
@@ -158,8 +162,11 @@ Or: "No findings."
 - What was fixed during review (or "None")
 
 ## Test Evidence
-- `<command>` → pass/fail
+- `<command>` (scope: <what it actually covered — whole project / one file / one subset — never bare pass/fail alone>) → pass/fail
 - ...
+
+## Not Verified
+- <anything skipped, approximated instead of run for real, or only spot-checked — even when there are no findings; or "Nothing outstanding" if genuinely full coverage>
 
 ## Verdict
 PASSED | BLOCKED

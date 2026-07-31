@@ -138,7 +138,7 @@ Wait for the response.
    3. **Architecture** — fits existing patterns, no circular deps, right abstraction level?
    4. **Security** — input validated at boundaries, no secrets in code, auth checked?
    5. **Performance** — N+1 queries, unbounded loops, missing pagination?
-2. Run the relevant test suite or verification commands and read the output.
+2. Run the relevant test suite or verification commands and read the output. **Check the check, not just its result.** A green result is not evidence of full coverage — confirm it ran in the same mode/scope the real pipeline uses (a single-file check is not the project-wide one; a hand-written approximation of a rule is not the rule itself) and against enough of the real data to matter. If a claim is "verified manually", confirm what subset was actually exercised.
 3. Check for dead code introduced or orphaned by this change — unused functions, replaced components, unreferenced constants. List them explicitly as findings; do not delete without noting them.
 4. Confirm the change actually does what was approved at Stop 1, and that nothing outside the agreed scope was modified.
 5. Consider regressions: could any change break existing behavior?
@@ -149,7 +149,7 @@ Wait for the response.
    - `nit` — style or preference. May be skipped.
 7. After the review is done, run CodeRabbit review if available (`coderabbit review --agent`). Incorporate any findings.
 8. Fix any blocking or major findings immediately. Re-run verification after each fix. Repeat until none remain.
-9. Report the review outcome to the user concisely: files changed, findings (or "No findings"), fixes applied, test evidence, and a verdict (PASSED | BLOCKED).
+9. Report the review outcome to the user concisely: files changed, findings (or "No findings"), fixes applied, test evidence with what each check actually covered, what's not verified (state this even when there are no findings), and a verdict (PASSED | BLOCKED).
 
 ### 5.2 Finalize
 
