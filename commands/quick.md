@@ -91,6 +91,10 @@ Apply any changes and re-present until the user confirms. Then continue immediat
 
 **SHARED TREE GATE — assume another agent is editing this repo right now.** Kamma threads and other agent sessions routinely share one working tree. Re-read a file from disk immediately before editing it; an earlier read in this session may already be stale. If a tool reports a file was "modified, either by the user or by a linter" and its content is your *pre-edit* version, treat that as a rollback, not a hiccup: audit every file you have touched, because such sweeps land unevenly and leave a tree that looks plausible. Never stage, revert, or clean by directory or wildcard — no `git add <dir>`, no whole-tree `checkout`/`reset`/`stash`. `git stash` on a shared tree has twice destroyed a parallel session's uncommitted work; use `git worktree` if you need a clean tree.
 
+**BASELINE GATE — know what was already broken before you touch anything.** Before starting, run the project's fast check or a quick smoke pass (not the full suite yet) and note any failures that are genuinely pre-existing — do this by reading, not by destructively resetting the shared tree (the SHARED TREE GATE above covers why). A pre-existing failure is not this change's to fix; note it and move on. Never assume a red result belongs to "someone else's dirty file" without checking `git log`/`git blame` first — it may have been red on the main branch all along.
+
+**Never make a check pass by weakening it.** Fixing a regression means fixing the code, not the check. Do not loosen a test assertion, raise a threshold, add an exemption, or coerce bad input into something the code silently tolerates, in order to reach green — if a test's own behavior is the actual defect, say so and ask before touching it.
+
 **Scope rule:** Touch only what the change requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to an item on your to-do list. If you notice unrelated issues, log them as `NOTICED — NOT TOUCHING: <file> — <issue>` in your output, then move on. Do not fix them.
 
 1. Work through every item on the to-do list in order.
@@ -99,14 +103,14 @@ Apply any changes and re-present until the user confirms. Then continue immediat
    - Implement only the work that item requires.
    - **DRIFT GATE — keep your stated approach in sync with reality.** The instant implementation diverges from what you presented at Stop 1 — a wrong assumption, a different approach, a different set of files, dropped or added work — update your to-do list immediately, and tell the user what changed and why. The same applies to any follow-up change the user requests mid-run: record it on the to-do list right away, not at wrap-up. Don't silently build something different from what was approved.
    - Run the verification specified in the item's `→ verify:` check.
-   - If verification fails, try to fix it up to 2 times. If still failing, note the issue clearly to the user and continue if there's still a reasonable path.
+   - If verification fails, try to fix the code up to 2 times — never the check itself (see the gate above). If still failing and the failure predates this change per the BASELINE GATE, note it as pre-existing and continue; if it doesn't predate this change, it's a regression this work caused and must be fixed.
    - Mark the item done only after it passes verification, or after the remaining issue has been recorded.
 
 ---
 
 ### 4.1 STOP 2: Ask the User to Test
 
-**Smoke gate:** before asking the user to test, run the project's full test suite (or, if none exists, a broad smoke check covering the affected areas) once — not just the per-item `→ verify:` checks. This catches pre-existing or cross-change bugs that no single check covers. If it fails, fix and re-run before proceeding. Note the command run and result.
+**Smoke gate:** before asking the user to test, run the project's full test suite (or, if none exists, a broad smoke check covering the affected areas) once — not just the per-item `→ verify:` checks. This catches pre-existing or cross-change bugs that no single check covers. Fix and re-run anything caused by this change; anything already noted at the BASELINE GATE stays pre-existing and gets reported, not silently fixed or weakened away. Note the command run, the result, and any pre-existing failures still outstanding.
 
 When all implementation work is done and locally verified, explain specifically how to test — what commands to run, what to click, what to observe, what the expected outcome is. Then ask:
 
