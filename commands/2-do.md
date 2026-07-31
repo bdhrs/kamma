@@ -36,7 +36,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 
 **Never make a check pass by weakening it.** Fixing a regression means fixing the code, not the check. Do not loosen a test assertion, raise a threshold, add an exemption, or coerce bad input into something the code silently tolerates, in order to reach green — if a test's own behavior is the actual defect (an assertion that was always wrong, a check that should never have existed), say so and ask before touching it; don't quietly neuter it to end a task cleanly.
 
-**Scope rule:** Touch only what the current task requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to a task in `plan.md`. If you notice unrelated issues, log them as `NOTICED — NOT TOUCHING: <file> — <issue>` in your output, then move on. Do not fix them.
+**Scope rule:** Touch only what the current task requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to a task in `plan.md`. If you notice unrelated issues, log them as `NOTICED — NOT TOUCHING: <file> — <issue>` in your output, then move on. Do not fix them. This also bounds *how much* you build for the task itself — match the complexity the task actually specifies (a plain on/off toggle stays a plain toggle unless the task says otherwise), and don't add speculative handling for a scenario nobody asked to cover yet.
 
 1. Announce which thread you're starting.
 
