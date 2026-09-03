@@ -98,9 +98,11 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Don'
 
    If tied to a GitHub issue, include the same reference near the top of `plan.md`.
 
-7. **Simplicity check.** Before presenting, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Ask yourself: would a senior engineer say this is overcomplicated? If yes, simplify. If a task touches more than ~5 files or has more than 3 acceptance criteria, split it.
+7. **Failing test first, for bug threads.** If the thread is a bug fix, the first task in `plan.md` must be writing a test that fails for the reported reason — not a fix. Its `→ verify:` line must require running that test and pasting the actual failure output into `plan.md` before any fix task begins. This turns "I fixed it" into something falsifiable and gives the BASELINE GATE something concrete to stand on. Feature threads are unaffected — their existing `→ verify:` lines already cover this.
 
-8. **Model Strategy** — If the user opted in to model splitting (question round): once the phases are finalized (after the simplicity check), insert a `## Model Strategy` table before Phase 1 with each phase, its tier (Fast/Pro), and a one-line reason. Always mixed — never all-pro. Pro phases are only for analysis/checking/planning outputs; Fast phases are for implementation, commands, verification, generation, installs, servers, and mechanical edits. Add `⚠️ MODEL SWITCH REQUIRED (Pro tier): <analysis/checking reason>` or `⚠️ MODEL SWITCH REQUIRED (Fast tier): mechanical execution resumes` at tier-change phase headers. Otherwise skip.
+8. **Simplicity check.** Before presenting, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Ask yourself: would a senior engineer say this is overcomplicated? If yes, simplify. If a task touches more than ~5 files or has more than 3 acceptance criteria, split it.
+
+9. **Model Strategy** — If the user opted in to model splitting (question round): once the phases are finalized (after the simplicity check), insert a `## Model Strategy` table before Phase 1 with each phase, its tier (Fast/Pro), and a one-line reason. Always mixed — never all-pro. Pro phases are only for analysis/checking/planning outputs; Fast phases are for implementation, commands, verification, generation, installs, servers, and mechanical edits. Add `⚠️ MODEL SWITCH REQUIRED (Pro tier): <analysis/checking reason>` or `⚠️ MODEL SWITCH REQUIRED (Fast tier): mechanical execution resumes` at tier-change phase headers. Otherwise skip.
 
 ### 3.3 STOP 1: Present the Plan
 

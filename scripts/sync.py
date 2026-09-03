@@ -4,7 +4,9 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shlex
 import shutil
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -16,6 +18,8 @@ COMMANDS_DIR = ROOT / "commands"
 TEMPLATES_DIR = ROOT / "templates"
 REGISTRATION_DIR = ROOT / "registration"
 SKILLS_DIR = ROOT / "skills"
+HOOKS_DIR = ROOT / "hooks"
+HOOK_MARKER = "kamma_gate.py"
 
 
 @dataclass(frozen=True)
@@ -198,6 +202,101 @@ def resolve_opencode_command_dir(root: Path) -> Path:
     return commands_dir
 
 
+def is_venv_interpreter(path: Path) -> bool:
+    """True if ``path`` lives inside a virtualenv (has a pyvenv.cfg sibling).
+
+    ``sync.py`` normally runs under ``uv run``, which puts the repo's disposable
+    ``.venv/bin`` first on PATH — so a plain ``shutil.which("python3")`` picks up
+    a python that moves or disappears on the next ``uv sync``. A hook needs a
+    stable, always-present interpreter, not whatever happened to be first on
+    PATH at sync time.
+    """
+    return (path.parent.parent / "pyvenv.cfg").is_file()
+
+
+def resolve_hook_interpreter() -> str:
+    for candidate in ("/usr/bin/python3", "/usr/local/bin/python3", "/bin/python3"):
+        if Path(candidate).is_file():
+            return candidate
+    which_result = shutil.which("python3")
+    if which_result and not is_venv_interpreter(Path(which_result)):
+        return which_result
+    return sys.executable
+
+
+def install_kamma_gate_hooks(root: Path) -> None:
+    """Copy the gate script into ``root`` and merge its hooks into settings.json.
+
+    Reads existing settings (or starts from ``{}``), never overwrites unrelated
+    keys, backs up the file once before the first write, and de-duplicates any
+    prior kamma entries by matching on ``HOOK_MARKER`` so repeat syncs are
+    idempotent.
+    """
+    hooks_target = root / "hooks"
+    ensure_dir(hooks_target)
+    script_dest = hooks_target / "kamma_gate.py"
+    shutil.copy2(HOOKS_DIR / "kamma_gate.py", script_dest)
+
+    interpreter = resolve_hook_interpreter()
+    command_prefix = f"{shlex.quote(interpreter)} {shlex.quote(str(script_dest))}"
+
+    settings_path = root / "settings.json"
+    if settings_path.exists():
+        try:
+            settings = json.loads(settings_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            settings = {}
+    else:
+        settings = {}
+    if not isinstance(settings, dict):
+        settings = {}
+
+    if settings_path.exists():
+        backup_path = settings_path.with_suffix(settings_path.suffix + ".bak")
+        if not backup_path.exists():
+            shutil.copy2(settings_path, backup_path)
+
+    hooks_config = settings.get("hooks")
+    if not isinstance(hooks_config, dict):
+        hooks_config = {}
+    settings["hooks"] = hooks_config
+
+    def strip_kamma_entries(entries: object) -> list:
+        if not isinstance(entries, list):
+            return []
+        kept = []
+        for entry in entries:
+            handlers = entry.get("hooks", []) if isinstance(entry, dict) else []
+            if not isinstance(handlers, list):
+                handlers = []
+            if any(
+                isinstance(h, dict) and HOOK_MARKER in str(h.get("command", ""))
+                for h in handlers
+            ):
+                continue
+            kept.append(entry)
+        return kept
+
+    pre_tool_use = strip_kamma_entries(hooks_config.get("PreToolUse"))
+    pre_tool_use.append(
+        {
+            "matcher": "Edit|Write|NotebookEdit",
+            "hooks": [{"type": "command", "command": f"{command_prefix} spec-gate"}],
+        }
+    )
+    hooks_config["PreToolUse"] = pre_tool_use
+
+    stop = strip_kamma_entries(hooks_config.get("Stop", []))
+    stop.append(
+        {
+            "hooks": [{"type": "command", "command": f"{command_prefix} stop-gate"}],
+        }
+    )
+    hooks_config["Stop"] = stop
+
+    settings_path.write_text(json.dumps(settings, indent=2) + "\n", encoding="utf-8")
+
+
 def sync_claude(root: Path, commands: list[Command]) -> None:
     target = root / "commands" / "kamma"
     remove_stale(
@@ -213,6 +312,7 @@ def sync_claude(root: Path, commands: list[Command]) -> None:
             shutil.copy2(command.source, root / "commands" / "kamma.md")
         else:
             shutil.copy2(command.source, target / f"{command.base}.md")
+    install_kamma_gate_hooks(root)
 
 
 def sync_antigravity(root: Path, commands: list[Command]) -> None:
