@@ -57,13 +57,17 @@ If the work is tied to a GitHub issue, ask for or preserve the issue number and 
 
 ### 3.2 Decide the Approach
 
-1. Read the relevant code and project context. Identify your key assumptions — about scope, affected files, and approach. If any assumption is uncertain and getting it wrong would change what you build, surface it as a question. Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred, skip the question round and proceed.
+1. **VERIFY GATE — establish facts before assumptions.** Any concrete claim you'll rely on (a count, a data format, a file's actual content, which code layer something lives in, which control consumes a value) must come from reading the real source — code, data, or a quick check — not from memory, a name match, or how the request framed it. If the change depends on "every place X happens," run an exhaustive sweep (grep the literal string/pattern, not just the obvious call form, and include hidden paths) before declaring the affected files complete — a partial sweep produces a plan that looks complete and isn't.
 
-2. **Confirm this is genuinely a quick change.** If scoping reveals multiple phases, a need for a written spec, or architectural novelty, say so now and recommend `/kamma` instead of continuing here.
+2. Read the relevant code and project context. Identify your key assumptions — about scope, affected files, and approach. If any assumption is uncertain and getting it wrong would change what you build, surface it as a question. Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred, skip the question round and proceed.
 
-3. **Push back if warranted.** If a simpler approach exists than what was described, say so. If the request would create unnecessary complexity or conflict with existing architecture, raise it before implementing. Climb the laziness ladder and stop at the first rung that meets the need: (1) does it need to exist at all? — if not, drop it; (2) does the standard library or a language built-in do it? — use it; (3) is there a native platform feature? — use it; (4) is there an already-installed dependency? — reuse it; (5) can it be one line? — keep it one line; (6) only then write the minimum that works. Never trade away correctness, error handling, validation, or security to reach a lower rung.
+3. **Confirm this is genuinely a quick change.** If scoping reveals multiple phases, a need for a written spec, or architectural novelty, say so now and recommend `/kamma` instead of continuing here.
 
-4. Break the change into a short ordered to-do list, each item a concrete edit with a `→ verify:` check — the test to run, the behavior to observe, the expected output. Vague checks like "verify it works" don't count.
+4. **MINIMAL-FIRST GATE.** Plan the smallest change that satisfies the request — no extra helpers, refactors, generalization, or "while we're at it" machinery beyond what was asked. A remark about a future intent ("when X happens, I'll want Y") is not a build request — treat it as context, not scope, unless the user gives an explicit go-ahead. If a simpler approach exists, or the request as stated would add complexity beyond the stated need, say so before implementing and propose the minimal version instead. Defer extras to a follow-up unless the user asks for them now. If the request would conflict with existing architecture, raise that too. Climb the laziness ladder and stop at the first rung that meets the need: (1) does it need to exist at all? — if not, drop it; (2) does the standard library or a language built-in do it? — use it; (3) is there a native platform feature? — use it; (4) is there an already-installed dependency? — reuse it; (5) can it be one line? — keep it one line; (6) only then write the minimum that works. Never trade away correctness, error handling, validation, or security to reach a lower rung.
+
+5. **Failing test first, for bug fixes.** If this change is a bug fix, the first to-do item must be writing a test that fails for the reported reason — not a fix. Run it and paste the actual failure output into your reply before any fix item begins. There's no `plan.md` in this flow, so the chat reply is the record. This turns "I fixed it" into something falsifiable and gives the BASELINE GATE something concrete to stand on. Non-bug changes are unaffected — their existing `→ verify:` checks already cover this.
+
+6. Break the change into a short ordered to-do list, each item a concrete edit with a `→ verify:` check — the test to run, the behavior to observe, the expected output. Vague checks like "verify it works" don't count.
 
 ### 3.3 STOP 1: Present the Approach
 
@@ -87,7 +91,13 @@ Apply any changes and re-present until the user confirms. Then continue immediat
 ## 4.0 IMPLEMENT
 **Run autonomously. Don't stop for mid-task confirmations.**
 
-**Scope rule:** Touch only what the change requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to an item on your to-do list. If you notice unrelated issues, log them as `NOTICED — NOT TOUCHING: <file> — <issue>` in your output, then move on. Do not fix them.
+**SHARED TREE GATE — assume another agent is editing this repo right now.** Kamma threads and other agent sessions routinely share one working tree. Re-read a file from disk immediately before editing it; an earlier read in this session may already be stale. If a tool reports a file was "modified, either by the user or by a linter" and its content is your *pre-edit* version, treat that as a rollback, not a hiccup: audit every file you have touched, because such sweeps land unevenly and leave a tree that looks plausible. Never stage, revert, or clean by directory or wildcard — no `git add <dir>`, no whole-tree `checkout`/`reset`/`stash`. `git stash` on a shared tree has twice destroyed a parallel session's uncommitted work; use `git worktree` if you need a clean tree.
+
+**BASELINE GATE — know what was already broken before you touch anything.** Before starting, run the project's fast check or a quick smoke pass (not the full suite yet) and note any failures that are genuinely pre-existing — do this by reading, not by destructively resetting the shared tree (the SHARED TREE GATE above covers why). A pre-existing failure is not this change's to fix; note it and move on. Never assume a red result belongs to "someone else's dirty file" without checking `git log`/`git blame` first — it may have been red on the main branch all along.
+
+**Never make a check pass by weakening it.** Fixing a regression means fixing the code, not the check. Do not loosen a test assertion, raise a threshold, add an exemption, or coerce bad input into something the code silently tolerates, in order to reach green — if a test's own behavior is the actual defect, say so and ask before touching it.
+
+**Scope rule:** Touch only what the change requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to an item on your to-do list. If you notice unrelated issues, log them as `NOTICED — NOT TOUCHING: <file> — <issue>` in your output, then move on. Do not fix them. This also bounds *how much* you build for the task itself — match the complexity the task actually specifies (a plain on/off toggle stays a plain toggle unless the task says otherwise), and don't add speculative handling for a scenario nobody asked to cover yet.
 
 1. Work through every item on the to-do list in order.
 2. For each item:
@@ -95,14 +105,14 @@ Apply any changes and re-present until the user confirms. Then continue immediat
    - Implement only the work that item requires.
    - **DRIFT GATE — keep your stated approach in sync with reality.** The instant implementation diverges from what you presented at Stop 1 — a wrong assumption, a different approach, a different set of files, dropped or added work — update your to-do list immediately, and tell the user what changed and why. The same applies to any follow-up change the user requests mid-run: record it on the to-do list right away, not at wrap-up. Don't silently build something different from what was approved.
    - Run the verification specified in the item's `→ verify:` check.
-   - If verification fails, try to fix it up to 2 times. If still failing, note the issue clearly to the user and continue if there's still a reasonable path.
+   - If verification fails, try to fix the code up to 2 times — never the check itself (see the gate above). If still failing and the failure predates this change per the BASELINE GATE, note it as pre-existing and continue; if it doesn't predate this change, it's a regression this work caused and must be fixed.
    - Mark the item done only after it passes verification, or after the remaining issue has been recorded.
 
 ---
 
 ### 4.1 STOP 2: Ask the User to Test
 
-**Smoke gate:** before asking the user to test, run the project's full test suite (or, if none exists, a broad smoke check covering the affected areas) once — not just the per-item `→ verify:` checks. This catches pre-existing or cross-change bugs that no single check covers. If it fails, fix and re-run before proceeding. Note the command run and result.
+**Smoke gate:** before asking the user to test, run the project's full test suite (or, if none exists, a broad smoke check covering the affected areas) once — not just the per-item `→ verify:` checks. This catches pre-existing or cross-change bugs that no single check covers. Fix and re-run anything caused by this change; anything already noted at the BASELINE GATE stays pre-existing and gets reported, not silently fixed or weakened away. Note the command run, the result, and any pre-existing failures still outstanding.
 
 When all implementation work is done and locally verified, explain specifically how to test — what commands to run, what to click, what to observe, what the expected outcome is. Then ask:
 
@@ -130,7 +140,7 @@ Wait for the response.
    3. **Architecture** — fits existing patterns, no circular deps, right abstraction level?
    4. **Security** — input validated at boundaries, no secrets in code, auth checked?
    5. **Performance** — N+1 queries, unbounded loops, missing pagination?
-2. Run the relevant test suite or verification commands and read the output.
+2. Run the relevant test suite or verification commands and read the output. **Check the check, not just its result.** A green result is not evidence of full coverage — confirm it ran in the same mode/scope the real pipeline uses (a single-file check is not the project-wide one; a hand-written approximation of a rule is not the rule itself) and against enough of the real data to matter. If a claim is "verified manually", confirm what subset was actually exercised.
 3. Check for dead code introduced or orphaned by this change — unused functions, replaced components, unreferenced constants. List them explicitly as findings; do not delete without noting them.
 4. Confirm the change actually does what was approved at Stop 1, and that nothing outside the agreed scope was modified.
 5. Consider regressions: could any change break existing behavior?
@@ -139,9 +149,9 @@ Wait for the response.
    - `major` — significant correctness or architecture issue. Must fix before finalizing.
    - `minor` — worth fixing but not critical. Fix unless explicitly deferred.
    - `nit` — style or preference. May be skipped.
-7. After the review is done, run CodeRabbit review if available (`coderabbit review --agent`). Incorporate any findings.
+7. After the review is done, run CodeRabbit review if available (`coderabbit review --agent`). Incorporate any findings. **Bound it — one attempt, one retry, then move on.** Run it in the foreground and wait for it to actually finish; don't end your turn early on a long-running review. If it errors, hangs, times out, or returns empty output, retry at most once — correcting the invocation for a known cause first if one applies (no configured remote → add `--base main --type uncommitted`; a commit landed mid-review → rerun with `--type committed`). If the retry also fails or a repo has no commits to review at all, stop trying: report CodeRabbit as unavailable and proceed on the agent review's findings alone. Never let an external tool's failure stall this change.
 8. Fix any blocking or major findings immediately. Re-run verification after each fix. Repeat until none remain.
-9. Report the review outcome to the user concisely: files changed, findings (or "No findings"), fixes applied, test evidence, and a verdict (PASSED | BLOCKED).
+9. Report the review outcome to the user concisely: files changed, findings (or "No findings"), fixes applied, test evidence with what each check actually covered, what's not verified (state this even when there are no findings), and a verdict (PASSED | BLOCKED).
 
 ### 5.2 Finalize
 
@@ -165,7 +175,8 @@ There is no thread directory to archive in the quick flow — nothing to copy or
 **Always suggest a commit message and description (do NOT run `git commit`):**
 - One concise commit message line in imperative mood, lowercase first word, under 72 characters. If a GitHub issue was referenced, include it: e.g., `fix: ensure consistent commit descriptions (closes #123)`
 - Bulleted description explaining what changed and why. One bullet per change, each a single long line — however long, never manually wrapped or split across lines. One clause only — no "and"-chains, no semicolons, no parentheticals. Go down the page, not across it.
-- Bulleted list of only the files changed as part of this work — not every file in the working tree. Cross-check `git status --short` / `git diff --name-only` against what you actually changed and exclude unrelated changes. Sort alphabetically by full path (folder, then subfolder, then file).
+- Bulleted list of only the files changed as part of this work — not every file in the working tree. Cross-check `git status --short` / `git diff --name-only` against what you actually changed and exclude unrelated changes. Sort alphabetically by full path (folder, then subfolder, then file). Never give a directory or wildcard in place of the explicit list.
+- **Verify the work is still there before listing it.** A concurrent session's commit, checkout, or reset can absorb or silently revert your changes. Confirm each listed change against the tree (`git status --short`, plus `git ls-files` for a tracking change) and re-check that any deletion actually landed (`git show --stat`). If something has been reverted or swept into another commit, say so plainly instead of listing it as done.
 - Present all three:
   > **Commit message:** `<message>`
   > **Commit description:**

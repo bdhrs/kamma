@@ -56,11 +56,13 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Don'
 
 ### 3.2 Generate Spec and Plan
 
-1. Read `kamma/project.md` and `kamma/tech.md` if they exist. Fill gaps from the repo. Then, before drafting anything, identify your key assumptions — about scope, tech stack, affected files, and approach. If any assumption is uncertain and getting it wrong would change the spec significantly, surface it as a question. Also assess complexity: if the work looks complex enough to need pro-model reasoning somewhere (novel architecture, no existing pattern, 3+ interconnected systems, security-critical logic), add one question to the batch: "This looks complex — use model splitting across Fast/Pro tiers?" Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred and the thread is simple, skip the question round and proceed. Pro means analysis/checking/planning only; execution belongs to Fast.
+1. **VERIFY GATE — establish facts before assumptions.** Any concrete claim the spec will rely on (a count, a data format, a file's actual content, which code layer something lives in, which control consumes a value) must come from reading the real source — code, data, or a quick check — not from memory, a name match, or how the request framed it. If the spec depends on "every place X happens," run an exhaustive sweep (grep the literal string/pattern, not just the obvious call form, and include hidden paths) before writing the affected-files list — a partial sweep produces a spec that looks complete and isn't. State which facts were verified this way and which remain assumptions.
 
-2. **Push back if warranted.** If a simpler approach exists than what was described, say so. If the request would create unnecessary complexity or conflict with existing architecture, raise it before planning. Climb the laziness ladder and stop at the first rung that meets the need: (1) does it need to exist at all? — if not, drop it; (2) does the standard library or a language built-in do it? — use it; (3) is there a native platform feature? — use it; (4) is there an already-installed dependency? — reuse it; (5) can it be one line? — keep it one line; (6) only then write the minimum that works. Never trade away correctness, error handling, validation, or security to reach a lower rung.
+2. Read `kamma/project.md` and `kamma/tech.md` if they exist. Fill gaps from the repo. Then, before drafting anything, identify your key assumptions — about scope, tech stack, affected files, and approach. If any assumption is uncertain and getting it wrong would change the spec significantly, surface it as a question. Also assess complexity: if the work looks complex enough to need pro-model reasoning somewhere (novel architecture, no existing pattern, 3+ interconnected systems, security-critical logic), add one question to the batch: "This looks complex — use model splitting across Fast/Pro tiers?" Batch all questions into a single round using the native question/input tool and wait. Fall back to a normal message only if no such tool is available. If everything can be confidently inferred and the thread is simple, skip the question round and proceed. Pro means analysis/checking/planning only; execution belongs to Fast.
 
-3. Generate `spec.md` with these sections:
+3. **MINIMAL-FIRST GATE.** Plan the smallest change that satisfies the request — no extra helpers, refactors, generalization, or "while we're at it" machinery beyond what was asked. A remark about a future intent ("when X happens, I'll want Y") is not a build request — treat it as context, not scope, unless the user gives an explicit go-ahead. If a simpler approach exists, or the request as stated would add complexity beyond the stated need, say so before planning and propose the minimal version instead. Defer extras to a follow-up unless the user asks for them now. If the request would conflict with existing architecture, raise that too. Climb the laziness ladder and stop at the first rung that meets the need: (1) does it need to exist at all? — if not, drop it; (2) does the standard library or a language built-in do it? — use it; (3) is there a native platform feature? — use it; (4) is there an already-installed dependency? — reuse it; (5) can it be one line? — keep it one line; (6) only then write the minimum that works. Never trade away correctness, error handling, validation, or security to reach a lower rung.
+
+4. Generate `spec.md` with these sections:
    - Overview
    - What it should do
    - Assumptions & uncertainties (what you're assuming, what you couldn't verify, what might be wrong)
@@ -72,9 +74,9 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Don'
 
    If tied to a GitHub issue, include a dedicated reference near the top.
 
-4. Before writing tasks, identify the dependency order: what must exist before what else can be built. Let this order determine the phase sequence.
+5. Before writing tasks, identify the dependency order: what must exist before what else can be built. Let this order determine the phase sequence.
 
-5. Generate `plan.md` with Phases → Tasks → Sub-tasks using `[ ]` markers.
+6. Generate `plan.md` with Phases → Tasks → Sub-tasks using `[ ]` markers.
 
    Slice tasks vertically — each task should deliver a testable piece of working functionality end-to-end, not a horizontal layer (all DB, then all API, then all UI).
 
@@ -96,9 +98,11 @@ Infer the thread type (feature, bug, chore, refactor) from the description. Don'
 
    If tied to a GitHub issue, include the same reference near the top of `plan.md`.
 
-6. **Simplicity check.** Before presenting, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Ask yourself: would a senior engineer say this is overcomplicated? If yes, simplify. If a task touches more than ~5 files or has more than 3 acceptance criteria, split it.
+7. **Failing test first, for bug threads.** If the thread is a bug fix, the first task in `plan.md` must be writing a test that fails for the reported reason — not a fix. Its `→ verify:` line must require running that test and pasting the actual failure output into `plan.md` before any fix task begins. This turns "I fixed it" into something falsifiable and gives the BASELINE GATE something concrete to stand on. Feature threads are unaffected — their existing `→ verify:` lines already cover this.
 
-7. **Model Strategy** — If the user opted in to model splitting (question round): once the phases are finalized (after the simplicity check), insert a `## Model Strategy` table before Phase 1 with each phase, its tier (Fast/Pro), and a one-line reason. Always mixed — never all-pro. Pro phases are only for analysis/checking/planning outputs; Fast phases are for implementation, commands, verification, generation, installs, servers, and mechanical edits. Add `⚠️ MODEL SWITCH REQUIRED (Pro tier): <analysis/checking reason>` or `⚠️ MODEL SWITCH REQUIRED (Fast tier): mechanical execution resumes` at tier-change phase headers. **Also tag EVERY phase header with its own tier** — `## Phase 2 — <name> — *Pro*` — not just the ones where the tier changes, and make each tag agree with the table. Unattended runners resolve a task's model from the nearest preceding phase header; an untagged header is indistinguishable from a Fast one, so a Pro phase silently runs on the Fast model, refuses the work as out-of-tier, and stalls the run. Otherwise skip.
+8. **Simplicity check.** Before presenting, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Ask yourself: would a senior engineer say this is overcomplicated? If yes, simplify. If a task touches more than ~5 files or has more than 3 acceptance criteria, split it.
+
+9. **Model Strategy** — If the user opted in to model splitting (question round): once the phases are finalized (after the simplicity check), insert a `## Model Strategy` table before Phase 1 with each phase, its tier (Fast/Pro), and a one-line reason. Always mixed — never all-pro. Pro phases are only for analysis/checking/planning outputs; Fast phases are for implementation, commands, verification, generation, installs, servers, and mechanical edits. Add `⚠️ MODEL SWITCH REQUIRED (Pro tier): <analysis/checking reason>` or `⚠️ MODEL SWITCH REQUIRED (Fast tier): mechanical execution resumes` at tier-change phase headers. **Also tag EVERY phase header with its own tier** — `## Phase 2 — <name> — *Pro*` — not just the ones where the tier changes, and make each tag agree with the table. Unattended runners resolve a task's model from the nearest preceding phase header; an untagged header is indistinguishable from a Fast one, so a Pro phase silently runs on the Fast model, refuses the work as out-of-tier, and stalls the run. Otherwise skip.
 
 ### 3.3 STOP 1: Present the Plan
 
@@ -135,7 +139,13 @@ Apply any changes and re-present until the user confirms. Then continue immediat
 ## 4.0 IMPLEMENT THE THREAD
 **Run autonomously. Don't stop for phase checkpoints or mid-task confirmations — except at model-switch markers (see below).**
 
-**Scope rule:** Touch only what the current task requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to a task in `plan.md`. If you notice unrelated issues, log them as `NOTICED — NOT TOUCHING: <file> — <issue>` in your output, then move on. Do not fix them.
+**SHARED TREE GATE — assume another agent is editing this repo right now.** Kamma threads and other agent sessions routinely share one working tree. Re-read a file from disk immediately before editing it; an earlier read in this session may already be stale. If a tool reports a file was "modified, either by the user or by a linter" and its content is your *pre-edit* version, treat that as a rollback, not a hiccup: audit every file you have touched, because such sweeps land unevenly and leave a tree that looks plausible. Never stage, revert, or clean by directory or wildcard — no `git add <dir>`, no whole-tree `checkout`/`reset`/`stash`. `git stash` on a shared tree has twice destroyed a parallel session's uncommitted work; use `git worktree` if you need a clean tree. Uncommitted work is not safe to leave sitting while other sessions run, so when a phase's work is finished and verified, tell the user it is ready to commit rather than batching everything to the end — you may not run git yourself.
+
+**BASELINE GATE — know what was already broken before you touch anything.** Before the first task, run the project's fast check or a quick smoke pass (not the full suite yet) and note any failures that are genuinely pre-existing — do this by reading, not by destructively resetting the shared tree (the SHARED TREE GATE above covers why). A pre-existing failure is not this thread's to fix; log it as `PRE-EXISTING — NOT CAUSED BY THIS THREAD: <check> — <failure>` and move on, the same way `NOTICED — NOT TOUCHING` works below. Never assume a red result belongs to "someone else's dirty file" without checking `git log`/`git blame` first — it may have been red on the main branch all along.
+
+**Never make a check pass by weakening it.** Fixing a regression means fixing the code, not the check. Do not loosen a test assertion, raise a threshold, add an exemption, or coerce bad input into something the code silently tolerates, in order to reach green — if a test's own behavior is the actual defect, say so and ask before touching it; don't quietly neuter it to end a task cleanly.
+
+**Scope rule:** Touch only what the current task requires. Don't refactor, clean up, add comments to, or improve adjacent code. Every changed line must trace directly to a task in `plan.md`. If you notice unrelated issues, log them as `NOTICED — NOT TOUCHING: <file> — <issue>` in your output, then move on. Do not fix them. This also bounds *how much* you build for the task itself — match the complexity the task actually specifies (a plain on/off toggle stays a plain toggle unless the task says otherwise), and don't add speculative handling for a scenario nobody asked to cover yet.
 
 1. Read `kamma/threads/<thread_id>/spec.md`, `plan.md`, and `handoff.md` (if it exists — context from a previous session).
 2. Work through every unchecked task and sub-task in sequential order.
@@ -146,7 +156,7 @@ Apply any changes and re-present until the user confirms. Then continue immediat
    - Implement only the work required for that item.
    - **DRIFT GATE — keep `spec.md` and `plan.md` in sync with reality, always.** The instant implementation diverges from `spec.md` or `plan.md` — a wrong assumption, a different approach, a different set of files, reordered or dropped tasks — update the relevant file immediately, before continuing. The same applies to any follow-up change the user requests mid-thread (a new requirement, a tweak, a scope addition): record it in `spec.md`/`plan.md` right away, not at wrap-up. Never leave `plan.md` with `[x]` tasks that no longer match what was built. Don't wait for review, or for the user to ask twice.
    - Run the verification specified in the task's `→ verify:` line.
-   - If verification fails, try to fix it up to 2 times. If still failing, note the issue clearly in `plan.md` and continue if there's still a reasonable path.
+   - If verification fails, try to fix the code up to 2 times — never the check itself (see the gate above). If still failing and the failure predates this thread per the BASELINE GATE, note it as pre-existing and continue; if it doesn't predate this thread, it's a regression this task caused and must be fixed before the task can be marked done.
    - Change `[~]` to `[x]` only after the item passes verification, or after the remaining issue has been recorded.
    - **Context judgment (same model):** If the session context has grown heavy — many files touched, long tool chains, sense of degradation — write a handoff and suggest starting a fresh session with the same model. Do not interrupt a fast, light session.
 4. At the end of each phase, run the phase's verification task.
@@ -154,7 +164,7 @@ Apply any changes and re-present until the user confirms. Then continue immediat
 
 ### 4.1 STOP 2: Ask the User to Test
 
-**Smoke gate:** before asking the user to test, run the project's full test suite (or, if none exists, a broad smoke check covering the affected areas) once — not just the per-task `→ verify:` lines. This catches pre-existing or cross-task bugs that no single task's verify line covers. If it fails, fix and re-run before proceeding. Note the command run and result.
+**Smoke gate:** before asking the user to test, run the project's full test suite (or, if none exists, a broad smoke check covering the affected areas) once — not just the per-task `→ verify:` lines. This catches pre-existing or cross-task bugs that no single task's verify line covers. Fix and re-run anything caused by this thread's changes; anything already noted at the BASELINE GATE stays pre-existing and gets reported, not silently fixed or weakened away. Note the command run, the result, and any pre-existing failures still outstanding.
 
 When all implementation work is done and locally verified, explain specifically how to test — what commands to run, what to click, what to observe, what the expected outcome is. Then ask:
 
@@ -183,7 +193,7 @@ Wait for the response.
    3. **Architecture** — fits existing patterns, no circular deps, right abstraction level?
    4. **Security** — input validated at boundaries, no secrets in code, auth checked?
    5. **Performance** — N+1 queries, unbounded loops, missing pagination?
-3. Run the relevant test suite or verification commands and read the output.
+3. Run the relevant test suite or verification commands and read the output. **Check the check, not just its result.** A green result is not evidence of full coverage — confirm it ran in the same mode/scope the real pipeline uses (a single-file check is not the project-wide one; a hand-written approximation of a rule is not the rule itself) and against enough of the real data to matter. If a claim is "verified manually", confirm what subset was actually exercised — a manual pass that happens to skip the only affected rows is not a pass.
 4. Check for dead code introduced or orphaned by this thread — unused functions, replaced components, unreferenced constants. List them explicitly as findings; do not delete without noting them.
 5. For each of the following, read the relevant code and report what you found — don't skip any:
    - **Spec coverage:** Does every requirement in `spec.md` have a corresponding implementation?
@@ -197,7 +207,7 @@ Wait for the response.
    - `major` — significant correctness or architecture issue. Must fix before finalizing.
    - `minor` — worth fixing but not critical. Fix unless explicitly deferred.
    - `nit` — style or preference. May be skipped.
-7. After the agent review is done, run CodeRabbit review if available (`coderabbit review --agent`). Incorporate any findings.
+7. After the agent review is done, run CodeRabbit review if available (`coderabbit review --agent`). Incorporate any findings. **Bound it — one attempt, one retry, then move on.** Run it in the foreground and wait for it to actually finish; don't end your turn early on a long-running review. If it errors, hangs, times out, or returns empty output, retry at most once — correcting the invocation for a known cause first if one applies (no configured remote → add `--base main --type uncommitted`; a commit landed mid-review → rerun with `--type committed`). If the retry also fails or a repo has no commits to review at all, stop trying: report CodeRabbit as unavailable and proceed on the agent review's findings alone. Never let an external tool's failure stall this thread.
 8. Fix any blocking or major findings immediately. Re-run verification after each fix. Repeat until none remain.
 9. Make sure `plan.md` reflects the actual state of the work.
 10. Then write `kamma/threads/<thread_id>/review.md` with the following sections:
@@ -222,8 +232,11 @@ Wait for the response.
    - What was fixed during review (or "None")
 
    ## Test Evidence
-   - `<command>` → pass/fail
+   - `<command>` (scope: <what it actually covered — whole project / one file / one subset — never bare pass/fail alone>) → pass/fail
    - ...
+
+   ## Not Verified
+   - <anything skipped, approximated instead of run for real, or only spot-checked — even when there are no findings; or "Nothing outstanding" if genuinely full coverage>
 
    ## Verdict
    PASSED | BLOCKED
@@ -257,7 +270,8 @@ Wait for the response.
 **Always suggest a commit message and description (do NOT run `git commit`):**
 - One concise commit message line in imperative mood, lowercase first word, under 72 characters. If a GitHub issue was referenced, include it: e.g., `fix: ensure consistent commit descriptions (closes #123)`
 - Bulleted description explaining what changed and why. One bullet per change, each a single long line — however long, never manually wrapped or split across lines. One clause only — no "and"-chains, no semicolons, no parentheticals. Go down the page, not across it.
-- Bulleted list of only the files changed as part of this thread's work — not every file in the working tree. Cross-check `git status --short` / `git diff --name-only` against the thread's `plan.md` tasks and exclude unrelated changes. Sort alphabetically by full path (folder, then subfolder, then file).
+- Bulleted list of only the files changed as part of this thread's work — not every file in the working tree. Cross-check `git status --short` / `git diff --name-only` against the thread's `plan.md` tasks and exclude unrelated changes. Sort alphabetically by full path (folder, then subfolder, then file). Never give a directory or wildcard in place of the explicit list.
+- **Verify the work is still there before listing it.** A concurrent session's commit, checkout, or reset can absorb or silently revert your changes, and `plan.md` saying something was changed, deleted, or untracked is not proof it still holds. Confirm each listed change against the tree (`git status --short`, plus `git ls-files` for a tracking change) and re-check that any deletion actually landed (`git show --stat`). If something has been reverted or swept into another commit, say so plainly instead of listing it as done.
 - Present all three:
   > **Commit message:** `<message>`
   > **Commit description:**
