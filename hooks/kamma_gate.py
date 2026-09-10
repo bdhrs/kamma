@@ -15,6 +15,8 @@ import sys
 from pathlib import Path
 
 LOOP_MARKER = "> **Thread type:** Loop (standing thread)"
+# Directory names under kamma/threads/ that are not themselves threads.
+NON_THREAD_DIRS = {"archive"}
 
 
 def read_stdin_json() -> dict:
@@ -57,6 +59,24 @@ def is_loop_thread(thread_dir: Path) -> bool:
     return False
 
 
+def thread_dirs_in(threads_dir: Path) -> list[Path]:
+    """Subdirectories of ``threads_dir`` that represent actual threads.
+
+    Excludes bookkeeping directories such as ``archive/``: those hold
+    finished threads, so judging them against the spec/plan gate would
+    block every edit in the repo over a directory that is working as
+    intended.
+    """
+    try:
+        return [
+            d
+            for d in threads_dir.iterdir()
+            if d.is_dir() and d.name not in NON_THREAD_DIRS
+        ]
+    except Exception:
+        return []
+
+
 def spec_gate() -> None:
     payload = read_stdin_json()
     cwd = payload.get("cwd")
@@ -71,10 +91,7 @@ def spec_gate() -> None:
     if not kamma_dir.is_dir() or not threads_dir.is_dir():
         return
 
-    try:
-        thread_dirs = [d for d in threads_dir.iterdir() if d.is_dir()]
-    except Exception:
-        return
+    thread_dirs = thread_dirs_in(threads_dir)
     if not thread_dirs:
         return
 
@@ -145,10 +162,7 @@ def stop_gate() -> None:
     if not threads_dir.is_dir():
         return
 
-    try:
-        thread_dirs = [d for d in threads_dir.iterdir() if d.is_dir()]
-    except Exception:
-        return
+    thread_dirs = thread_dirs_in(threads_dir)
 
     newly_flagged = []
     for d in thread_dirs:
