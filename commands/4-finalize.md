@@ -62,7 +62,7 @@ Verify `kamma/project.md`, `kamma/tech.md`, and `kamma/workflow.md` exist. If an
 ## 5.0 CLEAN UP THE THREAD
 
 1. Ensure `kamma/archive/` exists.
-2. Copy `kamma/threads/<thread_id>/` to `kamma/archive/<thread_id>/`. If that path exists, pick a unique variant.
+2. Copy `kamma/threads/<thread_id>/` to `kamma/archive/<thread_id>/`. If that path exists, pick a unique variant. Never create an `archive/` directory under `kamma/threads/` — that path is reserved for live threads.
 3. Delete `kamma/threads/<thread_id>/` and its contents.
 4. If `kamma/threads.md` exists, delete it — legacy file.
 5. Report where the thread was archived.

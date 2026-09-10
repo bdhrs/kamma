@@ -253,7 +253,7 @@ Wait for the response.
 1. If `kamma/project.md` exists and the thread changed something significant about the project, update it. If the file doesn't exist, don't create it.
 2. If `kamma/tech.md` exists and the thread changed tools, constraints, or working assumptions, update it. If the file doesn't exist, don't create it.
 3. Ensure `kamma/archive/` exists.
-4. Copy `kamma/threads/<thread_id>/` to `kamma/archive/<thread_id>/`. If that path exists, pick a unique variant.
+4. Copy `kamma/threads/<thread_id>/` to `kamma/archive/<thread_id>/`. If that path exists, pick a unique variant. Never create an `archive/` directory under `kamma/threads/` — that path is reserved for live threads.
 5. Delete `kamma/threads/<thread_id>/` and all its contents.
 6. If `kamma/threads.md` exists, delete it — legacy file.
 7. Announce that the thread is complete.
