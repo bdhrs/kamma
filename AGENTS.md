@@ -40,3 +40,13 @@ heading references.**
   at the repo root are gitignored symlinks pointing here.
 - This repo dogfoods Kamma; the working `kamma/` directory is gitignored.
 - Don't commit, push, or run git unless explicitly asked.
+
+## Before opening an issue or PR against this repo
+
+Read `skills/kamma/SKILL.md` and the specific file(s) in `commands/` your bug touches,
+in full, before proposing a fix — a symptom in one command is often caused by a step
+skipped or misdocumented elsewhere, and a patch that only addresses the symptom can
+bake a wrong assumption into the framework permanently. Check whether the root cause
+is elsewhere first. Prefer opening an issue over a PR unless the fix is a one-line,
+obviously-correct change — file the issue using the bug report template, which asks
+for the root cause, not just the symptom.
