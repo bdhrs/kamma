@@ -33,6 +33,14 @@ If any Kamma files are missing, don't stop and don't run setup. Continue with wh
 
 `/kamma:quick` is self-contained. Use only the context and rules in this command plus what you discover from the repo.
 
+**Tell the spec gate this is a quick run.** Claude Code's `spec-gate` hook denies work in a repo that has no thread. `/kamma:quick` is the no-spec path by design, so it must switch the gate off for the length of the run. From the repo root:
+
+```bash
+[ -f ~/.claude/hooks/kamma_gate.py ] && python3 ~/.claude/hooks/kamma_gate.py quick-on || true
+```
+
+If the hook file isn't there, nothing happens and nothing breaks — no other CLI has the gate. Section 5.5 switches it back on, and runs whatever else happened. The marker expires on its own after four hours, so an abandoned run cannot leave the gate off.
+
 ---
 
 ## 3.0 SCOPE THE CHANGE
@@ -198,7 +206,7 @@ There is no thread directory to archive in the quick flow — nothing to copy or
    - You misunderstood something (`[CONFUSION]`)
    - You violated a rule or missed an expected action (`[BEHAVIOR]`)
    - Something worked particularly well (`[POSITIVE]`)
-2. If nothing notable happened, skip the rest of this section.
+2. If nothing notable happened, skip the rest of the reflection steps (3–8) and go straight to Section 5.5. Never skip Section 5.5.
 3. Append each observation as a one-liner to `kamma/lessons.md` (create if needed):
    ```
    - YYYY-MM-DD [TAG] Short description of what happened
@@ -226,3 +234,16 @@ There is no thread directory to archive in the quick flow — nothing to copy or
 6. Keep additions minimal: one or two sentences per rule. Tell the user which file you updated and why.
 7. If no improvements apply, say nothing and move on.
 8. Recurring or cross-repo patterns (the same lesson repeating across threads or projects) are consolidated into the kamma framework itself by `/kamma:improve`, not here. Leave them in `lessons.md` for that pass.
+
+---
+
+### 5.5 Switch the Spec Gate Back On
+**Always run this. It is not optional and it is not skippable.**
+
+This undoes the `quick-on` from Section 2.0. Run it even if Section 5.4 was skipped, even if the user stopped you early, and even if the run failed:
+
+```bash
+[ -f ~/.claude/hooks/kamma_gate.py ] && python3 ~/.claude/hooks/kamma_gate.py quick-off || true
+```
+
+Run it from the repo root. If you leave it out, the spec gate stays off for this session in this repo until the four-hour marker expires — which means the next piece of work in this session is ungated.

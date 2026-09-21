@@ -297,7 +297,7 @@ def install_kamma_gate_hooks(root: Path) -> None:
     pre_tool_use = strip_kamma_entries(hooks_config.get("PreToolUse"))
     pre_tool_use.append(
         {
-            "matcher": "Edit|Write|NotebookEdit",
+            "matcher": "Edit|Write|NotebookEdit|Bash",
             "hooks": [{"type": "command", "command": f"{command_prefix} spec-gate"}],
         }
     )

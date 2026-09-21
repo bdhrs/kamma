@@ -11,5 +11,13 @@ package = false
 [dependency-groups]
 dev = [
     "pyright>=1.1.410",
+    "pytest>=8.0",
     "ruff>=0.15.17",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.pyright]
+# hooks/ is not a package; the tests import kamma_gate after a sys.path insert.
+extraPaths = ["hooks"]
