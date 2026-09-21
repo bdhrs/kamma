@@ -156,6 +156,23 @@ def remove_stale(paths: list[Path]) -> None:
         remove_if_exists(path)
 
 
+def remove_matching(directory: Path, pattern: str) -> None:
+    """Delete everything in ``directory`` matching ``pattern``.
+
+    A target that only deletes a hand-written list of old filenames keeps
+    serving any command deleted after that list was last edited — ``5-status``
+    stayed installed in four of the seven targets that way, long after its source
+    file was removed. Sweeping the namespace before writing makes
+    a deletion in ``commands/`` propagate on the next sync without anyone having
+    to remember. Callers pass a pattern narrow enough to spare files kamma does
+    not own, since some destinations are shared with the user's own commands.
+    """
+    if not directory.is_dir():
+        return
+    for path in sorted(directory.glob(pattern)):
+        remove_if_exists(path)
+
+
 def remove_marketplace_kamma() -> None:
     for agents_dir in AGENTS_DIRS:
         marketplace = agents_dir / "plugins" / "marketplace.json"
@@ -299,13 +316,7 @@ def install_kamma_gate_hooks(root: Path) -> None:
 
 def sync_claude(root: Path, commands: list[Command]) -> None:
     target = root / "commands" / "kamma"
-    remove_stale(
-        [
-            target / "status.md",
-            target / "kamma-status.md",
-            target / "one-shot.md",
-        ]
-    )
+    remove_matching(target, "*.md")
     ensure_dir(target)
     for command in commands:
         if command.base == "kamma":
@@ -337,8 +348,7 @@ def sync_antigravity(root: Path, commands: list[Command]) -> None:
             workflows_target / "status.md",
         ]
     )
-    for old in skills_root.glob("kamma-*"):
-        remove_if_exists(old)
+    remove_matching(skills_root, "kamma-*")
 
     ensure_dir(skill_target)
     shutil.copy2(SKILLS_DIR / "kamma" / "SKILL.md", skill_target / "SKILL.md")
@@ -351,8 +361,7 @@ def sync_antigravity(root: Path, commands: list[Command]) -> None:
             copy_tree_contents(TEMPLATES_DIR, step_dir / "templates")
 
     ensure_dir(workflows_target)
-    for old in workflows_target.glob("kamma-*.md"):
-        old.unlink()
+    remove_matching(workflows_target, "kamma-*.md")
     for command in commands:
         name = "kamma" if command.base == "kamma" else f"kamma-{command.base}"
         write_text(
@@ -363,14 +372,10 @@ def sync_antigravity(root: Path, commands: list[Command]) -> None:
 def sync_opencode(root: Path, commands: list[Command]) -> None:
     command_target = resolve_opencode_command_dir(root)
     ensure_dir(command_target)
-    remove_stale(
-        [
-            command_target / "kamma-status.md",
-            command_target / "status.md",
-            command_target / "kamma-one-shot.md",
-            command_target / "kamma-kamma.md",
-        ]
-    )
+    remove_matching(command_target, "kamma-*.md")
+    # No kamma- prefix, and this directory holds the user's own commands, so the
+    # sweep above cannot reach it.
+    remove_stale([command_target / "status.md"])
     for command in commands:
         if command.base == "kamma":
             shutil.copy2(command.source, command_target / "kamma.md")
@@ -394,10 +399,8 @@ def sync_codex(root: Path, commands: list[Command]) -> None:
         ]
     )
     remove_if_exists(skills_root / "kamma")
-    for old in skills_root.glob("kamma-*"):
-        remove_if_exists(old)
-    for old in prompt_target.glob("kamma-*.md"):
-        old.unlink()
+    remove_matching(skills_root, "kamma-*")
+    remove_matching(prompt_target, "kamma-*.md")
     remove_if_exists(root.parent / "plugins" / "kamma")
     remove_marketplace_kamma()
     for command in commands:
@@ -419,12 +422,7 @@ def sync_codex(root: Path, commands: list[Command]) -> None:
 
 def sync_qwen(root: Path, commands: list[Command]) -> None:
     target = root / "extensions" / "kamma"
-    remove_stale(
-        [
-            target / "commands" / "kamma" / "status.toml",
-            target / "commands" / "kamma" / "kamma-status.toml",
-        ]
-    )
+    remove_matching(target / "commands" / "kamma", "*.toml")
     ensure_dir(target / "commands" / "kamma")
     shutil.copy2(
         REGISTRATION_DIR / "qwen-extension.json", target / "qwen-extension.json"
@@ -442,11 +440,9 @@ def sync_pi(root: Path, commands: list[Command]) -> None:
     skills_root = root / "skills"
 
     ensure_dir(prompts_target)
-    for old in prompts_target.glob("kamma*.md"):
-        old.unlink()
+    remove_matching(prompts_target, "kamma*.md")
     remove_if_exists(skills_root / "kamma")
-    for old in skills_root.glob("kamma-*"):
-        remove_if_exists(old)
+    remove_matching(skills_root, "kamma-*")
 
     for command in commands:
         name = "kamma" if command.base == "kamma" else f"kamma-{command.base}"
@@ -469,14 +465,10 @@ def sync_pi(root: Path, commands: list[Command]) -> None:
 
 def sync_kilo(root: Path, commands: list[Command]) -> None:
     skills_root = root / "skills"
-    remove_stale(
-        [
-            skills_root / "kamma-status",
-            skills_root / "status",
-            skills_root / "kamma-one-shot",
-            skills_root / "kamma-kamma",
-        ]
-    )
+    remove_matching(skills_root, "kamma-*")
+    # No kamma- prefix, and this directory holds the user's own skills, so the
+    # sweep above cannot reach it.
+    remove_stale([skills_root / "status"])
     ensure_dir(skills_root / "kamma")
     for command in commands:
         if command.base == "kamma":

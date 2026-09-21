@@ -7,12 +7,19 @@ them into whichever AI CLIs are present (Claude Code, Antigravity, Codex, Qwen, 
 ## Repo layout
 
 - `commands/` — the source of truth for the prompts. `kamma.md` is the full single-run
-  cycle; `0-setup`, `1-plan`, `2-do`, `3-review`, `4-finalize`, `5-status`,
-  `handoff`, and `improve` are the individual steps. `improve` is the cross-repo
+  cycle and `quick` is the same run without spec or plan files; `0-setup`,
+  `1-plan`, `loop`, `2-do`, `3-review`, `4-finalize`, `handoff`, and `improve`
+  are the individual steps. `improve` is the cross-repo
   self-improvement loop: it reads every repo's `kamma/lessons.md` and consolidates
   recurring mistakes into the framework prompts.
-- `scripts/sync.py` — detects installed CLIs and copies `commands/` + `registration/`
-  into each tool's config dir. It copies (never symlinks) and skips missing tools.
+- `scripts/sync.py` — detects installed CLIs and installs `commands/`,
+  `registration/`, `skills/`, `templates/` and `hooks/` into each tool's config dir.
+  It copies (never symlinks) and skips missing tools. It also *removes*: each
+  target sweeps its own kamma files before writing, so a command deleted from
+  `commands/` disappears on the next sync.
+- `hooks/kamma_gate.py` — the Claude Code enforcement hooks. `sync.py` copies this
+  in and merges two entries into Claude Code's `settings.json`. No other tool has
+  an equivalent yet.
 - `registration/` — per-tool registration files (`QWEN.md`, the
   `*-extension.json` / `*-plugin.json` manifests). These are tracked sources consumed
   by `sync.py` — don't confuse them with the root-level agent files.
@@ -33,6 +40,16 @@ There is no real test suite; verification is reading the prompts for consistency
 (section numbering, cross-references, no broken instructions). **Always verify
 that adding new sections or gated blocks doesn't break list numbering or internal
 heading references.**
+
+## Keeping the docs true to the code
+
+Four files make claims about what the sync tool supports, and all four have drifted
+before: `README.md` (supported-tools line and the command table), `AGENTS.md` (this
+repo-layout list), `kamma/tech.md` (the config-root table) and
+`skills/kamma/SKILL.md` (its command list). After changing `commands/` or
+`get_targets()`, check every command in `commands/` appears in the README table and
+in this file, and that the tech table matches `get_targets()` exactly. A tool or
+command listed in a doc but absent from the code reads as real to everyone after you.
 
 ## Conventions
 

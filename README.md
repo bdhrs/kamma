@@ -4,7 +4,7 @@ A lightweight plan-do-review-finalize process for your CLI agents.
 
 ## Supported Tools
 
-Claude Code, Antigravity (IDE + `agy` CLI), OpenCode, Kilo Code, Codex CLI, Qwen Code
+Claude Code, Antigravity (IDE + `agy` CLI), OpenCode, Kilo Code, Codex CLI, Pi, Qwen Code
 
 > **Gemini CLI** was removed — Google is sunsetting it for consumer tiers (free,
 > Google AI Pro/Ultra) on 18 June 2026 in favour of Antigravity; Standard and
@@ -55,13 +55,13 @@ The sync tool copies the prompts to each supported AI tool's config directory. I
 |---------|-------------|
 | `/kamma` | Plan, do, review, and finalize a thread in a single run |
 | `/kamma:quick` | Same single run for a small change — no spec or plan files |
-  | `/kamma:0-setup` | Scaffold a project with project.md, tech.md, workflow.md |
+| `/kamma:0-setup` | Scaffold a project with project.md, tech.md, workflow.md |
 | `/kamma:1-plan` | Create a new thread (feature, bug fix, chore) with spec + plan |
 | `/kamma:loop` | Create a standing loop thread for repeated cycles of work |
 | `/kamma:2-do` | Work through the selected thread, or run one loop cycle |
 | `/kamma:3-review` | Review finished work or a loop cycle, ideally in a fresh tool or session |
 | `/kamma:4-finalize` | Finish a reviewed thread or completed loop, update docs, and clean up |
-| `/kamma:5-status` | Show where things stand across all threads |
+| `/kamma:handoff` | Save session context to the active thread so the next agent can resume |
 | `/kamma:improve` | Consolidate recurring lessons across repos into kamma framework improvements |
 
 
