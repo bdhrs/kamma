@@ -296,13 +296,12 @@ def spec_gate() -> None:
     except Exception:
         return
 
+    # No active thread at all means the work in front of the gate isn't part
+    # of a kamma thread's scope — nothing to gate against. The gate exists to
+    # stop a thread from proceeding without a spec/plan, not to force every
+    # write in a kamma-adopting repo through the thread workflow.
     if not thread_dirs:
-        deny(
-            "Kamma spec gate: this repo uses kamma but has no thread in "
-            "kamma/threads/. Starting work with no thread is not allowed. Run "
-            "/kamma:1-plan to create a thread, or /kamma:quick for a small "
-            "self-contained change. Edits inside kamma/ are always allowed."
-        )
+        return
 
     incomplete = []
     for d in thread_dirs:
