@@ -436,20 +436,19 @@ def sync_qwen(root: Path, commands: list[Command]) -> None:
 
 
 def sync_pi(root: Path, commands: list[Command]) -> None:
-    prompts_target = root / "prompts"
+    """Install Kamma into pi as skills only.
+
+    pi prompt templates (``~/.pi/agent/prompts/*.md``) are static text
+    expansions, not agent-run commands, so the kamma step instructions only
+    work through the skill mechanism. An older sync wrote a duplicate
+    ``kamma*.md`` set into ``prompts/``, which shadowed the skills in the ``/``
+    menu — the sweep below removes those on every sync.
+    """
     skills_root = root / "skills"
 
-    ensure_dir(prompts_target)
-    remove_matching(prompts_target, "kamma*.md")
+    remove_matching(root / "prompts", "kamma*.md")
     remove_if_exists(skills_root / "kamma")
     remove_matching(skills_root, "kamma-*")
-
-    for command in commands:
-        name = "kamma" if command.base == "kamma" else f"kamma-{command.base}"
-        write_text(
-            prompts_target / f"{name}.md",
-            render_antigravity_workflow(command),
-        )
 
     skill_target = skills_root / "kamma"
     ensure_dir(skill_target)
