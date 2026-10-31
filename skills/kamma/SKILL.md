@@ -72,6 +72,7 @@ Read and follow `kamma/workflow.md` for the full task flow. It is the single sou
 
 - `/kamma:0-setup` - Initialize Kamma in a project
 - `/kamma:1-plan` - Create a new feature/bug thread
+- `/kamma:1-plan-egm` - Create a new thread with Elephant-Goldfish stress-testing (meticulous variant; design-heavy work, needs a subagent-capable harness)
 - `/kamma:loop` - Create a new standing loop thread for repeated work
 - `/kamma:2-do` - Work through the current thread or one loop cycle
 - `/kamma:3-review` - Review the active thread or loop cycle

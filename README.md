@@ -57,6 +57,7 @@ The sync tool copies the prompts to each supported AI tool's config directory. I
 | `/kamma:quick` | Same single run for a small change — no spec or plan files |
 | `/kamma:0-setup` | Scaffold a project with project.md, tech.md, workflow.md |
 | `/kamma:1-plan` | Create a new thread (feature, bug fix, chore) with spec + plan |
+| `/kamma:1-plan-egm` | Create a new thread with Elephant-Goldfish stress-testing (meticulous variant of 1-plan) |
 | `/kamma:loop` | Create a standing loop thread for repeated cycles of work |
 | `/kamma:2-do` | Work through the selected thread, or run one loop cycle |
 | `/kamma:3-review` | Review finished work or a loop cycle, ideally in a fresh tool or session |
