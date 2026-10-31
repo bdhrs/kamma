@@ -10,7 +10,7 @@ them into whichever AI CLIs are present (Claude Code, Antigravity, Codex, Qwen, 
   cycle and `quick` is the same run without spec or plan files; `0-setup`,
   `1-plan`, `1-plan-egm`, `loop`, `2-do`, `3-review`, `4-finalize`, `handoff`, and `improve`
   are the individual steps. `1-plan-egm` is the meticulous planning variant that
-  adds Elephant-Goldfish stress-testing. `improve` is the cross-repo
+  adds Elephant-Goldfish stress-testing of the idea, the spec, and the plan. `improve` is the cross-repo
   self-improvement loop: it reads every repo's `kamma/lessons.md` and consolidates
   recurring mistakes into the framework prompts.
 - `scripts/sync.py` — detects installed CLIs and installs `commands/`,
