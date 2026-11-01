@@ -50,23 +50,25 @@ Three roles:
 5. **No apologies.** When challenged or corrected, outline the corrected technical logic or trade-off directly — do not apologize.
 6. **Reject echo-chamber framing.** Never parrot the request's framing back to the owner. If a conclusion is asserted, do not validate it reflexively — re-derive it from the repo.
 7. **Plain English.** No buzzwords, no ungrounded promotional adjectives ("seamless", "robust", "blazingly fast") or decorative adverbs ("seamlessly", "effortlessly", "literally", "drastically", "obviously"). Explain mechanisms directly.
-8. **Artifact-first.** Every generated artifact — `spec.md`, `plan.md`, review findings — is written to a file; never dumped in chat. Tell the owner the path plus a TL;DR of the decisions and open risks. Chat is for questions and TL;DRs, not documents.
+8. **Artifact-first.** Every generated artifact — `spec.md`, `plan.md`, review findings — is written to a file; never dumped in chat. Review findings go in `kamma/threads/<thread_id>/egm/` (section 2.3). Tell the owner the path plus a TL;DR of the decisions and open risks. Chat is for questions and TL;DRs, not documents. Count every number you report (findings, accepted, rejected) from the `egm/` files, never from memory.
 9. **Owner decides architecture.** When a design decision has more than one defensible answer (data model, boundaries, storage, protocols), present up to three options, each with its mechanism, trade-offs, and the conditions under which it fails — do not rank them and do not mark a default. Decide mechanical choices with one defensible answer (file names, formatting) yourself.
 10. **One question per gate.** Each native question call carries exactly one question and is the sole tool call in its turn. Open-ended clarification never travels through it — see section 2.0.1.
 
 ### 1.2.2 What a Goldfish is
 
-A Goldfish is a **fresh subagent**, spawned with your harness's subagent tool (`subagent` in pi, `Agent`/`Task` in Claude Code, `spawn_agent` in Codex, a subagent in OpenCode). It must NOT inherit this conversation. Pass it only:
+A Goldfish is a **fresh subagent**, spawned with your harness's subagent tool (`subagent` in pi, `Agent`/`Task` in Claude Code, `spawn_agent` in Codex, a subagent in OpenCode) or with an external agent CLI the owner names (section 1.2.4). It must NOT inherit this conversation. Pass it only:
 
 - the thread request/description and (where one exists) the anchored hypothesis,
 - the repo path and an instruction to read the real source **and every file the artifact references**, and
 - the artifact path (spec and readiness gates).
 
+At Gate 1 you may also pass a list of facts you verified, labelled "claims to re-check, not facts". Keep the Contrarian / YAGNI Goldfish free of that list (section 2.3).
+
 Every Goldfish is **strictly read-only**: it reports findings and modifies nothing. Every finding carries a severity — **Blocker** (the artifact is wrong or unusable as written), **Major** (a real gap that must be fixed), or **Nit** (worth fixing, never worth blocking on).
 
-**Hard stop:** if your harness cannot spawn subagents, stop and tell the user: a review done inside your own context is not a Goldfish review. Recommend `/kamma:1-plan` (the plain planner, which needs no subagents) instead. Never substitute a self-review, even labelled one.
+**Hard stop:** if your harness cannot spawn subagents and the owner named no external CLI, stop and tell the user: a review done inside your own context is not a Goldfish review. Recommend `/kamma:1-plan` (the plain planner, which needs no subagents) instead. Never substitute a self-review, even labelled one.
 
-**Failure handling:** if a Goldfish fails or returns nothing, retry it once. If the retry also fails, mark that gate "not run" and say so explicitly — never record a failed or empty review as "no findings".
+**Failure handling:** if a Goldfish fails or returns nothing, retry it once on the same backend, or switch to the next backend in the fallback order (section 1.2.4). A switch counts as the retry. Only when every backend has failed, mark that gate "not run" and say so explicitly — never record a failed or empty review as "no findings".
 
 ### 1.2.3 Deliberate deviations from upstream EGM
 
@@ -75,6 +77,38 @@ These are sanctioned adaptations, not drift. If you find yourself violating one,
 1. **Owner approves direction, not documents.** Upstream gates every drafted section on owner approval. Here, documents land as path + TL;DR and the owner reads them only if the TL;DR looks wrong. Escalated findings and architecture forks still stop for the owner.
 2. **Multi-turn drilling is delegated.** Upstream drills the owner across many chat turns before spawning reviewers. Here, at most one open question round happens up front (section 2.2); the rest of the drilling is done *to the artifacts* by the Goldfish, and only the survivors are escalated to the owner in a single batched round.
 3. **No zoom-out passes.** Upstream's review pipeline includes structural navigation passes for long documents. Kamma thread specs are short; comprehension, design critique, and readiness carry the load.
+4. **Away mode may pick a provisional default.** Constraint 9 forbids marking a default. When the owner is away (section 2.0.2), you pick one option per fork and mark it provisional, so the run does not stop. The owner confirms or changes each pick on return.
+
+### 1.2.4 Goldfish backends
+
+A Goldfish runs on the harness's native subagent tool, or on an external agent CLI the owner names (for example `pi -p --provider <name> --tools read --no-session`). Either way it must be read-only and start with no conversation context.
+
+1. **Smoke probe.** Before the first fan-out on a backend not yet used this session, run one Goldfish-shaped task that must use the read tool once: "read `<file>`, reply with its first line". Cap it at 3 minutes. A text-only ping is not enough: a ping can pass while every run that uses tools hangs. If the probe fails, go to the next backend.
+2. **Time cap.** Cap each Goldfish at 15 minutes unless the owner sets another limit. Prefer an output mode that shows progress (streaming or JSON events), so a hung run looks different from a slow one. A Goldfish that hits the cap counts as failed.
+3. **Fallback order.** The backend the owner named, then the harness's native subagents. If the owner named none, use the native subagents only.
+4. **Record every switch.** Write each probe failure, cap hit, and backend switch in the gate's `egm/` file (section 2.3) and in the final TL;DR (section 2.8).
+
+### 1.2.5 The Goldfish brief
+
+Every gate uses this brief. The gate adds only its lens or question and its inputs. Write the filled brief to the Goldfish's prompt.
+
+```
+You are a Goldfish reviewer. You have no earlier context. You are strictly read-only: report findings, change nothing.
+
+Safety:
+- Never open a file that may hold secrets: `.env`, `*.ini` with keys, htpasswd files, private keys.
+- Never run or import project code. Some modules load API keys when imported.
+- Use no network and no ssh.
+
+Task: <lens or question>
+
+Inputs: <inputs>
+
+Read the inputs and every file they reference. Open at most 15 files.
+
+Report each finding as: severity (Blocker / Major / Nit), evidence as `file:line`, the failure scenario, and the fix.
+Lead with problems. No praise. Use at most 600 words.
+```
 
 ## 2.0 CREATE A NEW THREAD
 
@@ -84,6 +118,17 @@ Two question shapes, kept strictly distinct:
 
 1. **Open-ended clarification** — asked in plain chat (or a native tool's free-form answer), with **no pre-canned options**. Pre-canned A/B/C answers narrow the answer space before the problem is understood; upstream EGM forbids them during exploration and so does this command. Batch open questions into a single round, and skip the round entirely if everything material can be confidently inferred.
 2. **Decision gates** — a single-select native question (`AskUserQuestion`, `request_user_input`, `ask_user`): exactly one question, up to three options, no "(Recommended)" prefix, no marked default, free-form answer always available. Used for architecture forks, readiness forks, and escalations with enumerable answers. Only fall back to plain chat if the native tool call actually fails.
+
+### 2.0.2 Away mode
+
+If the owner says they are away, or that the run must not stop, no decision gate is asked. This covers the sections 2.2 complexity question, every escalation, and every architecture fork. Do this for each one instead:
+
+1. Pick one option.
+2. Write all options, as constraint 9 requires, plus the reason for your pick and its risk, in the spec under "Decisions made while the owner was away (provisional)".
+3. Make "owner confirms each provisional decision" the first owner task in `plan.md`.
+4. List the provisional decisions in the final TL;DR (section 2.8).
+
+The section 2.2 complexity question defaults to "no model splitting". Say so in the spec.
 
 ### 2.1 Get the Thread Description
 
@@ -106,7 +151,9 @@ Two question shapes, kept strictly distinct:
 
 ### 2.3 Goldfish Gate 1 — Stress-Test the Idea
 
-1. **Spawn one Goldfish per lens, in parallel — six reviewers.** Each is read-only and sees only the request, the anchored hypothesis, the repo, and its lens brief:
+**Before the fan-out:** check `kamma/threads/` for name collisions, generate the thread ID (`YYYYMMDD_shortname`), and create `kamma/threads/<thread_id>/egm/`. Write `egm/brief.md` with the request, the facts you verified, and the anchored hypothesis. The directory appears before `spec.md` and `plan.md` on purpose: the Claude Code spec gate treats a thread without both files as in progress and blocks edits outside `kamma/` until they land or the directory is deleted. If this run aborts early, that is the honest state to leave behind. Run the section 1.2.4 smoke probe if the backend is new.
+
+1. **Spawn one Goldfish per lens, in parallel — six reviewers.** Each uses the section 1.2.5 brief with its lens as the task. Each is read-only and sees only the request, the anchored hypothesis, the repo, and its lens brief. The Contrarian / YAGNI Goldfish gets the request and the hypothesis only. The others may also get the verified-facts list from `egm/brief.md`, labelled "claims to re-check, not facts":
 
    | Lens | Core question |
    | :--- | :--- |
@@ -117,18 +164,20 @@ Two question shapes, kept strictly distinct:
    | **Observability & SRE debuggability** | Are key operations traceable? How would oncall triage a production incident caused by this? |
    | **Long-term tech debt & maintenance** | Does this introduce coupling or brittle state that hurts to maintain in two years? |
 
-2. **Small threads may pair lenses onto three reviewers** (two lenses each). Never fewer than three reviewers, and all six lenses must be covered — a single reviewer holding six lenses is a dilution, not a review.
+2. **Small threads may pair lenses onto three reviewers** (two lenses each). A thread is small when the change is one file or under about 100 lines. After a backend fallback (section 1.2.4), any thread may pair lenses. Never fewer than three reviewers, and all six lenses must be covered — a single reviewer holding six lenses is a dilution, not a review.
 
-3. **Deduplicate and decide.** Collect the findings, deduplicate overlaps. Classify each as:
+3. **Deduplicate and decide.** Collect the findings, deduplicate overlaps. Before you Accept or Reject a finding that states a fact about code, data, or behaviour, check that fact against the source. A Goldfish report is a claim, not a measurement. Classify each as:
    - **Accept** — valid; it changes the spec.
    - **Reject** — wrong or already covered; note the reason.
    - **Escalate** — needs the owner's knowledge; surface it as a question.
 
-4. **Feed survivors into the spec.** Accepted findings go into the spec's "Assumptions & uncertainties" section (section 2.4), labelled as Goldfish findings with their severity. Escalated findings become one decision-gate round (section 2.0.1), batched with anything section 2.2 left open. Report rejected findings and their reasons in one short note so the owner can overrule.
+   Write `egm/gate1.md`: the raw findings from every Goldfish, then a disposition table with the columns finding, severity, decision, how checked, where fixed. Add any backend switch or "not run" from section 1.2.4.
+
+4. **Feed survivors into the spec.** Accepted findings go into the spec's "Assumptions & uncertainties" section (section 2.4), labelled as Goldfish findings with their severity. The full findings stay in `egm/gate1.md`. Escalated findings become one decision-gate round (section 2.0.1), batched with anything section 2.2 left open. Report rejected findings and their reasons in one short note so the owner can overrule.
 
 ### 2.4 Write `spec.md`
 
-1. **Create the thread directory now.** Check `kamma/threads/` for name collisions, generate the thread ID (`YYYYMMDD_shortname`), and create `kamma/threads/<thread_id>/`. The directory appears before `plan.md` exists on purpose: the Claude Code spec gate treats a spec-without-plan thread as in progress and blocks unrelated edits until `plan.md` lands or the directory is deleted — if this run aborts early, that is the honest state to leave behind.
+1. **The thread directory already exists** (created in section 2.3). Confirm the thread ID still has no name collision. The Claude Code spec gate treats a spec-without-plan thread as in progress and blocks unrelated edits until `plan.md` lands or the directory is deleted — if this run aborts early, that is the honest state to leave behind.
 
 2. Draft `spec.md` with these sections:
    - Overview
@@ -137,6 +186,7 @@ Two question shapes, kept strictly distinct:
    - Constraints (if any)
    - How we'll know it's done
    - What's not included
+   - Review record (a short pointer to `egm/` with counts taken from those files, not the findings themselves)
 
    The spec must be self-contained — a different agent in a later session should understand it fully. Write down current behavior, affected files, constraints, assumptions, and project-specific terminology that matters. Don't rely on conversational memory.
 
@@ -148,11 +198,11 @@ Two question shapes, kept strictly distinct:
 
 The artifact EGM exists to attack is the design document itself; this gate is its kamma form.
 
-1. **Spawn two fresh Goldfish in parallel**, each read-only, each given only the `spec.md` path, the repo path, and its brief. Each reads the spec **and every file the spec references**:
+1. **Spawn two fresh Goldfish in parallel**, each using the section 1.2.5 brief with its question as the task. Each is read-only and is given only the `spec.md` path, the repo path, and its brief. Each reads the spec **and every file the spec references**:
    - **Comprehension reviewer** (naive reader) — restate the spec in your own words, then flag every point where your restatement stalls, diverges, or has to guess: unstated assumptions, undefined terms, internal contradictions, requirements a fresh implementer could not satisfy from this text alone.
    - **Design critic** — attack the design: decisions presented as facts, alternatives never weighed, unhandled failure modes and boundary/error behavior, and anything an implementer would later have to invent because the spec was silent.
 
-2. Findings come back with severity (Blocker/Major/Nit). Deduplicate, then classify Accept / Reject / Escalate exactly as in Gate 1.
+2. Findings come back with severity (Blocker/Major/Nit). Deduplicate, then classify Accept / Reject / Escalate exactly as in Gate 1. Write `egm/gate2.md` in the same form.
 
 3. **Fold fixes in before planning.** Accepted and in-spec escalated findings are fixed directly in `spec.md`. Escalations that need the owner's knowledge become one decision-gate round. Report rejects and reasons in one short note.
 
@@ -184,23 +234,25 @@ The artifact EGM exists to attack is the design document itself; this gate is it
 
    If tied to a GitHub issue, include the same reference near the top.
 
-4. **Failing test first, for bug threads.** If the thread is a bug fix, the first task in `plan.md` must be writing a test that fails for the reported reason — not a fix. Its `→ verify:` line must require running that test and pasting the actual failure output into `plan.md` before any fix task begins. This turns "I fixed it" into something falsifiable and gives the BASELINE GATE something concrete to stand on. Feature threads are unaffected — their existing `→ verify:` lines already cover this.
+4. **Runbook threads.** If a human, or another agent on another machine, runs the tasks, then every task names WHO runs it, gives the exact commands, and has a CHECK and an EXPECT line. Run long commands in the background with a pid file and a wait check. Put an executor-rules section at the top, and make it allow every command the tasks use.
 
-5. **Simplicity check.** Before finishing, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Would a senior engineer say this is overcomplicated? If yes, simplify. If a task touches more than ~5 files or has more than 3 acceptance criteria, split it.
+5. **Failing test first, for bug threads.** If the thread is a bug fix, the first task in `plan.md` must be writing a test that fails for the reported reason — not a fix. Its `→ verify:` line must require running that test and pasting the actual failure output into `plan.md` before any fix task begins. This turns "I fixed it" into something falsifiable and gives the BASELINE GATE something concrete to stand on. Feature threads are unaffected — their existing `→ verify:` lines already cover this.
 
-6. **Model Strategy** — If the user opted in to model splitting (section 2.2): once the phases are finalized (after the simplicity check), insert a `## Model Strategy` table before Phase 1 with each phase, its tier (Fast/Pro), and a one-line reason. Always mixed — never all-pro. Pro phases are only for analysis/checking/planning outputs; Fast phases are for implementation, commands, verification, generation, installs, servers, and mechanical edits. Add `⚠️ MODEL SWITCH REQUIRED (Pro tier): <analysis/checking reason>` or `⚠️ MODEL SWITCH REQUIRED (Fast tier): mechanical execution resumes` at tier-change phase headers. **Also tag EVERY phase header with its own tier** — `## Phase 2 — <name> — *Pro*` — not just the ones where the tier changes, and make each tag agree with the table. Unattended runners resolve a task's model from the nearest preceding phase header; an untagged header is indistinguishable from a Fast one, so a Pro phase silently runs on the Fast model, refuses the work as out-of-tier, and stalls the run. Otherwise skip.
+6. **Simplicity check.** Before finishing, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Would a senior engineer say this is overcomplicated? If yes, simplify. If a task touches more than ~5 files or has more than 3 acceptance criteria, split it.
 
-7. **Write it to `kamma/threads/<thread_id>/plan.md`.** No chat dump — the readiness gate and the final TL;DR cover it.
+7. **Model Strategy** — If the user opted in to model splitting (section 2.2): once the phases are finalized (after the simplicity check), insert a `## Model Strategy` table before Phase 1 with each phase, its tier (Fast/Pro), and a one-line reason. Always mixed — never all-pro. Pro phases are only for analysis/checking/planning outputs; Fast phases are for implementation, commands, verification, generation, installs, servers, and mechanical edits. Add `⚠️ MODEL SWITCH REQUIRED (Pro tier): <analysis/checking reason>` or `⚠️ MODEL SWITCH REQUIRED (Fast tier): mechanical execution resumes` at tier-change phase headers. **Also tag EVERY phase header with its own tier** — `## Phase 2 — <name> — *Pro*` — not just the ones where the tier changes, and make each tag agree with the table. Unattended runners resolve a task's model from the nearest preceding phase header; an untagged header is indistinguishable from a Fast one, so a Pro phase silently runs on the Fast model, refuses the work as out-of-tier, and stalls the run. Otherwise skip.
+
+8. **Write it to `kamma/threads/<thread_id>/plan.md`.** No chat dump — the readiness gate and the final TL;DR cover it.
 
 ### 2.7 Goldfish Gate 3 — Implementation-Readiness Audit
 
 Do this after `plan.md` is drafted. It catches the most common planning failure: a plan that looks complete but forces the implementer to make design decisions on the fly.
 
-1. Spawn a fresh zero-context Goldfish with only the `plan.md` path and the repo. It is read-only, must not see this conversation, and reads the plan **and every file the plan references**.
-2. Ask it: "For each task, can you implement it without making a design decision the plan did not specify?" It must flag every task that forces the implementer to invent something — an interface, a default value, a file location, an error strategy, a schema — each with severity (Blocker/Major/Nit).
-3. Fix every flagged gap in `plan.md` before proceeding. If a gap genuinely belongs to the owner, escalate it as a decision gate.
+1. Spawn a fresh zero-context Goldfish with the section 1.2.5 brief, the `plan.md` path, and the repo. It is read-only, must not see this conversation, and reads the plan **and every file the plan references**.
+2. Ask it: "For each task, can you implement it without making a design decision the plan did not specify?" It must flag every task that forces the implementer to invent something — an interface, a default value, a file location, an error strategy, a schema — each with severity (Blocker/Major/Nit). For a runbook plan (step 4 of section 2.6), add: "Check every EXPECT value against the code, and every task against the executor rules."
+3. Fix every flagged gap in `plan.md` before proceeding. If a gap genuinely belongs to the owner, escalate it as a decision gate. Write `egm/gate3.md` in the same form as Gate 1, with the disposition table.
 4. If it returns no Blockers or Majors, the plan is self-contained; Nits may be fixed silently.
-5. If the reviewer fails or returns empty output, retry once; if the retry also fails, mark this gate "not run" and say so — never treat a failed check as "no gaps".
+5. If the reviewer fails or returns empty output, retry once on the same backend or switch backend (section 1.2.4). If every backend fails, mark this gate "not run" and say so — never treat a failed check as "no gaps".
 
 ### 2.8 Finalize the Thread
 
@@ -209,5 +261,7 @@ Do this after `plan.md` is drafted. It catches the most common planning failure:
    > "New thread '<thread_id>' created. `spec.md`: <path> — `plan.md`: <path>."
    >
    > "TL;DR: <2–3 lines — what it does, the key decisions, the open risks/assumptions the Goldfish accepted>."
+   >
+   > "Review: <per gate, the backend and the number of Goldfish; any fallback or "not run"; total findings, accepted / rejected / escalated — counted from `egm/`>. Provisional decisions: <list, if away mode was used>."
    >
    > "Review the files if anything looks off, or start work with `/kamma:2-do`."
