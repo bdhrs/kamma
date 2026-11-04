@@ -260,6 +260,21 @@ Wait for the response.
 
 ### 5.3 GitHub Issue and Commit
 
+**PRIVACY SCAN — always run this first. It is not optional and it is not skippable.** It runs before the issue comment (that comment is public) and before the commit message.
+
+1. Build the scan list: every file in the thread's changed-files list, including new untracked ones (`git status --short`, `git ls-files --others --exclude-standard`). Add the draft issue comment, commit message, and commit description. Add the archived thread under `kamma/archive/` if the repo tracks it.
+2. Look for anything that should not go into a GitHub repo:
+   - Email addresses and phone numbers.
+   - Passwords, API keys, tokens, private keys, and connection strings with credentials.
+   - IP addresses, except loopback and documentation ranges.
+   - Home-folder paths that contain a user name, and internal host names or URLs.
+   - Real names of private people, and personal conversations (pasted chat, email, or session transcripts, including quotes in `lessons.md` and handoff notes).
+   - Content copied from `.env` or `.ini` files, and any other private data.
+   - Example values such as `user@example.com` or `127.0.0.1` are fine.
+3. Never print a matched value. Locate matches with `rg -l` or `rg -c`, read the line yourself, and report only the file, the line number, and the kind of data.
+4. For each finding, ask the user one at a time with the native question tool: remove it, replace it with a placeholder, or keep it. Name the file and say what is at stake.
+5. Do not give the commit message or post the issue comment until every finding is resolved. Then state the result: "Privacy scan: clean (N files)", or what was removed or kept and why.
+
 **If the thread references a GitHub issue** (in the description, `spec.md`, or `plan.md`):
 
 1. Extract the issue number.
