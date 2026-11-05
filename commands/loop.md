@@ -42,7 +42,6 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
    - **Out-of-Scope:** What should this loop explicitly IGNORE?
    - **Validation:** What are the recurring validation standards for every cycle?
    - **Completion:** Under what condition is this standing loop considered "finished"?
-   - **Model Tiers (Optional):** "Use model splitting (Fast/Pro) for cycle execution?" (Options: Yes, No).
 
 2. Draft `spec.md` with these sections:
    - `> **Thread type:** Loop (standing thread)` (Required marker)
@@ -76,6 +75,7 @@ TO-DO LIST: Keep a running to-do list for this command. Add work before you star
      7. **Handoff:** Update `handoff.md` with current state.
      8. **Learn:** Curate `learnings.md` (distill new lessons, prune stale ones).
    - **Read Contract:** A cycle reads only `spec.md`, `plan.md`, `handoff.md`, and `learnings.md`. Full cycle records are read only on demand.
+   - **Model Strategy** (always included): a short table mapping each per-cycle protocol step to its tier — **Pro** (strong model: Claude Code: **Opus**; Antigravity: **Gemini Pro**; Qwen: **Max**; otherwise "your strongest model") for Report, Analyze, and Learn; **Fast (workhorse)** (Claude Code: **Sonnet**; Antigravity: **Flash**; Qwen: **Flash**; otherwise "your workhorse model") for Implement, Validate, Record, and Handoff. Approval is a human stop — no tier. Guidance for the human — never stops or refuses work mid-cycle.
 
 3. Present the draft for review and revise until confirmed.
 

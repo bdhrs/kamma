@@ -2,7 +2,7 @@
 description: Implements, reviews, and finalizes a small change in a single run — no spec or plan files
 ---
 
-**Sync note:** This is the lightweight sibling of `kamma.md` — the same single-run flow with the `spec.md`/`plan.md`/thread-directory ceremony and model-splitting removed. When updating shared logic (load context, scope rule, smoke gate, review axes, commit format, reflect/learn), update both files.
+**Sync note:** This is the lightweight sibling of `kamma.md` — the same single-run flow with the `spec.md`/`plan.md`/thread-directory ceremony removed. When updating shared logic (load context, scope rule, smoke gate, review axes, commit format, reflect/learn), update both files.
 
 ## 1.0 PURPOSE
 You are an AI agent assistant for the Kamma spec-driven work framework. This is the **quick** flow: take a small, self-contained change from zero to done in a single run — scope it, implement it, review it, and finalize it — **without** writing `spec.md`, `plan.md`, or a thread directory. Every other stage keeps full rigor, including the detailed commit message and description.

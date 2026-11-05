@@ -121,14 +121,14 @@ Two question shapes, kept strictly distinct:
 
 ### 2.0.2 Away mode
 
-If the owner says they are away, or that the run must not stop, no decision gate is asked. This covers the sections 2.2 complexity question, every escalation, and every architecture fork. Do this for each one instead:
+If the owner says they are away, or that the run must not stop, no decision gate is asked. This covers every escalation and every architecture fork. Do this for each one instead:
 
 1. Pick one option.
 2. Write all options, as constraint 9 requires, plus the reason for your pick and its risk, in the spec under "Decisions made while the owner was away (provisional)".
 3. Make "owner confirms each provisional decision" the first owner task in `plan.md`.
 4. List the provisional decisions in the final TL;DR (section 2.8).
 
-The section 2.2 complexity question defaults to "no model splitting". Say so in the spec.
+The plan's `## Model Strategy` table (section 2.6) is always generated — say so in the spec.
 
 ### 2.1 Get the Thread Description
 
@@ -141,9 +141,11 @@ The section 2.2 complexity question defaults to "no model splitting". Say so in 
 
 ### 2.2 Anchor the Hypothesis
 
+**Model note (planning):** Planning is best done on the strongest reasoning model available — Claude Code: **Opus**; Antigravity: **Gemini Pro**; Qwen: **Max**; Codex: the top reasoning model; otherwise your strongest model. State this as one line to the user at the start of planning. If the owner has no access to the strong variant or doesn't switch, proceed on whatever model is running — never block, never refuse, never ask via the question tool.
+
 1. **VERIFY GATE — establish facts before assumptions.** Any concrete claim the spec will rely on (a count, a data format, a file's actual content, which code layer something lives in, which control consumes a value) must come from reading the real source — code, data, or a quick check — not from memory, a name match, or how the request framed it. If the spec depends on "every place X happens," run an exhaustive sweep (grep the literal string/pattern, not just the obvious call form, and include hidden paths) before writing the affected-files list — a partial sweep produces a spec that looks complete and isn't. State in the spec which facts were verified this way and which remain assumptions.
 
-2. **Surface assumptions before drafting.** Use `project.md`, `tech.md`, and the codebase to infer as much as you can. Then identify your key assumptions — about scope, tech stack, affected files, and approach. Ask **at most one batched round of open-ended questions** (section 2.0.1), and only for assumptions that are uncertain *and* would change the spec significantly if wrong. If everything material can be confidently inferred, ask nothing and proceed — the Goldfish attack in section 2.3 is the backstop that catches what inference missed. Also assess complexity: if the work looks complex enough to need pro-model reasoning somewhere (novel architecture, no existing pattern, 3+ interconnected systems, security-critical logic), add one decision gate to the same round: "This looks complex — use model splitting across Fast/Pro tiers?" Pro means analysis/checking/planning only; execution belongs to Fast.
+2. **Surface assumptions before drafting.** Use `project.md`, `tech.md`, and the codebase to infer as much as you can. Then identify your key assumptions — about scope, tech stack, affected files, and approach. Ask **at most one batched round of open-ended questions** (section 2.0.1), and only for assumptions that are uncertain *and* would change the spec significantly if wrong. If everything material can be confidently inferred, ask nothing and proceed — the Goldfish attack in section 2.3 is the backstop that catches what inference missed.
 
 3. **MINIMAL-FIRST GATE.** Draft the smallest change that satisfies the request — no extra helpers, refactors, generalization, or "while we're at it" machinery beyond what was asked. If a simpler approach exists, or the request as stated would add complexity beyond the stated need, say so before writing the spec and propose the minimal version instead. Defer extras to a follow-up unless the user asks for them now. If the request would conflict with existing architecture, raise that too. Climb the laziness ladder and stop at the first rung that meets the need: (1) does it need to exist at all? — if not, drop it; (2) does the standard library or a language built-in do it? — use it; (3) is there a native platform feature? — use it; (4) is there an already-installed dependency? — reuse it; (5) can it be one line? — keep it one line; (6) only then write the minimum that works. Never trade away correctness, error handling, validation, or security to reach a lower rung.
 
@@ -240,7 +242,7 @@ The artifact EGM exists to attack is the design document itself; this gate is it
 
 6. **Simplicity check.** Before finishing, review the plan for overengineering. Could this be done with fewer phases, fewer files, or simpler logic? If you wrote 20 tasks and it could be 8, rewrite it. Would a senior engineer say this is overcomplicated? If yes, simplify. If a task touches more than ~5 files or has more than 3 acceptance criteria, split it.
 
-7. **Model Strategy** — If the user opted in to model splitting (section 2.2): once the phases are finalized (after the simplicity check), insert a `## Model Strategy` table before Phase 1 with each phase, its tier (Fast/Pro), and a one-line reason. Always mixed — never all-pro. Pro phases are only for analysis/checking/planning outputs; Fast phases are for implementation, commands, verification, generation, installs, servers, and mechanical edits. Add `⚠️ MODEL SWITCH REQUIRED (Pro tier): <analysis/checking reason>` or `⚠️ MODEL SWITCH REQUIRED (Fast tier): mechanical execution resumes` at tier-change phase headers. **Also tag EVERY phase header with its own tier** — `## Phase 2 — <name> — *Pro*` — not just the ones where the tier changes, and make each tag agree with the table. Unattended runners resolve a task's model from the nearest preceding phase header; an untagged header is indistinguishable from a Fast one, so a Pro phase silently runs on the Fast model, refuses the work as out-of-tier, and stalls the run. Otherwise skip.
+7. **Model Strategy** — Once the phases are finalized (after the simplicity check), insert a `## Model Strategy` table before Phase 1 — always, every plan. Columns: Phase | Tier | Suggested model | Reason. Tiers: **Pro** — analysis, novel design, security-critical reasoning, review-worthy judgment — suggested model is the strong variant (Claude Code: **Opus**; Antigravity: **Gemini Pro**; Qwen: **Max**; Codex: top reasoning model; otherwise "your strongest model"). **Fast (workhorse)** — implementation, commands, verification, generation, installs, servers, mechanical edits — suggested model is the cheap variant (Claude Code: **Sonnet**; Antigravity: **Flash**; Qwen: **Flash**; otherwise "your workhorse model"). Always mixed — never all-pro. Planning itself belongs to Pro; execution belongs to Fast. **Also tag EVERY phase header with its own tier** — `## Phase 2 — <name> — *Fast*` — and make each tag agree with the table. Unattended runners resolve a task's model from the nearest preceding phase header; an untagged header is indistinguishable from a Fast one, so tag everything. The table is guidance for the human reading the plan — it tells them exactly where dropping to the workhorse is safe.
 
 8. **Write it to `kamma/threads/<thread_id>/plan.md`.** No chat dump — the readiness gate and the final TL;DR cover it.
 
