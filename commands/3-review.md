@@ -39,7 +39,7 @@ If the `spec.md` or `plan.md` contains the marker `> **Thread type:** Loop (stan
 
 1. Announce that you're reviewing the selected thread.
 2. **Independence escalation:** if you are the same agent/session that did the implementation AND your CLI has a way to spawn an independent subagent with its own context (e.g. Claude Code's Agent/Task tool), use it now — spawn one with a zero-memory prompt covering Sections 4.0–6.0 (load thread context, review, write findings) for this thread, and have it report its findings back to you instead of writing `review.md` itself. Continue at Section 7.0 using those findings.
-3. Otherwise (no subagent capability, or you're already a fresh session): note briefly if independence is reduced, and continue straight into Section 4.0 yourself.
+3. Otherwise (no subagent capability, or you're already a fresh session): note briefly if independence is reduced, and continue straight into Section 4.0 yourself. When the agent reviewing is the same session that did the implementation, the verdict must say so in plain words — never let a self-review read as if it were independent.
 
 ---
 
@@ -171,7 +171,8 @@ Or: "No findings."
 ## Verdict
 PASSED | BLOCKED
 - Review date: YYYY-MM-DD
-- Reviewer: <identity>
+- Reviewer: <identity or independent subagent>, model: <model>
+- Independence: full (separate context) | reduced (same session as implementer)
 ```
 
 Target ~30-50 lines. Keep it concise but complete enough for a future agent to understand what happened without re-running checks.
